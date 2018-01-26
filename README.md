@@ -120,17 +120,17 @@ Let assume you have selected the strategy `strategy-001.py`:
 
 **Simple backtesting**
 ```bash
-python3 ./freqtrade/main.py -s stragegy-001 backtesting --realistic-simulation
+python3 ./freqtrade/main.py -s strategy-001 backtesting --realistic-simulation
 ```
 
 **Refresh your test data**
 ```bash
-python3 ./freqtrade/main.py -s stragegy-001 backtesting --realistic-simulation -r
+python3 ./freqtrade/main.py -s strategy-001 backtesting --realistic-simulation -r
 ```
 
 **Test with live data**
 ```bash
-python3 ./freqtrade/main.py -s stragegy-001 backtesting --realistic-simulation -l
+python3 ./freqtrade/main.py -s strategy-001 backtesting --realistic-simulation -l
 ```
 
 ### Which coins were tested?
