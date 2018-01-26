@@ -66,9 +66,6 @@ class CustomStrategy(IStrategy):
         # SAR Parabol
         dataframe['sar'] = ta.SAR(dataframe)
 
-        # TEMA - Triple Exponential Moving Average
-        dataframe['tema'] = ta.TEMA(dataframe, timeperiod=9)
-
         # Hammer: values [0, 100]
         dataframe['CDLHAMMER'] = ta.CDLHAMMER(dataframe)
 
@@ -104,60 +101,3 @@ class CustomStrategy(IStrategy):
             ),
             'sell'] = 1
         return dataframe
-
-    def hyperopt_space(self) -> List[Dict]:
-        """
-        Define your Hyperopt space for the strategy
-        :return: Dict
-        """
-        space = {
-            'rsi_lt': hp.choice('rsi_lt', [
-                {'enabled': False},
-                {'enabled': True, 'value': hp.quniform('rsi_lt-value', 20, 40, 1)}
-            ]),
-            'slowk_lt': hp.choice('slowk_lt', [
-                {'enabled': False},
-                {'enabled': True, 'value': hp.quniform('slowk_lt-value', 0, 50, 1)}
-            ]),
-            'CDLHAMMER': hp.choice('CDLHAMMER', [
-                {'enabled': False},
-                {'enabled': True}
-            ]),
-            'trigger': hp.choice('trigger', [
-                {'type': 'lower_bb'},
-                {'type': 'lower_bb_tema'},
-            ]),
-            'stoploss': hp.uniform('stoploss', -0.5, -0.01),
-        }
-        return space
-
-    def buy_strategy_generator(self, params) -> None:
-        """
-        Define the buy strategy parameters to be used by hyperopt
-        """
-        def populate_buy_trend(dataframe: DataFrame) -> DataFrame:
-            conditions = []
-            # GUARDS AND TRENDS
-            if 'rsi_lt' in params and params['rsi_lt']['enabled']:
-                conditions.append(dataframe['rsi'] < params['rsi_lt']['value'])
-
-            if 'slowk_lt' in params and params['slowk_lt']['enabled']:
-                conditions.append(dataframe['slowk'] < params['slowk_lt']['value'])
-
-            if 'CDLHAMMER' in params and params['CDLHAMMER']['enabled']:
-                conditions.append(dataframe['CDLHAMMER'] == 100)
-
-            # TRIGGERS
-            triggers = {
-                'lower_bb': (dataframe['close'] < dataframe['bb_lowerband']),
-                'lower_bb_tema': (dataframe['tema'] < dataframe['bb_lowerband']),
-            }
-            conditions.append(triggers.get(params['trigger']['type']))
-
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'buy'] = 1
-
-            return dataframe
-
-        return populate_buy_trend
