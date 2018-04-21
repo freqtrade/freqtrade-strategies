@@ -16,7 +16,7 @@ import numpy # noqa
 class_name = 'CustomStrategy'
 
 
-class CustomStrategy(IStrategy):
+class Strategy002(IStrategy):
     """
     Prod strategy 002
     author@: Gerald Lonlas

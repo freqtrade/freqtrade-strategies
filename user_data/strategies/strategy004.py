@@ -14,7 +14,7 @@ import talib.abstract as ta
 class_name = 'CustomStrategy'
 
 
-class CustomStrategy(IStrategy):
+class Strategy004(IStrategy):
     """
     Prod strategy 004
     author@: Gerald Lonlas
