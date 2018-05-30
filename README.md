@@ -34,16 +34,17 @@ bot.
 - [Offer me a coffee](#offer-me-a-coffee)
 
 ## Free trading strategies
-Value below are result from backtesting from 2017-12-19 to 2017-01-20 and  
+Value below are result from backtesting from 2018-01-10 to 2018-01-30 and  
 `experimental.sell_profit_only` enabled. More detail on each strategy 
 page.
 
 |  Strategy | Buy count | AVG profit % | Total profit | AVG duration |
 |-----------|-----------|--------------|--------------|--------------|
-| [Strategy 001](https://github.com/glonlas/freqtrade-strategies/issues/1) | 287 | 2.39 | 0.02763202 |  1306.3 |
-| [Strategy 002](https://github.com/glonlas/freqtrade-strategies/issues/2) | 158 | 2.67 | 0.01686667 |  387.9 |
-| [Strategy 003](https://github.com/glonlas/freqtrade-strategies/issues/3) | 147 | 2.21 | 0.01277113 |  694.9 | 
-| [Strategy 004](https://github.com/glonlas/freqtrade-strategies/issues/4) | 232 | 2.11 | 0.01977185 |  455.3 | 
+| [Strategy 001](https://github.com/glonlas/freqtrade-strategies/issues/1) | 55 | 0.05 | 0.00012102 |  476.1 |
+| [Strategy 002](https://github.com/glonlas/freqtrade-strategies/issues/2) | 9 | 3.21 | 0.00114807 |  189.4 |
+| [Strategy 003](https://github.com/glonlas/freqtrade-strategies/issues/3) | 14 | 1.47 | 0.00081740 |  227.5 | 
+| [Strategy 004](https://github.com/glonlas/freqtrade-strategies/issues/4) | 37 | 0.69 | 0.00102128 |  367.3 | 
+| [Strategy 005](https://github.com/glonlas/freqtrade-strategies/issues/11) | 180 | 1.16 | 0.00827589 |  156.2 | 
 
 
 Strategies from this repo are free to use and feel free to update them. 
