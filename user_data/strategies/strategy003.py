@@ -11,11 +11,15 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy # noqa
 
+
 class Strategy003(IStrategy):
     """
-    Prod strategy 003
+    Strategy 003
     author@: Gerald Lonlas
     github@: https://github.com/glonlas/freqtrade-strategies
+
+    How to use it? 
+    > python3 ./freqtrade/main.py -s Strategy003
     """
 
     # Minimal ROI designed for the strategy.
@@ -32,7 +36,7 @@ class Strategy003(IStrategy):
     stoploss = -0.3
 
     # Optimal ticker interval for the strategy
-    ticker_interval = 5
+    ticker_interval = '5m'
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
         """
