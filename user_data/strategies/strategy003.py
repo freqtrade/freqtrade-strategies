@@ -11,12 +11,7 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy # noqa
 
-
-# Update this variable if you change the class name
-class_name = 'CustomStrategy'
-
-
-class CustomStrategy(IStrategy):
+class Strategy003(IStrategy):
     """
     Prod strategy 003
     author@: Gerald Lonlas

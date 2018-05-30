@@ -9,12 +9,7 @@ from pandas import DataFrame
 
 import talib.abstract as ta
 
-
-# Update this variable if you change the class name
-class_name = 'CustomStrategy'
-
-
-class CustomStrategy(IStrategy):
+class Strategy004(IStrategy):
     """
     Prod strategy 004
     author@: Gerald Lonlas
