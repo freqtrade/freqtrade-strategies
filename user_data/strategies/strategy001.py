@@ -18,7 +18,7 @@ class Strategy001(IStrategy):
     """
     Strategy 001
     author@: Gerald Lonlas
-    github@: https://github.com/glonlas/freqtrade-strategies
+    github@: https://github.com/freqtrade/freqtrade-strategies
 
     How to use it? 
     > python3 ./freqtrade/main.py -s Strategy001
