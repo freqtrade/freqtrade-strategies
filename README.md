@@ -74,12 +74,12 @@ For each strategies, we generally run backtests twice with `experimental.sell_pr
 enabled and disabled.
 
 ### How to install a strategy?
-First you need a [working Freqtrade](https://github.com/freqtrade/freqtrade/blob/master/docs/index.md) 
+First you need a [working Freqtrade](https://github.com/freqtrade/freqtrade/blob/develop/docs/index.md) 
 in version >= 0.16.0. 
 
 Once you have the bot on the right version, follow this steps:
 1. Select the strategy you want. All strategies of the repo are into 
-[user_data/strategies](https://github.com/freqtrade/freqtrade/tree/master/user_data/strategies)
+[user_data/strategies](https://github.com/freqtrade/freqtrade/tree/develop/user_data/strategies)
 2. Copy the strategy file
 3. Paste it into your `user_data/strategies` folder
 4. Run the bot with the parameter `-s <STRATEGY CLASS NAME>` (ex: `python3 ./freqtrade/main.py -s Strategy001`)
