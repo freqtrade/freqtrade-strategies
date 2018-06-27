@@ -11,28 +11,30 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy # noqa
 
-class strategy003(IStrategy):
+
+class Strategy005(IStrategy):
     """
-    Strategy 003
+    Strategy 005
     author@: Gerald Lonlas
     github@: https://github.com/freqtrade/freqtrade-strategies
 
-    How to use it? 
-    > python3 ./freqtrade/main.py -s Strategy003
+    How to use it?
+    > python3 ./freqtrade/main.py -s Strategy005
     """
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {
-        "60":  0.01,
-        "30":  0.03,
-        "20":  0.04,
+        "1440": 0.01,
+        "80": 0.02,
+        "40": 0.03,
+        "20": 0.04,
         "0":  0.05
     }
 
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
-    stoploss = -0.3
+    stoploss = -0.5
 
     # Optimal ticker interval for the strategy
     ticker_interval = '5m'
@@ -46,13 +48,13 @@ class strategy003(IStrategy):
         or your hyperopt configuration, otherwise you will waste your memory and CPU usage.
         """
 
-        # MFI
-        dataframe['mfi'] = ta.MFI(dataframe)
+        # MACD
+        macd = ta.MACD(dataframe)
+        dataframe['macd'] = macd['macd']
+        dataframe['macdsignal'] = macd['macdsignal']
 
-        # Stoch fast
-        stoch_fast = ta.STOCHF(dataframe)
-        dataframe['fastd'] = stoch_fast['fastd']
-        dataframe['fastk'] = stoch_fast['fastk']
+        # Minus Directional Indicator / Movement
+        dataframe['minus_di'] = ta.MINUS_DI(dataframe)
 
         # RSI
         dataframe['rsi'] = ta.RSI(dataframe)
@@ -60,16 +62,16 @@ class strategy003(IStrategy):
         # Inverse Fisher transform on RSI, values [-1.0, 1.0] (https://goo.gl/2JGGoy)
         rsi = 0.1 * (dataframe['rsi'] - 50)
         dataframe['fisher_rsi'] = (numpy.exp(2 * rsi) - 1) / (numpy.exp(2 * rsi) + 1)
+        # Inverse Fisher transform on RSI normalized, value [0.0, 100.0] (https://goo.gl/2JGGoy)
+        dataframe['fisher_rsi_norma'] = 50 * (dataframe['fisher_rsi'] + 1)
 
-        # Bollinger bands
-        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
-        dataframe['bb_lowerband'] = bollinger['lower']
+        # Stoch fast
+        stoch_fast = ta.STOCHF(dataframe)
+        dataframe['fastd'] = stoch_fast['fastd']
+        dataframe['fastk'] = stoch_fast['fastk']
 
-        # EMA - Exponential Moving Average
-        dataframe['ema5'] = ta.EMA(dataframe, timeperiod=5)
-        dataframe['ema10'] = ta.EMA(dataframe, timeperiod=10)
-        dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
-        dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
+        # Overlap Studies
+        # ------------------------------------
 
         # SAR Parabol
         dataframe['sar'] = ta.SAR(dataframe)
@@ -86,18 +88,16 @@ class strategy003(IStrategy):
         :return: DataFrame with buy column
         """
         dataframe.loc[
+            # Prod
             (
-                (dataframe['rsi'] < 28) &
-                (dataframe['rsi'] > 0) &
+                (dataframe['close'] > 0.00000200) &
+                (dataframe['volume'] > dataframe['volume'].mean() * 4) &
                 (dataframe['close'] < dataframe['sma']) &
-                (dataframe['fisher_rsi'] < -0.94) &
-                (dataframe['mfi'] < 16.0) &
-                (
-                    (dataframe['ema50'] > dataframe['ema100']) |
-                    (qtpylib.crossed_above(dataframe['ema5'], dataframe['ema10']))
-                ) &
                 (dataframe['fastd'] > dataframe['fastk']) &
-                (dataframe['fastd'] > 0)
+                (dataframe['rsi'] > 0) &
+                (dataframe['fastd'] > 0) &
+                # (dataframe['fisher_rsi'] < -0.94)
+                (dataframe['fisher_rsi_norma'] < 38.900000000000006)
             ),
             'buy'] = 1
 
@@ -110,9 +110,16 @@ class strategy003(IStrategy):
         :return: DataFrame with buy column
         """
         dataframe.loc[
+            # Prod
+            (
+                (qtpylib.crossed_above(dataframe['rsi'], 50)) &
+                (dataframe['macd'] < 0) &
+                (dataframe['minus_di'] > 0)
+            ) |
             (
                 (dataframe['sar'] > dataframe['close']) &
                 (dataframe['fisher_rsi'] > 0.3)
             ),
+
             'sell'] = 1
         return dataframe

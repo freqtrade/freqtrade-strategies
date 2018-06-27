@@ -5,7 +5,7 @@ import pandas as pd
 """
 Indicators for Freqtrade
 author@: Gerald Lonlas
-github@: https://github.com/glonlas/freqtrade-strategies
+github@: https://github.com/freqtrade/freqtrade-strategies
 """
 
 def pivots_points(dataframe: pd.DataFrame, timeperiod=30, levels=3) -> pd.DataFrame:

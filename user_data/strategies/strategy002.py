@@ -13,9 +13,12 @@ import numpy # noqa
 
 class strategy002(IStrategy):
     """
-    Prod strategy 002
+    Strategy 002
     author@: Gerald Lonlas
-    github@: https://github.com/glonlas/freqtrade-strategies
+    github@: https://github.com/freqtrade/freqtrade-strategies
+
+    How to use it? 
+    > python3 ./freqtrade/main.py -s Strategy002
     """
 
     # Minimal ROI designed for the strategy.
@@ -32,7 +35,7 @@ class strategy002(IStrategy):
     stoploss = -0.3
 
     # Optimal ticker interval for the strategy
-    ticker_interval = 5
+    ticker_interval = '5m'
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
         """
