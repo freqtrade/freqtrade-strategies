@@ -9,7 +9,7 @@ from pandas import DataFrame
 
 import talib.abstract as ta
 
-class Strategy004(IStrategy):
+class strategy004(IStrategy):
     """
     Prod strategy 004
     author@: Gerald Lonlas

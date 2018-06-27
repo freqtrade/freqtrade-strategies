@@ -14,7 +14,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 # Update this variable if you change the class name
 
 
-class Strategy001(IStrategy):
+class strategy001(IStrategy):
     """
     Prod strategy 001
     author@: Gerald Lonlas
