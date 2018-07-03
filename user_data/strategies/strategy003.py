@@ -11,8 +11,7 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy # noqa
 
-
-class Strategy003(IStrategy):
+class strategy003(IStrategy):
     """
     Strategy 003
     author@: Gerald Lonlas

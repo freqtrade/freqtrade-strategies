@@ -11,17 +11,25 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
-# Update this variable if you change the class name
-
-
-class strategy001(IStrategy):
+class ASDTSRockwellTrading(IStrategy):
     """
-    Strategy 001
-    author@: Gerald Lonlas
-    github@: https://github.com/freqtrade/freqtrade-strategies
+    trading strategy based on the concept explained at https://www.youtube.com/watch?v=mmAWVmKN4J0
+    author@: Gert Wohlgemuth
 
-    How to use it? 
-    > python3 ./freqtrade/main.py -s Strategy001
+    idea:
+
+        uptrend definition:
+            MACD above 0 line AND above MACD signal
+
+
+        downtrend definition:
+            MACD below 0 line and below MACD signal
+
+        sell definition:
+            MACD below MACD signal
+
+    it's basically a very simple MACD based strategy and we ignore the definition of the entry and exit points in this case, since the trading bot, will take of this already
+
     """
 
     # Minimal ROI designed for the strategy.
@@ -41,21 +49,11 @@ class strategy001(IStrategy):
     ticker_interval = '5m'
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
-        """
-        Adds several different TA indicators to the given DataFrame
 
-        Performance Note: For the best performance be frugal on the number of indicators
-        you are using. Let uncomment only the indicator you are using in your strategies
-        or your hyperopt configuration, otherwise you will waste your memory and CPU usage.
-        """
-
-        dataframe['ema20'] = ta.EMA(dataframe, timeperiod=20)
-        dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
-        dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
-
-        heikinashi = qtpylib.heikinashi(dataframe)
-        dataframe['ha_open'] = heikinashi['open']
-        dataframe['ha_close'] = heikinashi['close']
+        macd = ta.MACD(dataframe)
+        dataframe['macd'] = macd['macd']
+        dataframe['macdsignal'] = macd['macdsignal']
+        dataframe['macdhist'] = macd['macdhist']
 
         return dataframe
 
@@ -67,9 +65,8 @@ class strategy001(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['ema20'], dataframe['ema50']) &
-                (dataframe['ha_close'] > dataframe['ema20']) &
-                (dataframe['ha_open'] < dataframe['ha_close'])  # green bar
+                (dataframe['macd'] > 0) &
+                (dataframe['macd'] > dataframe['macdsignal'])
             ),
             'buy'] = 1
 
@@ -83,9 +80,7 @@ class strategy001(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['ema50'], dataframe['ema100']) &
-                (dataframe['ha_close'] < dataframe['ema20']) &
-                (dataframe['ha_open'] > dataframe['ha_close'])  # red bar
+                (dataframe['macd'] < dataframe['macdsignal'])
             ),
             'sell'] = 1
         return dataframe
