@@ -2,7 +2,6 @@
 # --- Do not remove these libs ---
 from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
-from hyperopt import hp
 from functools import reduce
 from pandas import DataFrame
 # --------------------------------
@@ -17,7 +16,7 @@ class strategy003(IStrategy):
     author@: Gerald Lonlas
     github@: https://github.com/freqtrade/freqtrade-strategies
 
-    How to use it? 
+    How to use it?
     > python3 ./freqtrade/main.py -s Strategy003
     """
 

@@ -1,7 +1,6 @@
 # --- Do not remove these libs ---
 from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
-from hyperopt import hp
 from functools import reduce
 from pandas import DataFrame, merge, DatetimeIndex
 # --------------------------------
