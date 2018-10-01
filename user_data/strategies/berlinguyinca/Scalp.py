@@ -7,12 +7,13 @@ from pandas import DataFrame
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from typing import Dict, List
-from functools import rweduce
+from functools import reduce
 from pandas import DataFrame, DatetimeIndex, merge
 # --------------------------------
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy  # noqa
+
 class Scalp(IStrategy):
     """
         this strategy is based around the idea of generating a lot of potentatils buys and make tiny profits on each trade
