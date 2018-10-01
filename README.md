@@ -2,8 +2,8 @@
 
 This Git repo contains free buy/sell strategies for [Freqtrade](https://github.com/freqtrade/freqtrade) >= `0.16.0`.
 
-
 ## Disclaimer
+
 These strategies are for educational purposes only. Do not risk money 
 which you are afraid to lose. USE THE SOFTWARE AT YOUR OWN RISK. THE 
 AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR TRADING 
@@ -18,6 +18,7 @@ hesitate to read the source code and understand the mechanism of this
 bot.
 
 ## Table of Content
+
 - [Free trading strategies](#free-trading-strategies)
 - [Contributes](#Contributes)
 - [FAQ](#faq)
@@ -54,12 +55,15 @@ Feel free to send your strategies, comments, optimizations and pull requests via
 
 ### What is Freqtrade?
 [Freqtrade](https://github.com/freqtrade) is a Simple High 
-frequency trading bot for crypto currencies designed to support multi 
+frequency trading bot for crypto currencies designed to support 
+ 
 exchanges and be controlled via Telegram built by [gcarq@](https://github.com/gcarq) and the
 [core-dev team](https://github.com/orgs/freqtrade/teams/core-dev).
 
 ### What includes these strategies?
+
 Each Strategies includes:  
+
 - [x] **Minimal ROI**: Minimal ROI optimized for the strategy.
 - [x] **Stoploss**: Optimimal stoploss calculated based on hyperopt result.
 - [x] **Buy Strategy**: Result from Hyperopt or based on exisiting trading strategies.
@@ -69,15 +73,18 @@ Each Strategies includes:
 - [x] **Backtesting results** 
 
 ### How were tested the strategies?
+
 All strategies tests are explain on their own tickets.  
 For each strategies, we generally run backtests twice with `experimental.sell_profit_only`
 enabled and disabled.
 
 ### How to install a strategy?
+
 First you need a [working Freqtrade](https://github.com/freqtrade/freqtrade/blob/develop/docs/index.md) 
 in version >= 0.16.0. 
 
 Once you have the bot on the right version, follow this steps:
+
 1. Select the strategy you want. All strategies of the repo are into 
 [user_data/strategies](https://github.com/freqtrade/freqtrade/tree/develop/user_data/strategies)
 2. Copy the strategy file
@@ -85,22 +92,28 @@ Once you have the bot on the right version, follow this steps:
 4. Run the bot with the parameter `-s <STRATEGY CLASS NAME>` (ex: `python3 ./freqtrade/main.py -s Strategy001`)
 
 ### How to test a strategy?
+
 Let assume you have selected the strategy `strategy001.py`:
 
-**Simple backtesting**
+#### Simple backtesting
+
 ```bash
-python3 ./freqtrade/main.py -s Strategy001 backtesting --realistic-simulation
+python3 ./freqtra
+e/main.py -s Strategy001 backtesting
 ```
 
-**Refresh your test data**
+#### Refresh your test data
+
 ```bash
-python3 ./freqtrade/main.py -s Strategy001 backtesting --realistic-simulation -r
+python3 ./freqtrade/main.py -s Strategy001 backtesting --refresh-pairs-cached
 ```
 
-**Test with live data**
+#### Test with live data
+
 ```bash
-python3 ./freqtrade/main.py -s Strategy001 backtesting --realistic-simulation -l
+python3 ./freqtrade/main.py -s Strategy001 backtesting --live
 ```
 
 ## Can I have your configuration file?
+
 You will find them into [user_data/](https://github.com/freqtrade/freqtrade-strategies/tree/master/user_data) folder.
