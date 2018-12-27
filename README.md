@@ -98,8 +98,7 @@ Let assume you have selected the strategy `strategy001.py`:
 #### Simple backtesting
 
 ```bash
-python3 ./freqtra
-e/main.py -s Strategy001 backtesting
+python3 ./freqtrade/main.py -s Strategy001 backtesting
 ```
 
 #### Refresh your test data
