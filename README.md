@@ -37,11 +37,11 @@ page.
 
 |  Strategy | Buy count | AVG profit % | Total profit | AVG duration | Backtest period |
 |-----------|-----------|--------------|--------------|--------------|-----------------|
-| [Strategy 001](https://github.com/freqtrade/freqtrade-strategies/issues/1) | 55 | 0.05 | 0.00012102 |  476.1 | 2018-01-10 to 2018-01-30 |
-| [Strategy 002](https://github.com/freqtrade/freqtrade-strategies/issues/2) | 9 | 3.21 | 0.00114807 |  189.4 | 2018-01-10 to 2018-01-30 |
-| [Strategy 003](https://github.com/freqtrade/freqtrade-strategies/issues/3) | 14 | 1.47 | 0.00081740 |  227.5 | 2018-01-10 to 2018-01-30 | 
-| [Strategy 004](https://github.com/freqtrade/freqtrade-strategies/issues/4) | 37 | 0.69 | 0.00102128 |  367.3 | 2018-01-10 to 2018-01-30 | 
-| [Strategy 005](https://github.com/freqtrade/freqtrade-strategies/issues/11) | 180 | 1.16 | 0.00827589 |  156.2 | 2018-01-10 to 2018-01-30 |
+| [Strategy 001](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/strategy001.py) | 55 | 0.05 | 0.00012102 |  476.1 | 2018-01-10 to 2018-01-30 |
+| [Strategy 002](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/strategy002.py) | 9 | 3.21 | 0.00114807 |  189.4 | 2018-01-10 to 2018-01-30 |
+| [Strategy 003](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/strategy003.py) | 14 | 1.47 | 0.00081740 |  227.5 | 2018-01-10 to 2018-01-30 | 
+| [Strategy 004](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/strategy004.py) | 37 | 0.69 | 0.00102128 |  367.3 | 2018-01-10 to 2018-01-30 | 
+| [Strategy 005](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/strategy005.py) | 180 | 1.16 | 0.00827589 |  156.2 | 2018-01-10 to 2018-01-30 |
 
 
 Strategies from this repo are free to use. Feel free to update them. 
@@ -98,8 +98,7 @@ Let assume you have selected the strategy `strategy001.py`:
 #### Simple backtesting
 
 ```bash
-python3 ./freqtra
-e/main.py -s Strategy001 backtesting
+python3 ./freqtrade/main.py -s Strategy001 backtesting
 ```
 
 #### Refresh your test data
