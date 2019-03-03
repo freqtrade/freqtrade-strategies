@@ -10,7 +10,7 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy # noqa
 
-class strategy003(IStrategy):
+class Strategy003(IStrategy):
     """
     Strategy 003
     author@: Gerald Lonlas
@@ -31,12 +31,36 @@ class strategy003(IStrategy):
 
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
-    stoploss = -0.3
+    stoploss = -0.10
 
     # Optimal ticker interval for the strategy
     ticker_interval = '5m'
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    # trailing stoploss
+    trailing_stop = False
+    trailing_stop_positive = 0.01
+    trailing_stop_positive_offset = 0.02
+
+    # Optimal ticker interval for the strategy
+    ticker_interval = '5m'
+
+    # run "populate_indicators" only for new candle
+    ta_on_candle = False
+
+    # Experimental settings (configuration will overide these if set)
+    use_sell_signal = True
+    sell_profit_only = True
+    ignore_roi_if_buy_signal = False
+
+    # Optional order type mapping
+    order_types = {
+        'buy': 'limit',
+        'sell': 'limit',
+        'stoploss': 'market',
+        'stoploss_on_exchange': False
+    }
+
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Adds several different TA indicators to the given DataFrame
 
@@ -78,7 +102,7 @@ class strategy003(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
@@ -102,7 +126,7 @@ class strategy003(IStrategy):
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame

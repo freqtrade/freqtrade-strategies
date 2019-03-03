@@ -1,6 +1,6 @@
 # Freqtrade strategies
 
-This Git repo contains free buy/sell strategies for [Freqtrade](https://github.com/freqtrade/freqtrade) >= `0.16.0`.
+This Git repo contains free buy/sell strategies for [Freqtrade](https://github.com/freqtrade/freqtrade).
 
 ## Disclaimer
 
@@ -31,6 +31,7 @@ bot.
     - [How to create/optimize a strategy?](https://github.com/freqtrade/freqtrade/blob/develop/docs/bot-optimization.md)
 
 ## Free trading strategies
+
 Value below are result from backtesting from 2018-01-10 to 2018-01-30 and  
 `experimental.sell_profit_only` enabled. More detail on each strategy 
 page.
@@ -47,13 +48,18 @@ page.
 Strategies from this repo are free to use. Feel free to update them. 
 Most of them  were designed from Hyperopt calculations.
 
+Some only work in specific market conditions, while others are more "general purpose" strategies.
+It's noteworthy that depending on the exchange and Pairs used, further optimization can bring better results.
+
 ## Share your own strategies and contribute to this repo
+
 Feel free to send your strategies, comments, optimizations and pull requests via an 
 [Issue ticket](https://github.com/freqtrade/freqtrade-strategies/issues/new).  
 
 ## FAQ
 
 ### What is Freqtrade?
+
 [Freqtrade](https://github.com/freqtrade) is a Simple High 
 frequency trading bot for crypto currencies designed to support 
  
@@ -80,8 +86,7 @@ enabled and disabled.
 
 ### How to install a strategy?
 
-First you need a [working Freqtrade](https://github.com/freqtrade/freqtrade/blob/develop/docs/index.md) 
-in version >= 0.16.0. 
+First you need a [working Freqtrade](https://freqtrade.io).
 
 Once you have the bot on the right version, follow this steps:
 
@@ -90,6 +95,8 @@ Once you have the bot on the right version, follow this steps:
 2. Copy the strategy file
 3. Paste it into your `user_data/strategies` folder
 4. Run the bot with the parameter `-s <STRATEGY CLASS NAME>` (ex: `python3 ./freqtrade/main.py -s Strategy001`)
+
+[More information](https://www.freqtrade.io/en/latest/bot-optimization/)
 
 ### How to test a strategy?
 
@@ -107,12 +114,10 @@ python3 ./freqtrade/main.py -s Strategy001 backtesting
 python3 ./freqtrade/main.py -s Strategy001 backtesting --refresh-pairs-cached
 ```
 
+*Note:* Generally, it's recommendet to use static backtest data (from a defined period of time) for compareable results.
+
 #### Test with live data
 
 ```bash
 python3 ./freqtrade/main.py -s Strategy001 backtesting --live
 ```
-
-## Can I have your configuration file?
-
-You will find them into [user_data/](https://github.com/freqtrade/freqtrade-strategies/tree/master/user_data) folder.
