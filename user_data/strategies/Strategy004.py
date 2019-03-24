@@ -55,6 +55,19 @@ class Strategy004(IStrategy):
         'stoploss': 'market',
         'stoploss_on_exchange': False
     }
+    
+    def informative_pairs(self):
+        """
+        Define additional, informative pair/interval combinations to be cached from the exchange.
+        These pair/interval combinations are non-tradeable, unless they are part
+        of the whitelist as well.
+        For more information, please consult the documentation
+        :return: List of tuples in the format (pair, interval)
+            Sample: return [("ETH/USDT", "5m"),
+                            ("BTC/USDT", "15m"),
+                            ]
+        """
+        return []
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """

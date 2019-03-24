@@ -4,20 +4,21 @@ from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
+from freqtrade.data.converter import parse_ticker_dataframe
 # --------------------------------
 
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import numpy # noqa
 
-class Strategy002(IStrategy):
+class InformativeSample(IStrategy):
     """
-    Strategy 002
-    author@: Gerald Lonlas
+    Sample strategy implementing Informative Pairs - compares ETH/BTC with USDT.
+    Not performing very well - but should serve as an example to use a referential pair against USD.
+    author@: xmatthias
     github@: https://github.com/freqtrade/freqtrade-strategies
 
     How to use it?
-    > python3 ./freqtrade/main.py -s Strategy002
+    > python3 freqtrade -s InformativeSample
     """
 
     # Minimal ROI designed for the strategy.
@@ -40,6 +41,9 @@ class Strategy002(IStrategy):
     trailing_stop = False
     trailing_stop_positive = 0.01
     trailing_stop_positive_offset = 0.02
+
+    # Optimal ticker interval for the strategy
+    ticker_interval = '5m'
 
     # run "populate_indicators" only for new candle
     ta_on_candle = False
@@ -68,7 +72,9 @@ class Strategy002(IStrategy):
                             ("BTC/USDT", "15m"),
                             ]
         """
-        return []
+
+
+        return [(f"{self.config['stake_currency']}/USDT", self.ticker_interval)]
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
@@ -79,26 +85,29 @@ class Strategy002(IStrategy):
         or your hyperopt configuration, otherwise you will waste your memory and CPU usage.
         """
 
-        # Stoch
-        stoch = ta.STOCH(dataframe)
-        dataframe['slowk'] = stoch['slowk']
+        dataframe['ema20'] = ta.EMA(dataframe, timeperiod=20)
+        dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
+        if self.dp:
+            if self.dp.runmode in('live', 'dry_run'):
+                # Compare stake-currency with USDT - using the defined ticker-interval
+                if (f"{self.stake_currency}/USDT", self.ticker_interval) in self.dp.available_pairs:
+                    data = self.dp.ohlcv(pair='ETH/BTC',
+                                         ticker_interval=self.ticker_interval)
+            else:
+                # Get historic ohlcv data (cached on disk).
+                # data = parse_ticker_dataframe(self.dp.historic_ohlcv(pair='ETH/BTC',
+                #                                  ticker_interval=self.ticker_interval), "5m")
+                data = self.dp.historic_ohlcv(pair=f"{self.stake_currency}/USDT",
+                                 ticker_interval=self.ticker_interval)
+            if len(data) == 0:
+                logger.warning(f"No data found for {self.stake_currency}/USDT")
+            # Combine the 2 dataframes using close
+            # this will result in a column named closeETH or closeBTC - depnding on stake_currency.
+            dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))
 
-        # RSI
-        dataframe['rsi'] = ta.RSI(dataframe)
-
-        # Inverse Fisher transform on RSI, values [-1.0, 1.0] (https://goo.gl/2JGGoy)
-        rsi = 0.1 * (dataframe['rsi'] - 50)
-        dataframe['fisher_rsi'] = (numpy.exp(2 * rsi) - 1) / (numpy.exp(2 * rsi) + 1)
-
-        # Bollinger bands
-        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
-        dataframe['bb_lowerband'] = bollinger['lower']
-
-        # SAR Parabol
-        dataframe['sar'] = ta.SAR(dataframe)
-
-        # Hammer: values [0, 100]
-        dataframe['CDLHAMMER'] = ta.CDLHAMMER(dataframe)
+            # Calculate SMA20 on stakecurrency. Resulting column = smaETH20
+            dataframe[f"sma{self.config['stake_currency']}20"] = dataframe[f'close{self.stake_currency}'].rolling(20).mean()
 
         return dataframe
 
@@ -110,10 +119,9 @@ class Strategy002(IStrategy):
         """
         dataframe.loc[
             (
-                (dataframe['rsi'] < 30) &
-                (dataframe['slowk'] < 20) &
-                (dataframe['bb_lowerband'] > dataframe['close']) &
-                (dataframe['CDLHAMMER'] == 100)
+                (dataframe['ema20'] > dataframe['ema50']) &
+                # stake/USDT above sma(stake/USDT, 20)
+                (dataframe[f'close{self.stake_currency}'] > dataframe[f'sma{self.stake_currency}20'])
             ),
             'buy'] = 1
 
@@ -127,8 +135,9 @@ class Strategy002(IStrategy):
         """
         dataframe.loc[
             (
-                (dataframe['sar'] > dataframe['close']) &
-                (dataframe['fisher_rsi'] > 0.3)
+                (dataframe['ema20'] < dataframe['ema50']) &
+                # stake/USDT below sma(stake/USDT, 20)
+                (dataframe[f'close{self.stake_currency}'] < dataframe[f'sma{self.stake_currency}20'])
             ),
             'sell'] = 1
         return dataframe
