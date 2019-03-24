@@ -89,7 +89,7 @@ class InformativeSample(IStrategy):
         dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
         if self.dp:
-            if self.dp.runmode == 'live':
+            if self.dp.runmode in('live', 'dry_run'):
                 # Compare stake-currency with USDT - using the defined ticker-interval
                 if (f"{self.stake_currency}/USDT", self.ticker_interval) in self.dp.available_pairs:
                     data = self.dp.ohlcv(pair='ETH/BTC',
