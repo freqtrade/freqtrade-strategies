@@ -4,19 +4,21 @@ from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
+from freqtrade.data.converter import parse_ticker_dataframe
 # --------------------------------
 
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
-class Strategy001(IStrategy):
+class InformativeSample(IStrategy):
     """
-    Strategy 001
-    author@: Gerald Lonlas
+    Sample strategy implementing Informative Pairs - compares ETH/BTC with USDT.
+    Not performing very well - but should serve as an example to use a referential pair against USD.
+    author@: xmatthias
     github@: https://github.com/freqtrade/freqtrade-strategies
 
     How to use it?
-    > python3 ./freqtrade/main.py -s Strategy001
+    > python3 freqtrade -s InformativeSample
     """
 
     # Minimal ROI designed for the strategy.
@@ -70,7 +72,9 @@ class Strategy001(IStrategy):
                             ("BTC/USDT", "15m"),
                             ]
         """
-        return []
+
+
+        return [(f"{self.config['stake_currency']}/USDT", self.ticker_interval)]
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
@@ -84,10 +88,26 @@ class Strategy001(IStrategy):
         dataframe['ema20'] = ta.EMA(dataframe, timeperiod=20)
         dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
+        if self.dp:
+            if self.dp.runmode == 'live':
+                # Compare stake-currency with USDT - using the defined ticker-interval
+                if (f"{self.stake_currency}/USDT", self.ticker_interval) in self.dp.available_pairs:
+                    data = self.dp.ohlcv(pair='ETH/BTC',
+                                         ticker_interval=self.ticker_interval)
+            else:
+                # Get historic ohlcv data (cached on disk).
+                # data = parse_ticker_dataframe(self.dp.historic_ohlcv(pair='ETH/BTC',
+                #                                  ticker_interval=self.ticker_interval), "5m")
+                data = self.dp.historic_ohlcv(pair=f"{self.stake_currency}/USDT",
+                                 ticker_interval=self.ticker_interval)
+            if len(data) == 0:
+                logger.warning(f"No data found for {self.stake_currency}/USDT")
+            # Combine the 2 dataframes using close
+            # this will result in a column named closeETH or closeBTC - depnding on stake_currency.
+            dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))
 
-        heikinashi = qtpylib.heikinashi(dataframe)
-        dataframe['ha_open'] = heikinashi['open']
-        dataframe['ha_close'] = heikinashi['close']
+            # Calculate SMA20 on stakecurrency. Resulting column = smaETH20
+            dataframe[f"sma{self.config['stake_currency']}20"] = dataframe[f'close{self.stake_currency}'].rolling(20).mean()
 
         return dataframe
 
@@ -99,9 +119,9 @@ class Strategy001(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['ema20'], dataframe['ema50']) &
-                (dataframe['ha_close'] > dataframe['ema20']) &
-                (dataframe['ha_open'] < dataframe['ha_close'])  # green bar
+                (dataframe['ema20'] > dataframe['ema50']) &
+                # stake/USDT above sma(stake/USDT, 20)
+                (dataframe[f'close{self.stake_currency}'] > dataframe[f'sma{self.stake_currency}20'])
             ),
             'buy'] = 1
 
@@ -115,9 +135,9 @@ class Strategy001(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['ema50'], dataframe['ema100']) &
-                (dataframe['ha_close'] < dataframe['ema20']) &
-                (dataframe['ha_open'] > dataframe['ha_close'])  # red bar
+                (dataframe['ema20'] < dataframe['ema50']) &
+                # stake/USDT below sma(stake/USDT, 20)
+                (dataframe[f'close{self.stake_currency}'] < dataframe[f'sma{self.stake_currency}20'])
             ),
             'sell'] = 1
         return dataframe
