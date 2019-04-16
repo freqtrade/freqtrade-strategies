@@ -24,8 +24,7 @@ class CCIStrategy(IStrategy):
     ticker_interval = '1m'
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
-        macd = ta.MACD(dataframe)
-        dataframe = CCIStrategy.resample(dataframe, self.ticker_interval, 5)
+        dataframe = self.resample(dataframe, self.ticker_interval, 5)
 
         dataframe['cci_one'] = ta.CCI(dataframe, timeperiod=170)
         dataframe['cci_two'] = ta.CCI(dataframe, timeperiod=34)
@@ -95,8 +94,7 @@ class CCIStrategy(IStrategy):
 
         return Series(cmf, name='cmf')
 
-    @staticmethod
-    def resample(dataframe, interval, factor):
+    def resample(self, dataframe, interval, factor):
         # defines the reinforcement logic
         # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
         df = dataframe.copy()
@@ -107,7 +105,7 @@ class CCIStrategy(IStrategy):
             'low': 'min',
             'close': 'last'
         }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min').agg(ohlc_dict)
+        df = df.resample(str(int(interval[:-1]) * factor) + 'min', label="right").agg(ohlc_dict)
         df['resample_sma'] = ta.SMA(df, timeperiod=100, price='close')
         df['resample_medium'] = ta.SMA(df, timeperiod=50, price='close')
         df['resample_short'] = ta.SMA(df, timeperiod=25, price='close')
