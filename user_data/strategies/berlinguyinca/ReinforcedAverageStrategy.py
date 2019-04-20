@@ -32,7 +32,6 @@ class ReinforcedAverageStrategy(IStrategy):
     ticker_interval = '4h'
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
-        macd = ta.MACD(dataframe)
 
         dataframe['maShort'] = ta.EMA(dataframe, timeperiod=8)
         dataframe['maMedium'] = ta.EMA(dataframe, timeperiod=21)
@@ -50,7 +49,7 @@ class ReinforcedAverageStrategy(IStrategy):
         :param dataframe: DataFrame
         :return: DataFrame with buy column
         """
-        dataframe = ReinforcedAverageStrategy.resample(dataframe, self.ticker_interval, 12)
+        dataframe = self.resample(dataframe, self.ticker_interval, 12)
 
         dataframe.loc[
             (
@@ -74,9 +73,7 @@ class ReinforcedAverageStrategy(IStrategy):
             'sell'] = 1
         return dataframe
 
-    @staticmethod
-    def resample( dataframe, interval, factor):
-
+    def resample(self, dataframe, interval, factor):
 
         # defines the reinforcement logic
         # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
@@ -88,7 +85,8 @@ class ReinforcedAverageStrategy(IStrategy):
             'low': 'min',
             'close': 'last'
         }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min').agg(ohlc_dict)
+        df = df.resample(str(int(interval[:-1]) * factor) + 'min',
+                         label="right").agg(ohlc_dict).dropna(how='any')
         df['resample_sma'] = ta.SMA(df, timeperiod=50, price='close')
         df = df.drop(columns=['open', 'high', 'low', 'close'])
         df = df.resample(interval[:-1] + 'min')

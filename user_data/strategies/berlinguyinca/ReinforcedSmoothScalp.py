@@ -40,7 +40,7 @@ class ReinforcedSmoothScalp(IStrategy):
     resample_factor = 5
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
-        dataframe = ReinforcedSmoothScalp.resample(dataframe, self.ticker_interval, self.resample_factor)
+        dataframe = self.resample(dataframe, self.ticker_interval, self.resample_factor)
 
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
         dataframe['ema_close'] = ta.EMA(dataframe, timeperiod=5, price='close')
@@ -103,8 +103,7 @@ class ReinforcedSmoothScalp(IStrategy):
             'sell'] = 1
         return dataframe
 
-    @staticmethod
-    def resample(dataframe, interval, factor):
+    def resample(self, dataframe, interval, factor):
         # defines the reinforcement logic
         # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
         df = dataframe.copy()
@@ -115,8 +114,8 @@ class ReinforcedSmoothScalp(IStrategy):
             'low': 'min',
             'close': 'last'
         }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min', how=ohlc_dict).dropna(
-            how='any')
+        df = df.resample(str(int(interval[:-1]) * factor) + 'min',
+                         label="right").agg(ohlc_dict).dropna(how='any')
         df['resample_sma'] = ta.SMA(df, timeperiod=50, price='close')
         df = df.drop(columns=['open', 'high', 'low', 'close'])
         df = df.resample(interval[:-1] + 'min')

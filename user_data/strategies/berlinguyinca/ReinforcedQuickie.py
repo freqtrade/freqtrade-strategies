@@ -48,7 +48,7 @@ class ReinforcedQuickie(IStrategy):
     EMA_LONG_TERM = 21
 
     def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
-        dataframe = ReinforcedQuickie.resample(dataframe, self.ticker_interval, self.resample_factor)
+        dataframe = self.resample(dataframe, self.ticker_interval, self.resample_factor)
 
         ##################################################################################
         # buy and sell indicators
@@ -171,8 +171,7 @@ class ReinforcedQuickie(IStrategy):
         ] = 1
         return dataframe
 
-    @staticmethod
-    def resample( dataframe, interval, factor):
+    def resample(self, dataframe, interval, factor):
         # defines the reinforcement logic
         # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
         df = dataframe.copy()
@@ -183,8 +182,8 @@ class ReinforcedQuickie(IStrategy):
             'low': 'min',
             'close': 'last'
         }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min', how=ohlc_dict).dropna(
-            how='any')
+        df = df.resample(str(int(interval[:-1]) * factor) + 'min',
+                         label="right").agg(ohlc_dict).dropna(how='any')
         df['resample_sma'] = ta.SMA(df, timeperiod=25, price='close')
         df = df.drop(columns=['open', 'high', 'low', 'close'])
         df = df.resample(interval[:-1] + 'min')
