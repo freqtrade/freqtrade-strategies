@@ -61,5 +61,5 @@ class ADXMomentun(IStrategy):
                     (dataframe['plus_di'] > dataframe['minus_di'])
 
             ),
-            'sell'] = 0
+            'sell'] = 1
         return dataframe
