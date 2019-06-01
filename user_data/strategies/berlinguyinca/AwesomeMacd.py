@@ -62,5 +62,5 @@ class AwesomeMacd(IStrategy):
                     (dataframe['ao'].shift() > 0)
 
             ),
-            'sell'] = 0
+            'sell'] = 1
         return dataframe

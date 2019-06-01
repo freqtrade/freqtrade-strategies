@@ -59,5 +59,5 @@ class BbandRsi(IStrategy):
                     (dataframe['rsi'] > 70)
 
             ),
-            'sell'] = 0
+            'sell'] = 1
         return dataframe

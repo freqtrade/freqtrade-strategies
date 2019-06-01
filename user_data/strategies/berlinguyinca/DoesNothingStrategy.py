@@ -40,5 +40,5 @@ class DoesNothingStrategy(IStrategy):
         dataframe.loc[
             (
             ),
-            'sell'] = 0
+            'sell'] = 1
         return dataframe

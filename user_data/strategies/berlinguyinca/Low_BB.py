@@ -104,5 +104,5 @@ class Low_BB(IStrategy):
         """
         dataframe.loc[
             (),
-            'sell'] = 0
+            'sell'] = 1
         return dataframe
