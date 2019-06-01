@@ -56,5 +56,5 @@ class AdxSmas(IStrategy):
                     (qtpylib.crossed_above(dataframe['long'], dataframe['short']))
 
             ),
-            'sell'] = 0
+            'sell'] = 1
         return dataframe
