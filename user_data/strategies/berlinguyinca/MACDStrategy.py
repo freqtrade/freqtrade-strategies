@@ -7,7 +7,6 @@ from pandas import DataFrame
 # --------------------------------
 
 import talib.abstract as ta
-import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 class MACDStrategy(IStrategy):
@@ -22,7 +21,7 @@ class MACDStrategy(IStrategy):
             and CCI < -50
 
         downtrend definition:
-            MACD below 0 line and below MACD signal
+            MACD below MACD signal
             and CCI > 100
 
     """
@@ -77,7 +76,8 @@ class MACDStrategy(IStrategy):
         dataframe.loc[
             (
                 (dataframe['macd'] < dataframe['macdsignal']) &
-                (dataframe['cci'] >= 100)
+                (dataframe['cci'] >= 100.0)
             ),
             'sell'] = 1
+
         return dataframe
