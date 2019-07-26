@@ -7,23 +7,17 @@ from pandas import DataFrame
 # --------------------------------
 
 import talib.abstract as ta
+import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
-class MACDStrategy(IStrategy):
+class MACDStrategy_crossed(IStrategy):
     """
-
-    author@: Gert Wohlgemuth
-
-    idea:
-
-        uptrend definition:
-            MACD above MACD signal
+        buy:
+            MACD crosses MACD signal above
             and CCI < -50
-
-        downtrend definition:
-            MACD below MACD signal
+        sell:
+            MACD crosses MACD signal below
             and CCI > 100
-
     """
 
     # Minimal ROI designed for the strategy.
@@ -60,7 +54,7 @@ class MACDStrategy(IStrategy):
         """
         dataframe.loc[
             (
-                (dataframe['macd'] > dataframe['macdsignal']) &
+                qtpylib.crossed_above(dataframe['macd'], dataframe['macdsignal']) &
                 (dataframe['cci'] <= -50.0)
             ),
             'buy'] = 1
@@ -75,7 +69,7 @@ class MACDStrategy(IStrategy):
         """
         dataframe.loc[
             (
-                (dataframe['macd'] < dataframe['macdsignal']) &
+                qtpylib.crossed_below(dataframe['macd'], dataframe['macdsignal']) &
                 (dataframe['cci'] >= 100.0)
             ),
             'sell'] = 1
