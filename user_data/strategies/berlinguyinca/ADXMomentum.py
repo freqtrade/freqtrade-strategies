@@ -7,7 +7,7 @@ import talib.abstract as ta
 # --------------------------------
 
 
-class ADXMomentun(IStrategy):
+class ADXMomentum(IStrategy):
     """
 
     author@: Gert Wohlgemuth
