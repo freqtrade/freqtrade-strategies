@@ -39,7 +39,7 @@ class ClucMay72018(IStrategy):
     # Optimal ticker interval for the strategy
     ticker_interval = '5m'
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=5)
         rsiframe = DataFrame(dataframe['rsi']).rename(columns={'rsi': 'close'})
         dataframe['emarsi'] = ta.EMA(rsiframe, timeperiod=5)
@@ -53,7 +53,7 @@ class ClucMay72018(IStrategy):
         dataframe['ema100'] = ta.EMA(dataframe, timeperiod=50)
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
@@ -69,7 +69,7 @@ class ClucMay72018(IStrategy):
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame

@@ -39,7 +39,7 @@ class ReinforcedSmoothScalp(IStrategy):
     # resample factor to establish our general trend. Basically don't buy if a trend is not given
     resample_factor = 5
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe = self.resample(dataframe, self.ticker_interval, self.resample_factor)
 
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
@@ -61,7 +61,7 @@ class ReinforcedSmoothScalp(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (
@@ -84,7 +84,7 @@ class ReinforcedSmoothScalp(IStrategy):
             'buy'] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                     (

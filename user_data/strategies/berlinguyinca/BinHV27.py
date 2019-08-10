@@ -28,7 +28,7 @@ class BinHV27(IStrategy):
     }
     stoploss = -0.50
     ticker_interval = '5m'
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['rsi'] = numpy.nan_to_num(ta.RSI(dataframe, timeperiod=5))
         rsiframe = DataFrame(dataframe['rsi']).rename(columns={'rsi': 'close'})
         dataframe['emarsi'] = numpy.nan_to_num(ta.EMA(rsiframe, timeperiod=5))
@@ -52,7 +52,7 @@ class BinHV27(IStrategy):
         dataframe['delta'] = dataframe['fastsma'] - dataframe['fastsma'].shift()
         dataframe['slowingdown'] = dataframe['delta'].lt(dataframe['delta'].shift())
         return dataframe
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             dataframe['slowsma'].gt(0) &
             dataframe['close'].lt(dataframe['highsma']) &
@@ -89,7 +89,7 @@ class BinHV27(IStrategy):
             ),
             'buy'] = 1
         return dataframe
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         buyframe = dataframe[dataframe['buy'] == 1].tail(1)
         if len(buyframe) == 0:
           dataframe.loc[[False], 'sell'] = 0

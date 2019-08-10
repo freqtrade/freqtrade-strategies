@@ -34,7 +34,7 @@ class Simple(IStrategy):
     # Optimal ticker interval for the strategy
     ticker_interval = '5m'
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # MACD
         macd = ta.MACD(dataframe)
         dataframe['macd'] = macd['macd']
@@ -52,7 +52,7 @@ class Simple(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (
@@ -65,7 +65,7 @@ class Simple(IStrategy):
             'buy'] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # different strategy used for sell points, due to be able to duplicate it to 100%
         dataframe.loc[
             (

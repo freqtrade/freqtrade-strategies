@@ -47,7 +47,7 @@ class ReinforcedQuickie(IStrategy):
     EMA_MEDIUM_TERM = 12
     EMA_LONG_TERM = 21
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe = self.resample(dataframe, self.ticker_interval, self.resample_factor)
 
         ##################################################################################
@@ -93,7 +93,7 @@ class ReinforcedQuickie(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
@@ -138,7 +138,7 @@ class ReinforcedQuickie(IStrategy):
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame

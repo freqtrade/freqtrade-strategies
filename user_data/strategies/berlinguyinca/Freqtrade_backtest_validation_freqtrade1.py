@@ -26,13 +26,13 @@ class Freqtrade_backtest_validation_freqtrade1(IStrategy):
     stoploss = -09.90
     ticker_interval = '1h'
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # SMA - Simple Moving Average
         dataframe['fastMA'] = ta.SMA(dataframe, timeperiod=14)
         dataframe['slowMA'] = ta.SMA(dataframe, timeperiod=28)
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['fastMA'] > dataframe['slowMA'])
@@ -41,7 +41,7 @@ class Freqtrade_backtest_validation_freqtrade1(IStrategy):
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['fastMA'] < dataframe['slowMA'])

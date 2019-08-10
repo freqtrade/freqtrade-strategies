@@ -41,7 +41,7 @@ class SmoothOperator(IStrategy):
     # resample factor to establish our general trend. Basically don't buy if a trend is not given
     resample_factor = 12
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
         dataframe = StrategyHelper.resample(dataframe, self.ticker_interval, self.resample_factor)
 
@@ -108,7 +108,7 @@ class SmoothOperator(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
 
@@ -178,7 +178,7 @@ class SmoothOperator(IStrategy):
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # different strategy used for sell points, due to be able to duplicate it to 100%
         dataframe.loc[
             (
