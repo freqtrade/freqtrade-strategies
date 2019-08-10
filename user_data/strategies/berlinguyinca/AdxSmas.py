@@ -32,14 +32,14 @@ class AdxSmas(IStrategy):
     # Optimal ticker interval for the strategy
     ticker_interval = '1h'
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['adx'] = ta.ADX(dataframe, timeperiod=14)
         dataframe['short'] = ta.SMA(dataframe, timeperiod=3)
         dataframe['long'] = ta.SMA(dataframe, timeperiod=6)
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                     (dataframe['adx'] > 25) &
@@ -49,7 +49,7 @@ class AdxSmas(IStrategy):
             'buy'] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                     (dataframe['adx'] < 25) &

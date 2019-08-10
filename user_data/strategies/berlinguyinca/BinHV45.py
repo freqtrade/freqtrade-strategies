@@ -25,7 +25,7 @@ class BinHV45(IStrategy):
     stoploss = -0.05
     ticker_interval = '1m'
 
-    def populate_indicators(self, dataframe: DataFrame) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         mid, lower = bollinger_bands(dataframe['close'], window_size=40, num_of_std=2)
         dataframe['mid'] = np.nan_to_num(mid)
         dataframe['lower'] = np.nan_to_num(lower)
@@ -35,7 +35,7 @@ class BinHV45(IStrategy):
         dataframe['tail'] = (dataframe['close'] - dataframe['low']).abs()
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 dataframe['lower'].shift().gt(0) &
@@ -48,7 +48,7 @@ class BinHV45(IStrategy):
             'buy'] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         no sell signal
         """
