@@ -4,7 +4,6 @@ from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
-from freqtrade.data.converter import parse_ticker_dataframe
 # --------------------------------
 
 import talib.abstract as ta
@@ -12,8 +11,8 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 class InformativeSample(IStrategy):
     """
-    Sample strategy implementing Informative Pairs - compares ETH/BTC with USDT.
-    Not performing very well - but should serve as an example to use a referential pair against USD.
+    Sample strategy implementing Informative Pairs - compares stake_currency with USDT.
+    Not performing very well - but should serve as an example how to use a referential pair against USDT.
     author@: xmatthias
     github@: https://github.com/freqtrade/freqtrade-strategies
 
@@ -72,8 +71,6 @@ class InformativeSample(IStrategy):
                             ("BTC/USDT", "15m"),
                             ]
         """
-
-
         return [(f"{self.config['stake_currency']}/USDT", self.ticker_interval)]
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -90,23 +87,21 @@ class InformativeSample(IStrategy):
         dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
         if self.dp:
             if self.dp.runmode in('live', 'dry_run'):
-                # Compare stake-currency with USDT - using the defined ticker-interval
+                # Get live ohlcv data for the informative pair.
                 if (f"{self.stake_currency}/USDT", self.ticker_interval) in self.dp.available_pairs:
-                    data = self.dp.ohlcv(pair='ETH/BTC',
+                    data = self.dp.ohlcv(pair=f"{self.stake_currency}/USDT",
                                          ticker_interval=self.ticker_interval)
             else:
                 # Get historic ohlcv data (cached on disk).
-                # data = parse_ticker_dataframe(self.dp.historic_ohlcv(pair='ETH/BTC',
-                #                                  ticker_interval=self.ticker_interval), "5m")
                 data = self.dp.historic_ohlcv(pair=f"{self.stake_currency}/USDT",
                                  ticker_interval=self.ticker_interval)
             if len(data) == 0:
                 logger.warning(f"No data found for {self.stake_currency}/USDT")
             # Combine the 2 dataframes using close
-            # this will result in a column named closeETH or closeBTC - depnding on stake_currency.
+            # this will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
             dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))
 
-            # Calculate SMA20 on stakecurrency. Resulting column = smaETH20
+            # Calculate SMA20 on 'close' data for stake_currency/USDT. Resulting column is named as 'smaETH20' (if stake_currency is ETH)
             dataframe[f"sma{self.config['stake_currency']}20"] = dataframe[f'close{self.stake_currency}'].rolling(20).mean()
 
         return dataframe
