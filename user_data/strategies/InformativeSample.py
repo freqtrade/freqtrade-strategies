@@ -86,19 +86,11 @@ class InformativeSample(IStrategy):
         dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
         if self.dp:
-            if self.dp.runmode in('live', 'dry_run'):
-                # Get live ohlcv data for the informative pair.
-                if (f"{self.stake_currency}/USDT", self.ticker_interval) in self.dp.available_pairs:
-                    data = self.dp.ohlcv(pair=f"{self.stake_currency}/USDT",
-                                         ticker_interval=self.ticker_interval)
-            else:
-                # Get historic ohlcv data (cached on disk).
-                data = self.dp.historic_ohlcv(pair=f"{self.stake_currency}/USDT",
-                                 ticker_interval=self.ticker_interval)
-            if len(data) == 0:
-                logger.warning(f"No data found for {self.stake_currency}/USDT")
-            # Combine the 2 dataframes using close
-            # this will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
+            # Get ohlcv data for informative pair.
+            data = self.dp.get_pair_dataframe(pair=f"{self.stake_currency}/USDT",
+                                              ticker_interval=self.ticker_interval)
+            # Combine the 2 dataframes using 'close'.
+            # This will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
             dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))
 
             # Calculate SMA20 on 'close' data for stake_currency/USDT. Resulting column is named as 'smaETH20' (if stake_currency is ETH)
