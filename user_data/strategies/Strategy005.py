@@ -124,7 +124,7 @@ class Strategy005(IStrategy):
             # Prod
             (
                 (dataframe['close'] > 0.00000200) &
-                (dataframe['volume'] > dataframe['volume'].mean() * 4) &
+                (dataframe['volume'] > dataframe['volume'].rolling(200).mean() * 4) &
                 (dataframe['close'] < dataframe['sma']) &
                 (dataframe['fastd'] > dataframe['fastk']) &
                 (dataframe['rsi'] > 0) &
