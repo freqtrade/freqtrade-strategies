@@ -41,9 +41,6 @@ class InformativeSample(IStrategy):
     trailing_stop_positive = 0.01
     trailing_stop_positive_offset = 0.02
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
-
     # run "populate_indicators" only for new candle
     ta_on_candle = False
 
