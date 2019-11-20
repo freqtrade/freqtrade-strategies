@@ -85,7 +85,7 @@ class InformativeSample(IStrategy):
         if self.dp:
             # Get ohlcv data for informative pair.
             data = self.dp.get_pair_dataframe(pair=f"{self.stake_currency}/USDT",
-                                              ticker_interval=self.ticker_interval)
+                                              timeframe=self.ticker_interval)
             # Combine the 2 dataframes using 'close'.
             # This will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
             dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))
