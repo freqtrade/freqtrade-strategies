@@ -44,7 +44,7 @@ class Strategy005(IStrategy):
     trailing_stop_positive_offset = 0.02
 
     # run "populate_indicators" only for new candle
-    ta_on_candle = False
+    process_only_new_candles = False
 
     # Experimental settings (configuration will overide these if set)
     use_sell_signal = True
@@ -124,7 +124,7 @@ class Strategy005(IStrategy):
             # Prod
             (
                 (dataframe['close'] > 0.00000200) &
-                (dataframe['volume'] > dataframe['volume'].mean() * 4) &
+                (dataframe['volume'] > dataframe['volume'].rolling(200).mean() * 4) &
                 (dataframe['close'] < dataframe['sma']) &
                 (dataframe['fastd'] > dataframe['fastk']) &
                 (dataframe['rsi'] > 0) &
