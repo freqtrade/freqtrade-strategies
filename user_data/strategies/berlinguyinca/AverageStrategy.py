@@ -1,7 +1,5 @@
 # --- Do not remove these libs ---
 from freqtrade.strategy.interface import IStrategy
-from typing import Dict, List
-from functools import reduce
 from pandas import DataFrame
 # --------------------------------
 
@@ -32,7 +30,6 @@ class AverageStrategy(IStrategy):
     ticker_interval = '4h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        macd = ta.MACD(dataframe)
 
         dataframe['maShort'] = ta.EMA(dataframe, timeperiod=8)
         dataframe['maMedium'] = ta.EMA(dataframe, timeperiod=21)
