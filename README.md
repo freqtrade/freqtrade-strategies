@@ -28,12 +28,12 @@ bot.
     - [How to install a strategy?](#how-to-install-a-strategy)
     - [How to test a strategy?](#how-to-test-a-strategy)
     - [Can I have your configuration file?](#can-i-have-your-configuration-file)
-    - [How to create/optimize a strategy?](https://github.com/freqtrade/freqtrade/blob/develop/docs/bot-optimization.md)
+    - [How to create/optimize a strategy?](https://www.freqtrade.io/en/latest/strategy-customization/)
 
 ## Free trading strategies
 
 Value below are result from backtesting from 2018-01-10 to 2018-01-30 and  
-`experimental.sell_profit_only` enabled. More detail on each strategy 
+`ask_strategy.sell_profit_only` enabled. More detail on each strategy 
 page.
 
 |  Strategy | Buy count | AVG profit % | Total profit | AVG duration | Backtest period |
@@ -60,28 +60,25 @@ Feel free to send your strategies, comments, optimizations and pull requests via
 
 ### What is Freqtrade?
 
-[Freqtrade](https://github.com/freqtrade) is a Simple High 
-frequency trading bot for crypto currencies designed to support 
- 
-exchanges and be controlled via Telegram built by [gcarq@](https://github.com/gcarq) and the
-[core-dev team](https://github.com/orgs/freqtrade/teams/core-dev).
+[Freqtrade](https://github.com/freqtrade/freqtrade) Freqtrade is a free and open source crypto trading bot written in Python.
+It is designed to support all major exchanges and be controlled via Telegram. It contains backtesting, plotting and money management tools as well as strategy optimization by machine learning.
 
 ### What includes these strategies?
 
 Each Strategies includes:  
 
 - [x] **Minimal ROI**: Minimal ROI optimized for the strategy.
-- [x] **Stoploss**: Optimimal stoploss calculated based on hyperopt result.
-- [x] **Buy Strategy**: Result from Hyperopt or based on exisiting trading strategies.
-- [x] **Sell Strategy**
+- [x] **Stoploss**: Optimimal stoploss.
+- [x] **Buy signals**: Result from Hyperopt or based on exisiting trading strategies.
+- [x] **Sell siganls**: Result from Hyperopt or based on exisiting trading strategies.
 - [x] **Indicators**: Includes the indicators required to run the strategy.
-- [x] **Hyperopt configuration:** To tune the strategy parameters.
-- [x] **Backtesting results** 
+
+Best backtest multiple strategies with the exchange and pairs you're interrested in, and finetune the strategy to the markets you're trading.
 
 ### How were tested the strategies?
 
 All strategies tests are explain on their own tickets.  
-For each strategies, we generally run backtests twice with `experimental.sell_profit_only`
+For each strategies, we generally run backtests twice with `ask_strategy.sell_profit_only`
 enabled and disabled.
 
 ### How to install a strategy?
@@ -94,9 +91,9 @@ Once you have the bot on the right version, follow this steps:
 [user_data/strategies](https://github.com/freqtrade/freqtrade/tree/develop/user_data/strategies)
 2. Copy the strategy file
 3. Paste it into your `user_data/strategies` folder
-4. Run the bot with the parameter `-s <STRATEGY CLASS NAME>` (ex: `python3 ./freqtrade/main.py -s Strategy001`)
+4. Run the bot with the parameter `--strategy <STRATEGY CLASS NAME>` (ex: `freqtrade trade --strategy Strategy001`)
 
-[More information](https://www.freqtrade.io/en/latest/bot-optimization/)
+More information [about backtesting](https://www.freqtrade.io/en/latest/backtesting/) and [strategy customization](https://www.freqtrade.io/en/latest/strategy-customization/).
 
 ### How to test a strategy?
 
@@ -105,19 +102,15 @@ Let assume you have selected the strategy `strategy001.py`:
 #### Simple backtesting
 
 ```bash
-python3 ./freqtrade/main.py -s Strategy001 backtesting
+freqtrade backtesting --strategy Strategy001
 ```
 
 #### Refresh your test data
 
 ```bash
-python3 ./freqtrade/main.py -s Strategy001 backtesting --refresh-pairs-cached
+freqtrade download-data --days 100
 ```
 
 *Note:* Generally, it's recommendet to use static backtest data (from a defined period of time) for compareable results.
 
-#### Test with live data
-
-```bash
-python3 ./freqtrade/main.py -s Strategy001 backtesting --live
-```
+Please check out the [official backtesting documentation](https://www.freqtrade.io/en/latest/backtesting/) for more information.
