@@ -61,8 +61,7 @@ class ReinforcedAverageStrategy(IStrategy):
 
         dataframe_long = resample_to_interval(dataframe, timeframe_to_minutes(self.ticker_interval) * 12)
         dataframe_long['sma'] = ta.SMA(dataframe_long, timeperiod=50, price='close')
-        dataframe = resampled_merge(dataframe, dataframe_long, fill_na=False)
-        dataframe['resample_2880_sma'] = dataframe['resample_2880_sma'].interpolate(method='linear')
+        dataframe = resampled_merge(dataframe, dataframe_long, fill_na=True)
 
         return dataframe
 
