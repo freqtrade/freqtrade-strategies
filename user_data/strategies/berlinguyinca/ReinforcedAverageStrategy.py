@@ -7,6 +7,8 @@ from pandas import DataFrame, merge, DatetimeIndex
 
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
+from technical.util import resample_to_interval, resampled_merge
+from freqtrade.exchange import timeframe_to_minutes
 
 
 class ReinforcedAverageStrategy(IStrategy):
@@ -31,6 +33,21 @@ class ReinforcedAverageStrategy(IStrategy):
     # Optimal ticker interval for the strategy
     ticker_interval = '4h'
 
+    # trailing stoploss
+    trailing_stop = False
+    trailing_stop_positive = 0.01
+    trailing_stop_positive_offset = 0.02
+    trailing_only_offset_is_reached = False
+
+    # run "populate_indicators" only for new candle
+    process_only_new_candles = False
+
+    # Experimental settings (configuration will overide these if set)
+    use_sell_signal = True
+    sell_profit_only = False
+    ignore_roi_if_buy_signal = False
+
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         dataframe['maShort'] = ta.EMA(dataframe, timeperiod=8)
@@ -41,6 +58,12 @@ class ReinforcedAverageStrategy(IStrategy):
         dataframe['bb_lowerband'] = bollinger['lower']
         dataframe['bb_upperband'] = bollinger['upper']
         dataframe['bb_middleband'] = bollinger['mid']
+
+        dataframe_long = resample_to_interval(dataframe, timeframe_to_minutes(self.ticker_interval) * 12)
+        dataframe_long['sma'] = ta.SMA(dataframe_long, timeperiod=50, price='close')
+        dataframe = resampled_merge(dataframe, dataframe_long, fill_na=False)
+        dataframe['resample_2880_sma'] = dataframe['resample_2880_sma'].interpolate(method='linear')
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -49,12 +72,12 @@ class ReinforcedAverageStrategy(IStrategy):
         :param dataframe: DataFrame
         :return: DataFrame with buy column
         """
-        dataframe = self.resample(dataframe, self.ticker_interval, 12)
 
         dataframe.loc[
             (
                 qtpylib.crossed_above(dataframe['maShort'], dataframe['maMedium']) &
-                dataframe['close'] > dataframe['resample_sma']
+                (dataframe['close'] > dataframe['resample_2880_sma']) &
+                (dataframe['volume'] > 0)
             ),
             'buy'] = 1
 
@@ -68,30 +91,8 @@ class ReinforcedAverageStrategy(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['maMedium'], dataframe['maShort'])
+                qtpylib.crossed_above(dataframe['maMedium'], dataframe['maShort']) &
+                (dataframe['volume'] > 0)
             ),
             'sell'] = 1
-        return dataframe
-
-    def resample(self, dataframe, interval, factor):
-
-        # defines the reinforcement logic
-        # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
-        df = dataframe.copy()
-        df = df.set_index(DatetimeIndex(df['date']))
-        ohlc_dict = {
-            'open': 'first',
-            'high': 'max',
-            'low': 'min',
-            'close': 'last'
-        }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min',
-                         label="right").agg(ohlc_dict).dropna(how='any')
-        df['resample_sma'] = ta.SMA(df, timeperiod=50, price='close')
-        df = df.drop(columns=['open', 'high', 'low', 'close'])
-        df = df.resample(interval[:-1] + 'min')
-        df = df.interpolate(method='time')
-        df['date'] = df.index
-        df.index = range(len(df))
-        dataframe = merge(dataframe, df, on='date', how='left')
         return dataframe
