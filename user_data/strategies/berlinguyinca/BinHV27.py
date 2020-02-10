@@ -90,32 +90,22 @@ class BinHV27(IStrategy):
             'buy'] = 1
         return dataframe
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        buyframe = dataframe[dataframe['buy'] == 1].tail(1)
-        if len(buyframe) == 0:
-          dataframe.loc[[False], 'sell'] = 0
-          return dataframe
-        trend = buyframe.iloc[0]['trend']
-        bigup = buyframe.iloc[0]['bigup']
-        bigdown = buyframe.iloc[0]['bigdown']
-        price = buyframe.iloc[0]['close']
         dataframe.loc[
             (
               (
-                bigup &
                 ~dataframe['preparechangetrendconfirm'] &
                 ~dataframe['continueup'] &
                 (dataframe['close'].gt(dataframe['lowsma']) | dataframe['close'].gt(dataframe['highsma'])) &
                 dataframe['highsma'].gt(0) &
-                (dataframe['bigdown'] | dataframe['trend'].lt(trend))
+                dataframe['bigdown']
               ) |
               (
-                bigdown &
                 ~dataframe['preparechangetrendconfirm'] &
                 ~dataframe['continueup'] &
                 dataframe['close'].gt(dataframe['highsma']) &
                 dataframe['highsma'].gt(0) &
                 (dataframe['emarsi'].ge(75) | dataframe['close'].gt(dataframe['slowsma'])) &
-                (dataframe['bigdown'] | dataframe['trend'].lt(trend))
+                dataframe['bigdown']
               ) |
               (
                 ~dataframe['preparechangetrendconfirm'] &
