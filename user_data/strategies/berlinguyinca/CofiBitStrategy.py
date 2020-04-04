@@ -30,7 +30,7 @@ class CofiBitStrategy(IStrategy):
     ticker_interval = '5m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        stoch_fast = ta.STOCHF(dataframe, 5.0, 3.0, 0.0, 3.0, 0.0)
+        stoch_fast = ta.STOCHF(dataframe, 5, 3, 0, 3, 0)
         dataframe['fastd'] = stoch_fast['fastd']
         dataframe['fastk'] = stoch_fast['fastk']
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
