@@ -9,9 +9,9 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from freqtrade.optimize.hyperopt_interface import IHyperOpt
 
 shortRangeBegin = 10
-shortRangeEnd = 40
-mediumRangeBegin = 50
-mediumRangeEnd = 150
+shortRangeEnd = 20
+mediumRangeBegin = 100
+mediumRangeEnd = 120
 
 
 class AverageHyperopt(IHyperOpt):
@@ -41,14 +41,12 @@ class AverageHyperopt(IHyperOpt):
             Buy strategy Hyperopt will build and use
             """
             conditions = []
-
             # TRIGGERS
             if 'trigger' in params:
-                for short in range(shortRangeBegin, shortRangeEnd):
-                    for medium in range(mediumRangeBegin, mediumRangeEnd):
-                        if params['trigger'] == f"cross_short({short})_above_medium({medium})":
-                            conditions.append(qtpylib.crossed_above(
-                                dataframe[f'maShort({short})'], dataframe[f'maMedium({medium})']))
+                conditions.append(qtpylib.crossed_above(
+                    dataframe[f"maShort({params['trigger'][0]})"],
+                    dataframe[f"maMedium({params['trigger'][1]})"])
+                    )
 
             if conditions:
                 dataframe.loc[
@@ -67,8 +65,10 @@ class AverageHyperopt(IHyperOpt):
         buyTriggerList = []
         for short in range(shortRangeBegin, shortRangeEnd):
             for medium in range(mediumRangeBegin, mediumRangeEnd):
+                # The output will be (short, long)
                 buyTriggerList.append(
-                    f'cross_short({short})_above_medium({medium}')
+                    (short, medium)
+                )
         return [
             Categorical(buyTriggerList, name='trigger')
         ]
@@ -87,11 +87,10 @@ class AverageHyperopt(IHyperOpt):
 
             # TRIGGERS
             if 'sell-trigger' in params:
-                for short in range(shortRangeBegin, shortRangeEnd):
-                    for medium in range(mediumRangeBegin, mediumRangeEnd):
-                        if params['sell-trigger'] == f'cross_medium({medium})_above_short({short})':
-                            conditions.append(qtpylib.crossed_above(
-                                dataframe[f'maMedium({medium})'], dataframe[f'maShort({short})']))
+                conditions.append(qtpylib.crossed_above(
+                    dataframe[f"maMedium({params['sell-trigger'][1]})"],
+                    dataframe[f"maShort({params['sell-trigger'][0]})"])
+                    )
 
             if conditions:
                 dataframe.loc[
@@ -110,8 +109,10 @@ class AverageHyperopt(IHyperOpt):
         sellTriggerList = []
         for short in range(shortRangeBegin, shortRangeEnd):
             for medium in range(mediumRangeBegin, mediumRangeEnd):
+                # The output will be (short, long)
                 sellTriggerList.append(
-                    f'cross_medium(medium)_above_short({short})')
+                    (short, medium)
+                )
 
         return [
             Categorical(sellTriggerList, name='sell-trigger')
@@ -126,7 +127,8 @@ class AverageHyperopt(IHyperOpt):
         dataframe.loc[
             (
                 qtpylib.crossed_above(
-                    dataframe['maShort'], dataframe['maMedium'])
+                    dataframe[f'maShort({shortRangeBegin})'],
+                    dataframe[f'maMedium({mediumRangeBegin})'])
             ),
             'buy'] = 1
 
@@ -141,7 +143,8 @@ class AverageHyperopt(IHyperOpt):
         dataframe.loc[
             (
                 qtpylib.crossed_above(
-                    dataframe['maMedium'], dataframe['maShort'])
+                    dataframe[f'maMedium({mediumRangeBegin})'],
+                    dataframe[f'maShort({shortRangeBegin})'])
             ),
             'sell'] = 1
 
