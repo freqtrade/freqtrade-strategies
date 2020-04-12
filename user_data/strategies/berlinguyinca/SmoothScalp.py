@@ -40,7 +40,7 @@ class SmoothScalp(IStrategy):
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
         dataframe['ema_close'] = ta.EMA(dataframe, timeperiod=5, price='close')
         dataframe['ema_low'] = ta.EMA(dataframe, timeperiod=5, price='low')
-        stoch_fast = ta.STOCHF(dataframe, 5.0, 3.0, 0.0, 3.0, 0.0)
+        stoch_fast = ta.STOCHF(dataframe, 5, 3, 0, 3, 0)
         dataframe['fastd'] = stoch_fast['fastd']
         dataframe['fastk'] = stoch_fast['fastk']
         dataframe['adx'] = ta.ADX(dataframe)
