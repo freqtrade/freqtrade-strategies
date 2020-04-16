@@ -18,9 +18,9 @@ class MACDStrategy_hyperopt(IHyperOpt):
     """
     This is an Example hyperopt to inspire you. - corresponding to MACDStrategy in this repository.
 
-    To run this, best use the following command (adjust to your environment
+    To run this, best use the following command (adjust to your environment if needed):
     ```
-    freqtrade hyperopt --strategy MACDStrategy --hyperopts MACDStrategy_hyperopt --spaces buy sell
+    freqtrade hyperopt --strategy MACDStrategy --hyperopt MACDStrategy_hyperopt --spaces buy sell
     ```
     The idea is to optimize only the CCI value.
     - Buy side: CCI between -700 and 0
