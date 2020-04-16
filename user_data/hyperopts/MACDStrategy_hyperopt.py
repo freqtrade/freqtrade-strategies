@@ -18,7 +18,7 @@ class MACDStrategy_hyperopt(IHyperOpt):
     """
     This is an Example hyperopt to inspire you. - corresponding to MACDStrategy in this repository.
 
-    To run this, best use the following command (adjust to your environment
+    To run this, best use the following command (adjust to your environment if needed):
     ```
     freqtrade hyperopt --strategy MACDStrategy --hyperopt MACDStrategy_hyperopt --spaces buy sell
     ```
