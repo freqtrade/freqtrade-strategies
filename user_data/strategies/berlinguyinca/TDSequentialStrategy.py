@@ -112,7 +112,7 @@ class TDSequentialStrategy(IStrategy):
         :return: DataFrame with buy column
         """
         dataframe["buy"] = 0
-        dataframe.loc[((dataframe['exceed_low']) |
+        dataframe.loc[((dataframe['exceed_low']) &
                       (dataframe['seq_buy'] > 8))
                       , 'buy'] = 1
 
