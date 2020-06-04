@@ -7,11 +7,17 @@ from freqtrade.strategy.interface import IStrategy
 
 class TDSequentialStrategy(IStrategy):
     """
-    Default Strategy provided by freqtrade bot.
-    Please do not modify this strategy, it's  intended for internal use only.
-    Please look at the SampleStrategy in the user_data/strategy directory
-    or strategy repository https://github.com/freqtrade/freqtrade-strategies
-    for samples and inspiration.
+    Strategy based on TD Sequential indicator.
+    
+    Buy trigger:
+        When you see 9 consecutive closes "lower" than the close 4 bars prior.
+        An ideal buy is when the low of bars 6 and 7 in the count are exceeded by the low of bars 8 or 9.
+        
+    Sell trigger:
+        When you see 9 consecutive closes "higher" than the close 4 candles prior.
+        An ideal sell is when the the high of bars 6 and 7 in the count are exceeded by the high of bars 8 or 9.
+    
+    Created by @bmoulkaf
     """
     INTERFACE_VERSION = 2
 
@@ -19,7 +25,7 @@ class TDSequentialStrategy(IStrategy):
     minimal_roi = {'0': 5}
 
     # Optimal stoploss designed for the strategy
-    stoploss = -0.003
+    stoploss = -0.05
 
     # Optimal ticker interval for the strategy
     ticker_interval = '1h'
