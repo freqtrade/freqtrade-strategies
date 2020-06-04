@@ -8,6 +8,8 @@ from freqtrade.strategy.interface import IStrategy
 class TDSequentialStrategy(IStrategy):
     """
     Strategy based on TD Sequential indicator.
+    source:
+    https://hackernoon.com/how-to-buy-sell-cryptocurrency-with-number-indicator-td-sequential-5af46f0ebce1
     
     Buy trigger:
         When you see 9 consecutive closes "lower" than the close 4 bars prior.
