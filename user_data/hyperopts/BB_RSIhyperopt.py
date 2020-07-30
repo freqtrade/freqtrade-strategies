@@ -26,9 +26,10 @@ bbperiodRangeStart = 5
 bbperiodRangeStop = 60
 bbperiodRangeStep = 5
 
-bbstdRangeStart = 1
-bbstdRangeStop = 4
+bbstdRangeStart = 1.0
+bbstdRangeStop = 4.0
 bbstdRangeStep = 0.5
+
 
 class BB_RSIhyperopt(IHyperOpt):
     """
@@ -43,13 +44,13 @@ class BB_RSIhyperopt(IHyperOpt):
         dataframe['rsi'] = ta.RSI(dataframe)
 
         # Bollinger bands
-        for bbperiod in np.arange(bbperiodRangeStart,bbperiodRangeStop,bbperiodRangeStep):
-            for bbstd in np.arange(bbstdRangeStart,bbstdRangeStop,bbstdRangeStep):
-                bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=bbperiod, stds=bbstd)
-                dataframe[f'BB_lowerband({bbperiod},{bbstd})']= bollinger['lower']
-                dataframe[f'BB_middleband({bbperiod},{bbstd})']= bollinger['mid']
-                dataframe[f'BB_upperband({bbperiod},{bbstd})']= bollinger['upper']
-
+        for bbperiod in np.arange(bbperiodRangeStart, bbperiodRangeStop, bbperiodRangeStep):
+            for bbstd in np.arange(bbstdRangeStart, bbstdRangeStop, bbstdRangeStep):
+                bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe),
+                                                    window=bbperiod, stds=bbstd)
+                dataframe[f'BB_lowerband({bbperiod},{bbstd})'] = bollinger['lower']
+                dataframe[f'BB_middleband({bbperiod},{bbstd})'] = bollinger['mid']
+                dataframe[f'BB_upperband({bbperiod},{bbstd})'] = bollinger['upper']
 
         return dataframe
 
@@ -72,10 +73,15 @@ class BB_RSIhyperopt(IHyperOpt):
             # TRIGGERS
             if 'trigger' in params:
                 if params['trigger'][2] == 'below':
-                    conditions.append(dataframe['close'] < dataframe[f"BB_lowerband({params['trigger'][0]},{params['trigger'][1]})"])
+                    conditions.append(
+                        dataframe['close'] < dataframe[f"BB_lowerband({params['trigger'][0]},{params['trigger'][1]})"])
                 if params['trigger'][2] == 'crossedabove':
-                    conditions.append(qtpylib.crossed_above(dataframe['close'],dataframe[f"BB_lowerband({params['trigger'][0]},{params['trigger'][1]})"]))
+                    conditions.append(qtpylib.crossed_above(
+                        dataframe['close'],
+                        dataframe[f"BB_lowerband({params['trigger'][0]},{params['trigger'][1]})"]))
 
+            # Check that volume is not 0
+            conditions.append(dataframe['volume'] > 0)
 
             if conditions:
                 dataframe.loc[
@@ -92,10 +98,10 @@ class BB_RSIhyperopt(IHyperOpt):
         Define your Hyperopt space for searching strategy parameters
         """
         buyTriggerList = []
-        for bbperiod in np.arange(bbperiodRangeStart,bbperiodRangeStop,bbperiodRangeStep):
-            for bbstd in np.arange(bbstdRangeStart,bbstdRangeStop,bbstdRangeStep):
-                buyTriggerList.append((bbperiod,bbstd,'crossedabove'))
-                buyTriggerList.append((bbperiod,bbstd,'below'))
+        for bbperiod in np.arange(bbperiodRangeStart, bbperiodRangeStop, bbperiodRangeStep):
+            for bbstd in np.arange(bbstdRangeStart, bbstdRangeStop, bbstdRangeStep):
+                buyTriggerList.append((bbperiod, bbstd, 'crossedabove'))
+                buyTriggerList.append((bbperiod, bbstd, 'below'))
 
         return [
             Integer(10, 60, name='rsi-value'),
@@ -125,13 +131,20 @@ class BB_RSIhyperopt(IHyperOpt):
             if 'sell-trigger' in params and params['sell-trigger']:
 
                 if params['sell-trigger'][2] == 'crossedaboveupper':
-                    conditions.append(qtpylib.crossed_above(dataframe['close'],dataframe[f"BB_upperband({params['sell-trigger'][0]},{params['sell-trigger'][1]})"]))
+                    conditions.append(qtpylib.crossed_above(
+                        dataframe['close'],
+                        dataframe[f"BB_upperband({params['sell-trigger'][0]},{params['sell-trigger'][1]})"]))
                 if params['sell-trigger'][2] == 'crossedabovemiddle':
-                    conditions.append(qtpylib.crossed_above(dataframe['close'],dataframe[f"BB_middleband({params['sell-trigger'][0]},{params['sell-trigger'][1]})"]))
+                    conditions.append(qtpylib.crossed_above(
+                        dataframe['close'],
+                        dataframe[f"BB_middleband({params['sell-trigger'][0]},{params['sell-trigger'][1]})"]))
                 if params['sell-trigger'][2] == 'crossedabovelower':
-                    conditions.append(qtpylib.crossed_above(dataframe['close'],dataframe[f"BB_lowerband({params['sell-trigger'][0]},{params['sell-trigger'][1]})"]))
+                    conditions.append(qtpylib.crossed_above(
+                        dataframe['close'],
+                        dataframe[f"BB_lowerband({params['sell-trigger'][0]},{params['sell-trigger'][1]})"]))
 
-
+            # Check that volume is not 0
+            conditions.append(dataframe['volume'] > 0)
 
             if conditions:
                 dataframe.loc[
@@ -148,12 +161,11 @@ class BB_RSIhyperopt(IHyperOpt):
         Define your Hyperopt space for searching sell strategy parameters
         """
         sellTriggerList = []
-        for bbperiod in np.arange(bbperiodRangeStart,bbperiodRangeStop,bbperiodRangeStep):
-            for bbstd in np.arange(bbstdRangeStart,bbstdRangeStop,bbstdRangeStep):
-                sellTriggerList.append((bbperiod,bbstd,'crossedaboveupper'))
-                sellTriggerList.append((bbperiod,bbstd,'crossedabovemiddle'))
-                sellTriggerList.append((bbperiod,bbstd,'crossedabovelower'))
-
+        for bbperiod in np.arange(bbperiodRangeStart, bbperiodRangeStop, bbperiodRangeStep):
+            for bbstd in np.arange(bbstdRangeStart, bbstdRangeStop, bbstdRangeStep):
+                sellTriggerList.append((bbperiod, bbstd, 'crossedaboveupper'))
+                sellTriggerList.append((bbperiod, bbstd, 'crossedabovemiddle'))
+                sellTriggerList.append((bbperiod, bbstd, 'crossedabovelower'))
 
         return [
             Integer(10, 90, name='sell-rsi-value'),
@@ -161,7 +173,6 @@ class BB_RSIhyperopt(IHyperOpt):
             Categorical([True, False], name='sell-belowrsi-enabled'),
             Categorical(sellTriggerList, name='sell-trigger')
         ]
-
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
@@ -174,20 +185,21 @@ class BB_RSIhyperopt(IHyperOpt):
         dataframe.loc[
             (
                 (dataframe['close'] < dataframe[f'BB_lowerband({bbperiodRangeStart},{bbstdRangeStart})']) &
-                (dataframe['rsi'] < 21)
+                (dataframe['rsi'] < 21) &
+                (dataframe['volume'] > 0)  # Make sure Volume is not 0
             ),
             'buy'] = 1
 
         return dataframe
-    
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:    
+
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
-                
+
                 (dataframe['close'] > dataframe[f'BB_upperband({bbperiodRangeStart},{bbstdRangeStart})']) &
-                (dataframe['rsi'] > 67)
-                
+                (dataframe['rsi'] > 67) &
+                (dataframe['volume'] > 0)  # Make sure Volume is not 0
+
             ),
             'sell'] = 1
         return dataframe
-    
