@@ -61,6 +61,7 @@ class MACDCrossHyperopt(IHyperOpt):
                 conditions.append(qtpylib.crossed_above(
                     dataframe[f"MACD({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"],
                     dataframe[f"MACDsignal({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"]) &
+
                     (dataframe[f"MACD({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"] < 0) &
                     (dataframe[f"MACDsignal({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"] < 0)
                 )
@@ -111,6 +112,7 @@ class MACDCrossHyperopt(IHyperOpt):
                 conditions.append(qtpylib.crossed_below(
                     dataframe[f"MACD({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"],
                     dataframe[f"MACDsignal({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"]) &
+
                     (dataframe[f"MACD({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"] > 0) &
                     (dataframe[f"MACDsignal({params['trigger'][0]},{params['trigger'][1]},{params['trigger'][2]})"] > 0)
                 )
