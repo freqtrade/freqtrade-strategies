@@ -48,6 +48,9 @@ class AverageHyperopt(IHyperOpt):
                     dataframe[f"maMedium({params['trigger'][1]})"])
                     )
 
+            # Check that volume is not 0
+            conditions.append(dataframe['volume'] > 0)
+
             if conditions:
                 dataframe.loc[
                     reduce(lambda x, y: x & y, conditions),

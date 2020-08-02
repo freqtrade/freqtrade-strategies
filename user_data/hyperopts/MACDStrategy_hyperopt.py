@@ -52,7 +52,8 @@ class MACDStrategy_hyperopt(IHyperOpt):
             dataframe.loc[
                 (
                     (dataframe['macd'] > dataframe['macdsignal']) &
-                    (dataframe['cci'] <= params['buy-cci-value'])
+                    (dataframe['cci'] <= params['buy-cci-value']) &
+                    (dataframe['volume'] > 0)  # Make sure Volume is not 0
                 ),
                 'buy'] = 1
 
