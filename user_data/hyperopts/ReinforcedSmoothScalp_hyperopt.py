@@ -16,27 +16,6 @@ class ReinforcedSmoothScalp(IHyperOpt):
     Default hyperopt provided by the Freqtrade bot.
     You can override it with your own Hyperopt
     """
-    @staticmethod
-    def populate_indicators(dataframe: DataFrame, metadata: dict) -> DataFrame:
-
-        dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
-        dataframe['ema_close'] = ta.EMA(dataframe, timeperiod=5, price='close')
-        dataframe['ema_low'] = ta.EMA(dataframe, timeperiod=5, price='low')
-        stoch_fast = ta.STOCHF(dataframe, 5, 3, 0, 3, 0)
-        dataframe['fastd'] = stoch_fast['fastd']
-        dataframe['fastk'] = stoch_fast['fastk']
-        dataframe['adx'] = ta.ADX(dataframe)
-        dataframe['cci'] = ta.CCI(dataframe, timeperiod=20)
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-        dataframe['mfi'] = ta.MFI(dataframe)
-
-        # required for graphing
-        bollinger = qtpylib.bollinger_bands(dataframe['close'], window=20, stds=2)
-        dataframe['bb_lowerband'] = bollinger['lower']
-        dataframe['bb_upperband'] = bollinger['upper']
-        dataframe['bb_middleband'] = bollinger['mid']
-
-        return dataframe
 
     @staticmethod
     def buy_strategy_generator(params: Dict[str, Any]) -> Callable:
@@ -56,12 +35,12 @@ class ReinforcedSmoothScalp(IHyperOpt):
                 conditions.append(dataframe['fastd'] < params['fastd-value'])
             if 'adx-enabled' in params and params['adx-enabled']:
                 conditions.append(dataframe['adx'] > params['adx-value'])
-            #if 'rsi-enabled' in params and params['rsi-enabled']:
-             #   conditions.append(dataframe['rsi'] < params['rsi-value'])
+            # if 'rsi-enabled' in params and params['rsi-enabled']:
+            #   conditions.append(dataframe['rsi'] < params['rsi-value'])
             if 'fastk-enabled' in params and params['fastk-enabled']:
                 conditions.append(dataframe['fastk'] < params['fastk-value'])
             # TRIGGERS
-            #if 'trigger' in params:
+            # if 'trigger' in params:
             #    if params['trigger'] == 'bb_lower':
             #        conditions.append(dataframe['close'] < dataframe['bb_lowerband'])
             #    if params['trigger'] == 'macd_cross_signal':
@@ -73,11 +52,13 @@ class ReinforcedSmoothScalp(IHyperOpt):
             #            dataframe['close'], dataframe['sar']
             #        ))
 
-            
-                if conditions:
-                    dataframe.loc[
-                        reduce(lambda x, y: x & y, conditions),
-                        'buy'] = 1
+            # Check that volume is not 0
+            conditions.append(dataframe['volume'] > 0)
+
+            if conditions:
+                dataframe.loc[
+                    reduce(lambda x, y: x & y, conditions),
+                    'buy'] = 1
 
             return dataframe
 
@@ -93,13 +74,13 @@ class ReinforcedSmoothScalp(IHyperOpt):
             Integer(15, 45, name='fastd-value'),
             Integer(15, 45, name='fastk-value'),
             Integer(20, 50, name='adx-value'),
-            #Integer(20, 40, name='rsi-value'),
+            # Integer(20, 40, name='rsi-value'),
             Categorical([True, False], name='mfi-enabled'),
             Categorical([True, False], name='fastd-enabled'),
             Categorical([True, False], name='adx-enabled'),
             Categorical([True, False], name='fastk-enabled'),
-            #Categorical([True, False], name='rsi-enabled'),
-            #Categorical(['bb_lower', 'macd_cross_signal', 'sar_reversal'], name='trigger')
+            # Categorical([True, False], name='rsi-enabled'),
+            # Categorical(['bb_lower', 'macd_cross_signal', 'sar_reversal'], name='trigger')
         ]
 
     @staticmethod
@@ -126,22 +107,25 @@ class ReinforcedSmoothScalp(IHyperOpt):
                 conditions.append(dataframe['cci'] > params['sell-cci-value'])
 
             # TRIGGERS
-            if 'sell-trigger' in params:
-                #if params['sell-trigger'] == 'sell-bb_upper':
+            # if 'sell-trigger' in params:
+                # if params['sell-trigger'] == 'sell-bb_upper':
                 #    conditions.append(dataframe['close'] > dataframe['bb_upperband'])
-                #if params['sell-trigger'] == 'sell-macd_cross_signal':
+                # if params['sell-trigger'] == 'sell-macd_cross_signal':
                 #    conditions.append(qtpylib.crossed_above(
                 #        dataframe['macdsignal'], dataframe['macd']
                 #    ))
-                #if params['sell-trigger'] == 'sell-sar_reversal':
+                # if params['sell-trigger'] == 'sell-sar_reversal':
                 #    conditions.append(qtpylib.crossed_above(
                 #        dataframe['sar'], dataframe['close']
                 #    ))
 
-                if conditions:
-                    dataframe.loc[
-                        reduce(lambda x, y: x & y, conditions),
-                        'sell'] = 1
+            # Check that volume is not 0
+            conditions.append(dataframe['volume'] > 0)
+
+            if conditions:
+                dataframe.loc[
+                    reduce(lambda x, y: x & y, conditions),
+                    'sell'] = 1
 
             return dataframe
 
@@ -163,7 +147,7 @@ class ReinforcedSmoothScalp(IHyperOpt):
             Categorical([True, False], name='sell-adx-enabled'),
             Categorical([True, False], name='sell-cci-enabled'),
             Categorical([True, False], name='sell-fastk-enabled'),
-            #Categorical(['sell-bb_upper',
+            # Categorical(['sell-bb_upper',
             #             'sell-macd_cross_signal',
             #             'sell-sar_reversal'], name='sell-trigger')
         ]
