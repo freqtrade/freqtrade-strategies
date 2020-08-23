@@ -29,7 +29,10 @@ class ADXMomentum(IStrategy):
     stoploss = -0.25
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '1h'
+    timeframe = '1h'
+
+    # Number of candles the strategy requires before producing valid signals
+    startup_candle_count: int = 20
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['adx'] = ta.ADX(dataframe, timeperiod=14)
@@ -44,9 +47,9 @@ class ADXMomentum(IStrategy):
         dataframe.loc[
             (
                     (dataframe['adx'] > 25) &
-                    (dataframe['mom'] < 0) &
+                    (dataframe['mom'] > 0) &
                     (dataframe['minus_di'] > 25) &
-                    (dataframe['plus_di'] < dataframe['minus_di'])
+                    (dataframe['plus_di'] > dataframe['minus_di'])
 
             ),
             'buy'] = 1
@@ -56,9 +59,9 @@ class ADXMomentum(IStrategy):
         dataframe.loc[
             (
                     (dataframe['adx'] > 25) &
-                    (dataframe['mom'] > 0) &
+                    (dataframe['mom'] < 0) &
                     (dataframe['minus_di'] > 25) &
-                    (dataframe['plus_di'] > dataframe['minus_di'])
+                    (dataframe['plus_di'] < dataframe['minus_di'])
 
             ),
             'sell'] = 1
