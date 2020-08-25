@@ -70,7 +70,7 @@ Each Strategies includes:
 - [x] **Minimal ROI**: Minimal ROI optimized for the strategy.
 - [x] **Stoploss**: Optimimal stoploss.
 - [x] **Buy signals**: Result from Hyperopt or based on exisiting trading strategies.
-- [x] **Sell siganls**: Result from Hyperopt or based on exisiting trading strategies.
+- [x] **Sell signals**: Result from Hyperopt or based on exisiting trading strategies.
 - [x] **Indicators**: Includes the indicators required to run the strategy.
 
 Best backtest multiple strategies with the exchange and pairs you're interrested in, and finetune the strategy to the markets you're trading.
