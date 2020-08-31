@@ -23,7 +23,7 @@ class ReinforcedSmoothScalp(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     # should not be below 3% loss
 
-    stoploss = -0.8
+    stoploss = -0.1
     # Optimal ticker interval for the strategy
     # the shorter the better
     ticker_interval = '1m'
@@ -32,7 +32,6 @@ class ReinforcedSmoothScalp(IStrategy):
     resample_factor = 5
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe = self.resample(dataframe, self.ticker_interval, self.resample_factor)
 
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
         dataframe['ema_close'] = ta.EMA(dataframe, timeperiod=5, price='close')
@@ -93,26 +92,4 @@ class ReinforcedSmoothScalp(IStrategy):
             )
             ,
             'sell'] = 1
-        return dataframe
-
-    def resample(self, dataframe, interval, factor):
-        # defines the reinforcement logic
-        # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
-        df = dataframe.copy()
-        df = df.set_index(DatetimeIndex(df['date']))
-        ohlc_dict = {
-            'open': 'first',
-            'high': 'max',
-            'low': 'min',
-            'close': 'last'
-        }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min',
-                         label="right").agg(ohlc_dict).dropna(how='any')
-        df['resample_sma'] = ta.SMA(df, timeperiod=50, price='close')
-        df = df.drop(columns=['open', 'high', 'low', 'close'])
-        df = df.resample(interval[:-1] + 'min')
-        df = df.interpolate(method='time')
-        df['date'] = df.index
-        df.index = range(len(df))
-        dataframe = merge(dataframe, df, on='date', how='left')
         return dataframe
