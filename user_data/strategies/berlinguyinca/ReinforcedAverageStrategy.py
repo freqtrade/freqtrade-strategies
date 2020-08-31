@@ -58,8 +58,8 @@ class ReinforcedAverageStrategy(IStrategy):
         dataframe['bb_lowerband'] = bollinger['lower']
         dataframe['bb_upperband'] = bollinger['upper']
         dataframe['bb_middleband'] = bollinger['mid']
-
-        dataframe_long = resample_to_interval(dataframe, timeframe_to_minutes(self.ticker_interval) * 12)
+        self.resample_interval = timeframe_to_minutes(self.ticker_interval) * 12
+        dataframe_long = resample_to_interval(dataframe, self.resample_interval)
         dataframe_long['sma'] = ta.SMA(dataframe_long, timeperiod=50, price='close')
         dataframe = resampled_merge(dataframe, dataframe_long, fill_na=True)
 
@@ -75,7 +75,7 @@ class ReinforcedAverageStrategy(IStrategy):
         dataframe.loc[
             (
                 qtpylib.crossed_above(dataframe['maShort'], dataframe['maMedium']) &
-                (dataframe['close'] > dataframe['resample_2880_sma']) &
+                (dataframe['close'] > dataframe[f'resample_{self.resample_interval}_sma']) &
                 (dataframe['volume'] > 0)
             ),
             'buy'] = 1
