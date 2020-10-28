@@ -2,7 +2,7 @@
 from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
 from functools import reduce
-from pandas import DataFrame, DatetimeIndex, merge
+from pandas import DataFrame
 # --------------------------------
 
 import talib.abstract as ta
@@ -10,6 +10,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy  # noqa
 
 # DO NOT USE, just playing with smooting and graphs!
+
 
 class SmoothOperator(IStrategy):
     """
@@ -20,8 +21,6 @@ class SmoothOperator(IStrategy):
 
     The concept is about combining several common indicators, with a heavily smoothing, while trying to detect
     a none completed peak shape.
-
-
     """
 
     # Minimal ROI designed for the strategy.
@@ -38,13 +37,7 @@ class SmoothOperator(IStrategy):
     # Optimal ticker interval for the strategy
     ticker_interval = '5m'
 
-    # resample factor to establish our general trend. Basically don't buy if a trend is not given
-    resample_factor = 12
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
-        dataframe = StrategyHelper.resample(dataframe, self.ticker_interval, self.resample_factor)
-
         ##################################################################################
         # required for entry and exit
         # CCI
@@ -135,9 +128,9 @@ class SmoothOperator(IStrategy):
                 # |
 
                 (
-                # simple v bottom shape (lopsided to the left to increase reactivity)
-                # which has to be below a very slow average
-                # this pattern only catches a few, but normally very good buy points
+                    # simple v bottom shape (lopsided to the left to increase reactivity)
+                    # which has to be below a very slow average
+                    # this pattern only catches a few, but normally very good buy points
                     (
                             (dataframe['average'].shift(5) > dataframe['average'].shift(4))
                             & (dataframe['average'].shift(4) > dataframe['average'].shift(3))
@@ -172,7 +165,7 @@ class SmoothOperator(IStrategy):
 
                 &
                 # ensure we have an overall uptrend
-                (dataframe['close'] > dataframe)
+                (dataframe['close'] > dataframe['close'].shift())
             ),
             'buy'] = 1
 
@@ -183,32 +176,27 @@ class SmoothOperator(IStrategy):
         dataframe.loc[
             (
                 (
-
                     #   This generates very nice sale points, and mostly sit's one stop behind
                     #   the top of the peak
-                        (
-                                (dataframe['mfi_rsi_cci_smooth'] > 100)
-                                & (dataframe['mfi_rsi_cci_smooth'].shift(1) > dataframe['mfi_rsi_cci_smooth'])
-                                & (dataframe['mfi_rsi_cci_smooth'].shift(2) < dataframe['mfi_rsi_cci_smooth'].shift(1))
-                                & (dataframe['mfi_rsi_cci_smooth'].shift(3) < dataframe['mfi_rsi_cci_smooth'].shift(2))
-                        )
-
-                        |
-
-                        #   This helps with very long, sideways trends, to get out of a market before
-                        #   it dumps
-                        (
-                            StrategyHelper.eight_green_candles(dataframe)
-                        )
-                        |
-
-                        # in case of very overbought market, like some one pumping
-                        # sell
-                        (
-                                (dataframe['cci'] > 200)
-                                & (dataframe['rsi'] > 70)
-                        )
-
+                    (
+                        (dataframe['mfi_rsi_cci_smooth'] > 100)
+                        & (dataframe['mfi_rsi_cci_smooth'].shift(1) > dataframe['mfi_rsi_cci_smooth'])
+                        & (dataframe['mfi_rsi_cci_smooth'].shift(2) < dataframe['mfi_rsi_cci_smooth'].shift(1))
+                        & (dataframe['mfi_rsi_cci_smooth'].shift(3) < dataframe['mfi_rsi_cci_smooth'].shift(2))
+                    )
+                    |
+                    #   This helps with very long, sideways trends, to get out of a market before
+                    #   it dumps
+                    (
+                        StrategyHelper.eight_green_candles(dataframe)
+                    )
+                    |
+                    # in case of very overbought market, like some one pumping
+                    # sell
+                    (
+                        (dataframe['cci'] > 200)
+                        & (dataframe['rsi'] > 70)
+                    )
                 )
 
             ),
@@ -313,27 +301,3 @@ class StrategyHelper:
                 (dataframe['open'].shift(3) > dataframe['close'].shift(3)) &
                 (dataframe['open'].shift(4) > dataframe['close'].shift(4))
         )
-
-
-    @staticmethod
-    def resample( dataframe, interval, factor):
-        # defines the reinforcement logic
-        # resampled dataframe to establish if we are in an uptrend, downtrend or sideways trend
-        df = dataframe.copy()
-        df = df.set_index(DatetimeIndex(df['date']))
-        ohlc_dict = {
-            'open': 'first',
-            'high': 'max',
-            'low': 'min',
-            'close': 'last'
-        }
-        df = df.resample(str(int(interval[:-1]) * factor) + 'min', plotoschow=ohlc_dict)
-
-        df['resample_sma'] = ta.SMA(df, timeperiod=25, price='close')
-        df = df.drop(columns=['open', 'high', 'low', 'close'])
-        df = df.resample(interval[:-1] + 'min')
-        df = df.interpolate(method='time')
-        df['date'] = df.index
-        df.index = range(len(df))
-        dataframe = merge(dataframe, df, on='date', how='left')
-        return dataframe
