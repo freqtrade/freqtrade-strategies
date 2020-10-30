@@ -49,7 +49,7 @@ Most of them  were designed from Hyperopt calculations.
 Some only work in specific market conditions, while others are more "general purpose" strategies.
 It's noteworthy that depending on the exchange and Pairs used, further optimization can bring better results.
 
-Also, results will heavily depend on the pairs, timeframe and timerange used to backtest - so please run your own backtests that mirror your usecase, to evaluate each strategy for yourself.
+Please keep in mind, results will heavily depend on the pairs, timeframe and timerange used to backtest - so please run your own backtests that mirror your usecase, to evaluate each strategy for yourself.
 
 ## Share your own strategies and contribute to this repo
 
