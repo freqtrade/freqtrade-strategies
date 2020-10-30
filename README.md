@@ -20,14 +20,12 @@ bot.
 ## Table of Content
 
 - [Free trading strategies](#free-trading-strategies)
-- [Contributes](#Contributes)
+- [Contribute](#share-your-own-strategies-and-contribute-to-this-repo)
 - [FAQ](#faq)
     - [What is Freqtrade?](#what-is-freqtrade)
     - [What includes these strategies?](#what-includes-these-strategies)
-    - [How were tested the strategies?](#how-were-tested-the-strategies)
     - [How to install a strategy?](#how-to-install-a-strategy)
     - [How to test a strategy?](#how-to-test-a-strategy)
-    - [Can I have your configuration file?](#can-i-have-your-configuration-file)
     - [How to create/optimize a strategy?](https://www.freqtrade.io/en/latest/strategy-customization/)
 
 ## Free trading strategies
@@ -51,10 +49,12 @@ Most of them  were designed from Hyperopt calculations.
 Some only work in specific market conditions, while others are more "general purpose" strategies.
 It's noteworthy that depending on the exchange and Pairs used, further optimization can bring better results.
 
+Also, results will heavily depend on the pairs, timeframe and timerange used to backtest - so please run your own backtests that mirror your usecase, to evaluate each strategy for yourself.
+
 ## Share your own strategies and contribute to this repo
 
 Feel free to send your strategies, comments, optimizations and pull requests via an 
-[Issue ticket](https://github.com/freqtrade/freqtrade-strategies/issues/new).  
+[Issue ticket](https://github.com/freqtrade/freqtrade-strategies/issues/new) or as a [Pull request](https://github.com/freqtrade/freqtrade-strategies/pulls) enhancing this repository.
 
 ## FAQ
 
@@ -74,12 +74,6 @@ Each Strategies includes:
 - [x] **Indicators**: Includes the indicators required to run the strategy.
 
 Best backtest multiple strategies with the exchange and pairs you're interrested in, and finetune the strategy to the markets you're trading.
-
-### How were tested the strategies?
-
-All strategies tests are explain on their own tickets.  
-For each strategies, we generally run backtests twice with `ask_strategy.sell_profit_only`
-enabled and disabled.
 
 ### How to install a strategy?
 
