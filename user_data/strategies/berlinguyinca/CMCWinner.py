@@ -40,8 +40,8 @@ class CMCWinner(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.05
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '15m'
+    # Optimal timeframe for the strategy
+    timeframe = '15m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
@@ -57,7 +57,7 @@ class CMCWinner(IStrategy):
 
         # MFI
         dataframe['mfi'] = ta.MFI(dataframe)
-		
+
 		# CMO
         dataframe['cmo'] = ta.CMO(dataframe)
 

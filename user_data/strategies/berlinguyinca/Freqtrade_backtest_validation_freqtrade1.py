@@ -11,7 +11,6 @@ from pandas import DataFrame
 # Add your lib to import here
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import numpy
 
 
 class Freqtrade_backtest_validation_freqtrade1(IStrategy):
@@ -23,8 +22,8 @@ class Freqtrade_backtest_validation_freqtrade1(IStrategy):
         "0": 2.04
     }
 
-    stoploss = -09.90
-    ticker_interval = '1h'
+    stoploss = -0.90
+    timeframe = '1h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # SMA - Simple Moving Average

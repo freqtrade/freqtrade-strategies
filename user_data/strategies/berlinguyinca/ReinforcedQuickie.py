@@ -37,8 +37,8 @@ class ReinforcedQuickie(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.05
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
 
     # resample factor to establish our general trend. Basically don't buy if a trend is not given
     resample_factor = 12
@@ -48,7 +48,7 @@ class ReinforcedQuickie(IStrategy):
     EMA_LONG_TERM = 21
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe = self.resample(dataframe, self.ticker_interval, self.resample_factor)
+        dataframe = self.resample(dataframe, self.timeframe, self.resample_factor)
 
         ##################################################################################
         # buy and sell indicators

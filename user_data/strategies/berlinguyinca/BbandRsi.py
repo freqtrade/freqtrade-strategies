@@ -29,8 +29,8 @@ class BbandRsi(IStrategy):
     # Optimal stoploss designed for the strategy
     stoploss = -0.25
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '1h'
+    # Optimal timeframe for the strategy
+    timeframe = '1h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)

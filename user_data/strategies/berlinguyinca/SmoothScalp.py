@@ -32,9 +32,9 @@ class SmoothScalp(IStrategy):
     # should not be below 3% loss
 
     stoploss = -0.5
-    # Optimal ticker interval for the strategy
+    # Optimal timeframe for the strategy
     # the shorter the better
-    ticker_interval = '1m'
+    timeframe = '1m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')

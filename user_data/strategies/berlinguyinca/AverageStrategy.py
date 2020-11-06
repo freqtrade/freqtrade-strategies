@@ -26,8 +26,8 @@ class AverageStrategy(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.2
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '4h'
+    # Optimal timeframe for the strategy
+    timeframe = '4h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 

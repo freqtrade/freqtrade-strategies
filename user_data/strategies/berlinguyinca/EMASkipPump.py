@@ -30,8 +30,8 @@ class EMASkipPump(IStrategy):
     # should be converted to a trailing stop loss
     stoploss = -0.05
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """ Adds several different TA indicators to the given DataFrame

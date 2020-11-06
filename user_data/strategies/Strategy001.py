@@ -9,6 +9,7 @@ from pandas import DataFrame
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
+
 class Strategy001(IStrategy):
     """
     Strategy 001
@@ -32,8 +33,8 @@ class Strategy001(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.10
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
 
     # trailing stoploss
     trailing_stop = False
