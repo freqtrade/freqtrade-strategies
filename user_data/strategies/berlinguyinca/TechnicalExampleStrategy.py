@@ -11,8 +11,8 @@ class TechnicalExampleStrategy(IStrategy):
 
     stoploss = -0.05
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['cmf'] = cmf(dataframe, 21)
@@ -23,7 +23,7 @@ class TechnicalExampleStrategy(IStrategy):
         dataframe.loc[
             (
                 (
-                        (dataframe['cmf'] < 0)
+                    (dataframe['cmf'] < 0)
 
                 )
             ),
@@ -34,7 +34,7 @@ class TechnicalExampleStrategy(IStrategy):
         # different strategy used for sell points, due to be able to duplicate it to 100%
         dataframe.loc[
             (
-                    (dataframe['cmf'] > 0)
+                (dataframe['cmf'] > 0)
             ),
             'sell'] = 1
         return dataframe

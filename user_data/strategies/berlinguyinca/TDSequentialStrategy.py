@@ -10,15 +10,15 @@ class TDSequentialStrategy(IStrategy):
     Strategy based on TD Sequential indicator.
     source:
     https://hackernoon.com/how-to-buy-sell-cryptocurrency-with-number-indicator-td-sequential-5af46f0ebce1
-    
+
     Buy trigger:
         When you see 9 consecutive closes "lower" than the close 4 bars prior.
         An ideal buy is when the low of bars 6 and 7 in the count are exceeded by the low of bars 8 or 9.
-        
+
     Sell trigger:
         When you see 9 consecutive closes "higher" than the close 4 candles prior.
         An ideal sell is when the the high of bars 6 and 7 in the count are exceeded by the high of bars 8 or 9.
-    
+
     Created by @bmoulkaf
     """
     INTERFACE_VERSION = 2
@@ -28,16 +28,16 @@ class TDSequentialStrategy(IStrategy):
 
     # Optimal stoploss designed for the strategy
     stoploss = -0.05
-    
+
     # Trailing stoploss
     trailing_stop = False
     # trailing_only_offset_is_reached = False
     # trailing_stop_positive = 0.01
     # trailing_stop_positive_offset = 0.0  # Disabled / not configured
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '1h'
-    
+    # Optimal timeframe for the strategy
+    timeframe = '1h'
+
     # These values can be overridden in the "ask_strategy" section in the config.
     use_sell_signal = True
     sell_profit_only = False

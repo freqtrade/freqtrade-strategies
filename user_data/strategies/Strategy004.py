@@ -8,6 +8,7 @@ from pandas import DataFrame
 
 import talib.abstract as ta
 
+
 class Strategy004(IStrategy):
 
     """
@@ -32,8 +33,8 @@ class Strategy004(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.10
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
 
     # trailing stoploss
     trailing_stop = False

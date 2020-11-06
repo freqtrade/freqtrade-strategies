@@ -6,13 +6,10 @@ from pandas import DataFrame
 # --------------------------------
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-from typing import Dict, List
-from functools import reduce
-from pandas import DataFrame, DatetimeIndex, merge
 # --------------------------------
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import numpy  # noqa
+
 
 class Scalp(IStrategy):
     """
@@ -22,8 +19,6 @@ class Scalp(IStrategy):
 
         Recommended is to only sell based on ROI for this strategy
     """
-
-
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
@@ -35,9 +30,9 @@ class Scalp(IStrategy):
     # should not be below 3% loss
 
     stoploss = -0.04
-    # Optimal ticker interval for the strategy
+    # Optimal timeframe for the strategy
     # the shorter the better
-    ticker_interval = '1m'
+    timeframe = '1m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
@@ -54,8 +49,8 @@ class Scalp(IStrategy):
         dataframe['bb_upperband'] = bollinger['upper']
         dataframe['bb_middleband'] = bollinger['mid']
 
-
         return dataframe
+
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
@@ -69,6 +64,7 @@ class Scalp(IStrategy):
             ),
             'buy'] = 1
         return dataframe
+
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (

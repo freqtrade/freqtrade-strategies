@@ -9,6 +9,7 @@ from pandas import DataFrame
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
+
 class InformativeSample(IStrategy):
     """
     Sample strategy implementing Informative Pairs - compares stake_currency with USDT.
@@ -33,8 +34,8 @@ class InformativeSample(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.10
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
 
     # trailing stoploss
     trailing_stop = False
@@ -68,7 +69,7 @@ class InformativeSample(IStrategy):
                             ("BTC/USDT", "15m"),
                             ]
         """
-        return [(f"{self.config['stake_currency']}/USDT", self.ticker_interval)]
+        return [(f"{self.config['stake_currency']}/USDT", self.timeframe)]
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
@@ -85,7 +86,7 @@ class InformativeSample(IStrategy):
         if self.dp:
             # Get ohlcv data for informative pair.
             data = self.dp.get_pair_dataframe(pair=f"{self.stake_currency}/USDT",
-                                              timeframe=self.ticker_interval)
+                                              timeframe=self.timeframe)
             # Combine the 2 dataframes using 'close'.
             # This will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
             dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))

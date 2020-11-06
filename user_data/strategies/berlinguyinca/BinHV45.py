@@ -12,10 +12,11 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 def bollinger_bands(stock_price, window_size, num_of_std):
     rolling_mean = stock_price.rolling(window=window_size).mean()
-    rolling_std  = stock_price.rolling(window=window_size).std()
+    rolling_std = stock_price.rolling(window=window_size).std()
     lower_band = rolling_mean - (rolling_std * num_of_std)
 
     return rolling_mean, lower_band
+
 
 class BinHV45(IStrategy):
     minimal_roi = {
@@ -23,7 +24,7 @@ class BinHV45(IStrategy):
     }
 
     stoploss = -0.05
-    ticker_interval = '1m'
+    timeframe = '1m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         mid, lower = bollinger_bands(dataframe['close'], window_size=40, num_of_std=2)

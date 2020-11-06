@@ -24,9 +24,9 @@ class ReinforcedSmoothScalp(IStrategy):
     # should not be below 3% loss
 
     stoploss = -0.1
-    # Optimal ticker interval for the strategy
+    # Optimal timeframe for the strategy
     # the shorter the better
-    ticker_interval = '1m'
+    timeframe = '1m'
 
     # resample factor to establish our general trend. Basically don't buy if a trend is not given
     resample_factor = 5

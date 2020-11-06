@@ -24,7 +24,7 @@ class CombinedBinHAndCluc(IStrategy):
         "0": 0.05
     }
     stoploss = -0.05
-    ticker_interval = '5m'
+    timeframe = '5m'
 
     use_sell_signal = True
     sell_profit_only = True

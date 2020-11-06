@@ -28,7 +28,7 @@ class ADXMomentum(IStrategy):
     # Optimal stoploss designed for the strategy
     stoploss = -0.25
 
-    # Optimal ticker interval for the strategy
+    # Optimal timeframe for the strategy
     timeframe = '1h'
 
     # Number of candles the strategy requires before producing valid signals

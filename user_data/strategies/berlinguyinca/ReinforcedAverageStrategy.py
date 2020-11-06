@@ -30,8 +30,8 @@ class ReinforcedAverageStrategy(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.2
 
-    # Optimal ticker interval for the strategy
-    ticker_interval = '4h'
+    # Optimal timeframe for the strategy
+    timeframe = '4h'
 
     # trailing stoploss
     trailing_stop = False
@@ -47,7 +47,6 @@ class ReinforcedAverageStrategy(IStrategy):
     sell_profit_only = False
     ignore_roi_if_buy_signal = False
 
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         dataframe['maShort'] = ta.EMA(dataframe, timeperiod=8)
@@ -58,7 +57,7 @@ class ReinforcedAverageStrategy(IStrategy):
         dataframe['bb_lowerband'] = bollinger['lower']
         dataframe['bb_upperband'] = bollinger['upper']
         dataframe['bb_middleband'] = bollinger['mid']
-        self.resample_interval = timeframe_to_minutes(self.ticker_interval) * 12
+        self.resample_interval = timeframe_to_minutes(self.timeframe) * 12
         dataframe_long = resample_to_interval(dataframe, self.resample_interval)
         dataframe_long['sma'] = ta.SMA(dataframe_long, timeperiod=50, price='close')
         dataframe = resampled_merge(dataframe, dataframe_long, fill_na=True)
