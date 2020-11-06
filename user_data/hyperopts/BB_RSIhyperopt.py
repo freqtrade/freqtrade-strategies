@@ -184,7 +184,10 @@ class BB_RSIhyperopt(IHyperOpt):
         """
         dataframe.loc[
             (
-                (dataframe['close'] < dataframe[f'BB_lowerband({bbperiodRangeStart},{bbstdRangeStart})']) &
+                qtpylib.crossed_above(
+                    dataframe['close'],
+                    dataframe[f'BB_lowerband({bbperiodRangeStart},{bbstdRangeStart})']
+                ) &
                 (dataframe['rsi'] < 21) &
                 (dataframe['volume'] > 0)  # Make sure Volume is not 0
             ),
@@ -196,7 +199,9 @@ class BB_RSIhyperopt(IHyperOpt):
         dataframe.loc[
             (
 
-                (dataframe['close'] > dataframe[f'BB_upperband({bbperiodRangeStart},{bbstdRangeStart})']) &
+                qtpylib.crossed_above(
+                    dataframe['close'],
+                    dataframe[f'BB_upperband({bbperiodRangeStart},{bbstdRangeStart})']) &
                 (dataframe['rsi'] > 67) &
                 (dataframe['volume'] > 0)  # Make sure Volume is not 0
 
