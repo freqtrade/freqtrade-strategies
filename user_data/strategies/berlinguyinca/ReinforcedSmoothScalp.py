@@ -1,6 +1,8 @@
 # --- Do not remove these libs ---
 from freqtrade.strategy.interface import IStrategy
-from pandas import DataFrame, DatetimeIndex, merge
+from freqtrade.strategy import timeframe_to_minutes
+from pandas import DataFrame
+from technical.util import resample_to_interval, resampled_merge
 import numpy  # noqa
 # --------------------------------
 import talib.abstract as ta
@@ -32,6 +34,11 @@ class ReinforcedSmoothScalp(IStrategy):
     resample_factor = 5
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        tf_res = timeframe_to_minutes(self.timeframe) * 5
+        df_res = resample_to_interval(dataframe, tf_res)
+        df_res['sma'] = ta.SMA(df_res, 50, price='close')
+        dataframe = resampled_merge(dataframe, df_res, fill_na=True)
+        dataframe['resample_sma'] = dataframe[f'resample_{tf_res}_sma']
 
         dataframe['ema_high'] = ta.EMA(dataframe, timeperiod=5, price='high')
         dataframe['ema_close'] = ta.EMA(dataframe, timeperiod=5, price='close')
