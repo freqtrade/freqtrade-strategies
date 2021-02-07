@@ -19,24 +19,17 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 class BinHV45HyperOpt(IHyperOpt):
     """
-    This is a Hyperopt template to get you started.
+    Hyperopt file for optimizing BinHV45Strategy.
+    Uses ranges to find best parameter combination for bbdelta, closedelta and tail
+    of the buy strategy.
 
-    More information in the documentation: https://www.freqtrade.io/en/latest/hyperopt/
+    Sell strategy is ignored, because it's ignored in BinHV45Strategy as well.
+    This strategy therefor works without explicit sell signal therefor hyperopting
+    for 'roi' is recommend as well
 
-    You should:
-    - Add any lib you need to build your hyperopt.
-
-    You must keep:
-    - The prototypes for the methods: populate_indicators, indicator_space, buy_strategy_generator.
-
-    The methods roi_space, generate_roi_table and stoploss_space are not required
-    and are provided by default.
-    However, you may override them if you need 'roi' and 'stoploss' spaces that
-    differ from the defaults offered by Freqtrade.
-    Sample implementation of these methods will be copied to `user_data/hyperopts` when
-    creating the user-data directory using `freqtrade create-userdir --userdir user_data`,
-    or is available online under the following URL:
-    https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/templates/sample_hyperopt_advanced.py.
+    Also, this is just ONE way to optimize this strategy - others might also include
+    disabling certain conditions completely. This file is just a starting point, feel free
+    to improve and PR.
     """
 
     @staticmethod
