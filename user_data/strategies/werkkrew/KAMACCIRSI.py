@@ -134,31 +134,9 @@ class KAMACCIRSI(IStrategy):
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = False
 
-    # These values can be overridden in the "ask_strategy" section in the config.
-    use_sell_signal = True
-    sell_profit_only = True
-    ignore_roi_if_buy_signal = False
-
     # Number of candles the strategy requires before producing valid signals
     # Set this to the highest period value in the indicator_params dict or highest of the ranges in the hyperopt settings (default: 72)
     startup_candle_count: int = 72
-
-    # Optional order type mapping.
-    order_types = {
-        'buy': 'limit',
-        'sell': 'limit',
-        'emergencysell': 'market',
-        'stoploss': 'market',
-        'stoploss_on_exchange': True,
-        'stoploss_on_exchange_interval': 60,
-        'stoploss_on_exchange_limit_ratio': 0.99
-    }
-
-    # Optional order time in force.
-    order_time_in_force = {
-        'buy': 'gtc',
-        'sell': 'gtc'
-    }
     
     """
     Not currently being used for anything, thinking about implementing this later.
