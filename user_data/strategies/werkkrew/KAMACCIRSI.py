@@ -82,53 +82,48 @@ class KAMACCIRSI(IStrategy):
     PASTE OUTPUT FROM HYPEROPT HERE
     """
 
-    # Buy hyperspace params (optimized alone (2/11/21)):
-    # 927/1000:    194 trades. 123/68/3 Wins/Draws/Losses. Avg profit   1.18%. Median profit   0.26%. Total profit  0.00228732 BTC ( 228.36Σ%). Avg duration 863.4 min. Objective: -37.11041
+    # Buy hyperspace params:
     buy_params = {
-        'cci-enabled': False,
-        'cci-limit': 137,
-        'cci-period': 34,
-        'kama-long-period': 42,
-        'kama-short-period': 13,
+        'cci-enabled': True,
+        'cci-limit': 198,
+        'cci-period': 18,
+        'kama-long-period': 46,
+        'kama-short-period': 11,
         'kama-trigger': 'cross',
-        'rsi-enabled': True,
-        'rsi-limit': 70,
-        'rsi-period': 23
+        'rsi-enabled': False,
+        'rsi-limit': 72,
+        'rsi-period': 5
     }
 
-    # Sell hyperspace params: (optimized alone (2/11/21))
-    # 198/1000:    196 trades. 118/76/2 Wins/Draws/Losses. Avg profit   1.21%. Median profit   0.17%. Total profit  0.00238257 BTC ( 237.87Σ%). Avg duration 822.2 min. Objective: -43.77210
+    # Sell hyperspace params:
     sell_params = {
         'sell-cci-enabled': False,
-        'sell-cci-limit': -165,
-        'sell-cci-period': 50,
-        'sell-kama-long-period': 70,
-        'sell-kama-short-period': 7,
-        'sell-kama-trigger': 'slope',
-        'sell-rsi-enabled': True,
-        'sell-rsi-limit': 79,
-        'sell-rsi-period': 27
+        'sell-cci-limit': -144,
+        'sell-cci-period': 18,
+        'sell-kama-long-period': 41,
+        'sell-kama-short-period': 5,
+        'sell-kama-trigger': 'cross',
+        'sell-rsi-enabled': False,
+        'sell-rsi-limit': 69,
+        'sell-rsi-period': 12
     }
 
-    # ROI table: (optimized alone 2/11/21)
-    # 2821/5000:    196 trades. 118/76/2 Wins/Draws/Losses. Avg profit   1.21%. Median profit   0.17%. Total profit  0.00237930 BTC ( 237.55Σ%). Avg duration 822.0 min. Objective: -43.68932
+    # ROI table:
     minimal_roi = {
-        "0": 0.10641,
-        "16": 0.04562,
-        "75": 0.03079,
-        "195": 0
+        "0": 0.11599,
+        "18": 0.03112,
+        "34": 0.01895,
+        "131": 0
     }
 
-    # Stoploss: (optimized alone 2/11/21)
-    # 6/1000:     176 trades. 115/57/4 Wins/Draws/Losses. Avg profit   1.08%. Median profit   0.30%. Total profit  0.00191173 BTC ( 190.87Σ%). Avg duration 954.9 min. Objective: -22.30542
-    stoploss = -0.31878
+    # Stoploss:
+    stoploss = -0.32982
 
-    # Trailing stop: (optimized alone 2/11/21)
-    # 19/1000:    176 trades. 115/57/4 Wins/Draws/Losses. Avg profit   1.04%. Median profit   0.30%. Total profit  0.00182933 BTC ( 182.64Σ%). Avg duration 954.8 min. Objective: -22.34594
+    # Trailing stop:
     trailing_stop = True
-    trailing_stop_positive = 0.06276
-    trailing_stop_positive_offset = 0.10079
-    trailing_only_offset_is_reached = False
+    trailing_stop_positive = 0.28596
+    trailing_stop_positive_offset = 0.29771
+    trailing_only_offset_is_reached = True
 
     """
     END HYPEROPT
@@ -142,7 +137,7 @@ class KAMACCIRSI(IStrategy):
     # These values can be overridden in the "ask_strategy" section in the config.
     use_sell_signal = True
     sell_profit_only = True
-    ignore_roi_if_buy_signal = True
+    ignore_roi_if_buy_signal = False
 
     # Number of candles the strategy requires before producing valid signals
     # Set this to the highest period value in the indicator_params dict or highest of the ranges in the hyperopt settings (default: 72)
