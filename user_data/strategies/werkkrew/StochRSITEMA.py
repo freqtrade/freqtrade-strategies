@@ -60,34 +60,30 @@ class StochRSITEMA(IStrategy):
 
     # Buy hyperspace params:
     buy_params = {
-       'rsi-lower-band': 46, 
-       'rsi-period': 30, 
-       'stoch-lower-band': 23
+     'rsi-lower-band': 48, 'rsi-period': 28, 'stoch-lower-band': 22
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'tema-period': 8, 
-        'tema-trigger': 'close'
+     'tema-period': 20, 'tema-trigger': 'close'
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.13771,
-        "17": 0.07172,
-        "31": 0.01378,
-        "105": 0
+        "0": 0.17919,
+        "21": 0.03934,
+        "44": 0.01366,
+        "87": 0
     }
 
     # Stoploss:
-    stoploss = -0.3279
+    stoploss = -0.25047
 
     # Trailing stop:
     trailing_stop = True
-    trailing_stop_positive = 0.32791
-    trailing_stop_positive_offset = 0.40339
-    trailing_only_offset_is_reached = True
-
+    trailing_stop_positive = 0.26106
+    trailing_stop_positive_offset = 0.34462
+    trailing_only_offset_is_reached = False
 
     """
     END HYPEROPT
@@ -100,6 +96,12 @@ class StochRSITEMA(IStrategy):
         'stoch-slowd-period': 3,
     }
 
+    # Make sure these match or are not overridden in config
+    use_sell_signal = True
+    sell_profit_only = True
+    sell_profit_offset = 0.01
+    ignore_roi_if_buy_signal = False
+
     timeframe = '5m'
 
     # Run "populate_indicators()" only for new candle.
@@ -107,7 +109,7 @@ class StochRSITEMA(IStrategy):
 
     # Number of candles the strategy requires before producing valid signals
     # Set this to the highest period value in the indicator_params dict or highest of the ranges in the hyperopt settings (default: 72)
-    startup_candle_count: int = 72
+    startup_candle_count: int = 50
     
     """
     Not currently being used for anything, thinking about implementing this later.
