@@ -48,7 +48,7 @@ class ADXMomentum(IStrategy):
             (
                     (dataframe['adx'] > 25) &
                     (dataframe['mom'] > 0) &
-                    (dataframe['minus_di'] > 25) &
+                    (dataframe['plus_di'] > 25) &
                     (dataframe['plus_di'] > dataframe['minus_di'])
 
             ),
