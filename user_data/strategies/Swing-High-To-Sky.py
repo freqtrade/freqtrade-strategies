@@ -44,7 +44,8 @@ class SwingHighToSky(IStrategy):
         dataframe['macdsignal'] = macd['macdsignal']
         dataframe['macdhist'] = macd['macdhist']
         
-        dataframe['cci'] = ta.CCI(dataframe)
+        dataframe['cci-buy'] = ta.CCI(dataframe, timeperiod=xx)
+        dataframe['cci-sell'] = ta.CCI(dataframe, timeperiod=xx-sell)
 
         return dataframe
 
