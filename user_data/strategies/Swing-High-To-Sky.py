@@ -22,11 +22,15 @@ class_name = 'SwingHighToSky'
 class SwingHighToSky(IStrategy):
 
     # Disable ROI
+    # Could be replaced with new ROI from hyperopt.
     minimal_roi = {
          "0":  100
     }
 
     stoploss = -0.30
+  
+    ### Do extra hyperopt for trailing seperat. Use "--spaces default" and then "--spaces trailing".
+    ### See here for more information: https://www.freqtrade.io/en/latest/hyperopt
     trailing_stop = True
     trailing_stop_positive = 0.08
     trailing_stop_positive_offset = 0.10
@@ -42,10 +46,10 @@ class SwingHighToSky(IStrategy):
         macd = ta.MACD(dataframe)
         dataframe['macd'] = macd['macd']
         dataframe['macdsignal'] = macd['macdsignal']
-        dataframe['macdhist'] = macd['macdhist']
         
+        ### Add timeperiod from hyperopt (replace xx with value)
         dataframe['cci-buy'] = ta.CCI(dataframe, timeperiod=xx)
-        dataframe['cci-sell'] = ta.CCI(dataframe, timeperiod=xx-sell)
+        dataframe['cci-sell'] = ta.CCI(dataframe, timeperiod=xx)
 
         return dataframe
 
@@ -54,7 +58,7 @@ class SwingHighToSky(IStrategy):
         dataframe.loc[
             (
                 (dataframe['macd'] > dataframe['macdsignal']) &
-                (dataframe['cci'] <= -100.0)
+                (dataframe['cci-buy'] <= -100.0) # Replace with value from hyperopt.
             ),
             'buy'] = 1
 
@@ -65,7 +69,7 @@ class SwingHighToSky(IStrategy):
         dataframe.loc[
             ( 
                 (dataframe['macd'] < dataframe['macdsignal']) & 
-                (dataframe['cci'] >= 200.0)
+                (dataframe['cci-sell'] >= 200.0) # Replace with value from hyperopt.
             ),
             'sell'] = 1
             
