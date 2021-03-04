@@ -33,7 +33,7 @@ class TrailingSL(IStrategy):
 
         SL_INDICATOR_NAME = 'atr'
         result = 1
-        if self.custom_info[pair] is not None and trade is not None:
+        if self.custom_info and pair in self.custom_info and trade:
             # using current_time directly (like below) will only work in backtesting/hyperopt.
             # in live / dry-run, it'll be really the current time
             relative_sl = None
