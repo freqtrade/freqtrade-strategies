@@ -47,7 +47,7 @@ class TrailingSL(IStrategy):
                     # so we need to get analyzed_dataframe from dp
                     dataframe, last_updated = self.dp.get_analyzed_dataframe(pair=pair,
                                                                              timeframe=self.timeframe)
-                    relative_sl = dataframe[last_updated][SL_INDICATOR_NAME]
+                    relative_sl = dataframe[SL_INDICATOR_NAME].iat[-1]
 
             if (relative_sl is not None):
                 # print("custom_stoploss().relative_sl: {}".format(relative_sl))
