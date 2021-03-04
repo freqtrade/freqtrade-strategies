@@ -63,7 +63,8 @@ class TrailingSL(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['atr'] = ta.ATR(dataframe)
-        self.custom_info[metadata['pair']] = dataframe[['date', 'atr']].copy().set_index('date')
+        if self.dp.runmode.value in ('backtest', 'hyperopt'):
+            self.custom_info[metadata['pair']] = dataframe[['date', 'atr']].copy().set_index('date')
         return dataframe
 
 
