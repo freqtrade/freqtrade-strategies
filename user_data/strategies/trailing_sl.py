@@ -34,14 +34,19 @@ class TrailingSL(IStrategy):
         SL_INDICATOR_NAME = 'atr'
         result = 1
         if self.custom_info[pair] is not None and trade is not None:
-            # using current_time directly (like below) will only work in backtesting.
-            # so check "runmode" to make sure that it's only used in backtesting
-            if(self.dp.runmode == RunMode.BACKTEST):
-              relative_sl = self.custom_info[pair].loc[current_time][SL_INDICATOR_NAME]
+            # using current_time directly (like below) will only work in backtesting/hyperopt.
             # in live / dry-run, it'll be really the current time
-            else:
-              # but we can just use the last entry to get the current value
-              relative_sl =  self.custom_info[pair][SL_INDICATOR_NAME].iloc[ -1 ]
+            if self.dp:
+                # backtesting/hyperopt
+                if self.dp.runmode.value in ('backtest', 'hyperopt'):
+                    relative_sl = self.custom_info[pair].loc[current_time][SL_INDICATOR_NAME]
+                # for live, dry-run, storing the dataframe is not really necessary, 
+                # it's available from get_analyzed_dataframe()
+                else:
+                    # so we need to get analyzed_dataframe from dp
+                    dataframe, last_updated = self.dp.get_analyzed_dataframe(pair=pair,
+                                                                             timeframe=self.timeframe)
+                    relative_sl = dataframe[last_updated][SL_INDICATOR_NAME]
 
             if (relative_sl is not None):
                 print("Custom SL: {}".format(relative_sl))
