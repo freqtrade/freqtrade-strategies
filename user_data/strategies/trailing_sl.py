@@ -36,11 +36,12 @@ class TrailingSL(IStrategy):
         if self.custom_info[pair] is not None and trade is not None:
             # using current_time directly (like below) will only work in backtesting/hyperopt.
             # in live / dry-run, it'll be really the current time
+            relative_sl = None
             if self.dp:
                 # backtesting/hyperopt
                 if self.dp.runmode.value in ('backtest', 'hyperopt'):
                     relative_sl = self.custom_info[pair].loc[current_time][SL_INDICATOR_NAME]
-                # for live, dry-run, storing the dataframe is not really necessary, 
+                # for live, dry-run, storing the dataframe is not really necessary,
                 # it's available from get_analyzed_dataframe()
                 else:
                     # so we need to get analyzed_dataframe from dp
@@ -49,13 +50,13 @@ class TrailingSL(IStrategy):
                     relative_sl = dataframe[last_updated][SL_INDICATOR_NAME]
 
             if (relative_sl is not None):
-                print("Custom SL: {}".format(relative_sl))
-                # new stoploss relative to current_rate
+                # print("custom_stoploss().relative_sl: {}".format(relative_sl))
+                # calculate new_stoploss relative to current_rate
                 new_stoploss = (current_rate-relative_sl)/current_rate
                 # turn into relative negative offset required by `custom_stoploss` return implementation
                 result = new_stoploss - 1
 
-        print("Result: {}".format(result))
+        # print("custom_stoploss() -> {}".format(result))
         return result
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
