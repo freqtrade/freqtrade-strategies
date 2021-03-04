@@ -47,6 +47,8 @@ class TrailingSL(IStrategy):
                     # so we need to get analyzed_dataframe from dp
                     dataframe, last_updated = self.dp.get_analyzed_dataframe(pair=pair,
                                                                              timeframe=self.timeframe)
+                    # only use .iat[-1] in live mode, otherwise you will look into the future
+                    # see: https://www.freqtrade.io/en/latest/strategy-customization/#common-mistakes-when-developing-strategies
                     relative_sl = dataframe[SL_INDICATOR_NAME].iat[-1]
 
             if (relative_sl is not None):
