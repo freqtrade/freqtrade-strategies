@@ -82,3 +82,12 @@ class CustomStoplossWithPSAR(IStrategy):
             'buy'] = 1
 
         return dataframe
+
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Placeholder Strategy: does nothing
+        Based on TA indicators, populates the sell signal for the given dataframe
+        :param dataframe: DataFrame
+        :return: DataFrame with buy column
+        """
+        return dataframe
