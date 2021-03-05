@@ -91,4 +91,6 @@ class CustomStoplossWithPSAR(IStrategy):
         :param dataframe: DataFrame
         :return: DataFrame with buy column
         """
+        # Deactivated sell signal to allow the strategy to work correctly
+        dataframe.loc[:, 'sell'] = 0
         return dataframe
