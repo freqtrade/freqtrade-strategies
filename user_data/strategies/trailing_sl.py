@@ -15,14 +15,13 @@ from datetime import datetime
 from freqtrade.persistence import Trade
 from freqtrade.state import RunMode
 
-class TrailingSL(IStrategy):
+class CustomStoplossWithPSAR(IStrategy):
     """
-    this is an abstract stump class, just implmenting `custom_stoploss`
-    you are supposed to inherit from it in your own strategy, e.g.:
+    this is an example class, implementing a PSAR based trailing stop loss
+    you are supposed to take the `custom_stoploss()` and `populate_indicators()`
+    parts and adapt it to your own strategy
 
-    # see example class at end of this file
-    class MyAwesomeStrategy(CustomStoploss):
-
+    the populate_buy_trend() function is pretty nonsencial
     """
 
     custom_info = {}
@@ -31,7 +30,6 @@ class TrailingSL(IStrategy):
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
 
-        SL_INDICATOR_NAME = 'atr'
         result = 1
         if self.custom_info and pair in self.custom_info and trade:
             # using current_time directly (like below) will only work in backtesting/hyperopt.
@@ -40,7 +38,7 @@ class TrailingSL(IStrategy):
             if self.dp:
                 # backtesting/hyperopt
                 if self.dp.runmode.value in ('backtest', 'hyperopt'):
-                    relative_sl = self.custom_info[pair].loc[current_time][SL_INDICATOR_NAME]
+                    relative_sl = self.custom_info[pair].loc[current_time]['sar']
                 # for live, dry-run, storing the dataframe is not really necessary,
                 # it's available from get_analyzed_dataframe()
                 else:
@@ -49,7 +47,7 @@ class TrailingSL(IStrategy):
                                                                              timeframe=self.timeframe)
                     # only use .iat[-1] in live mode, otherwise you will look into the future
                     # see: https://www.freqtrade.io/en/latest/strategy-customization/#common-mistakes-when-developing-strategies
-                    relative_sl = dataframe[SL_INDICATOR_NAME].iat[-1]
+                    relative_sl = dataframe['sar'].iat[-1]
 
             if (relative_sl is not None):
                 # print("custom_stoploss().relative_sl: {}".format(relative_sl))
@@ -62,7 +60,25 @@ class TrailingSL(IStrategy):
         return result
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe['atr'] = ta.ATR(dataframe)
+        dataframe['sar'] = ta.SAR(dataframe)
         if self.dp.runmode.value in ('backtest', 'hyperopt'):
-            self.custom_info[metadata['pair']] = dataframe[['date', 'atr']].copy().set_index('date')
+            self.custom_info[metadata['pair']] = dataframe[['date', 'sar']].copy().set_index('date')
+
+        # all "normal" indicators:
+        dataframe['rsi'] = ta.RSI(dataframe)
+        return dataframe
+
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Placeholder Strategy
+        Based on TA indicators, populates the buy signal for the given dataframe
+        :param dataframe: DataFrame
+        :return: DataFrame with buy column
+        """
+        dataframe.loc[
+            (
+                (dataframe['rsi'] < 30)
+            ),
+            'buy'] = 1
+
         return dataframe
