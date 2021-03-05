@@ -65,19 +65,20 @@ class CustomStoplossWithPSAR(IStrategy):
             self.custom_info[metadata['pair']] = dataframe[['date', 'sar']].copy().set_index('date')
 
         # all "normal" indicators:
-        dataframe['rsi'] = ta.RSI(dataframe)
+        # e.g.
+        # dataframe['rsi'] = ta.RSI(dataframe)
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Placeholder Strategy
+        Placeholder Strategy: buys when SAR is smaller then candle before
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
         :return: DataFrame with buy column
         """
         dataframe.loc[
             (
-                (dataframe['rsi'] < 30)
+                (dataframe['sar'] < dataframe['sar'].shift())
             ),
             'buy'] = 1
 
