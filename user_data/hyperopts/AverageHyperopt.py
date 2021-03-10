@@ -43,9 +43,11 @@ class AverageHyperopt(IHyperOpt):
             conditions = []
             # TRIGGERS
             if 'trigger' in params:
+                trigger = [int(item) for item in params['trigger'].split('-')]
+
                 conditions.append(qtpylib.crossed_above(
-                    dataframe[f"maShort({params['trigger'][0]})"],
-                    dataframe[f"maMedium({params['trigger'][1]})"])
+                    dataframe[f"maShort({trigger[0]})"],
+                    dataframe[f"maMedium({trigger[1]})"])
                     )
 
             # Check that volume is not 0
@@ -70,7 +72,7 @@ class AverageHyperopt(IHyperOpt):
             for medium in range(mediumRangeBegin, mediumRangeEnd):
                 # The output will be (short, long)
                 buyTriggerList.append(
-                    (short, medium)
+                    '{}-{}'.format(short, medium)
                 )
         return [
             Categorical(buyTriggerList, name='trigger')
@@ -90,10 +92,12 @@ class AverageHyperopt(IHyperOpt):
 
             # TRIGGERS
             if 'sell-trigger' in params:
+                trigger = [int(item) for item in params['sell-trigger'].split('-')]
+
                 conditions.append(qtpylib.crossed_above(
-                    dataframe[f"maMedium({params['sell-trigger'][1]})"],
-                    dataframe[f"maShort({params['sell-trigger'][0]})"])
-                    )
+                    dataframe[f"maMedium({trigger[1]})"],
+                    dataframe[f"maShort({trigger[0]})"])
+                )
 
             if conditions:
                 dataframe.loc[
@@ -114,7 +118,7 @@ class AverageHyperopt(IHyperOpt):
             for medium in range(mediumRangeBegin, mediumRangeEnd):
                 # The output will be (short, long)
                 sellTriggerList.append(
-                    (short, medium)
+                    '{}-{}'.format(short, medium)
                 )
 
         return [
