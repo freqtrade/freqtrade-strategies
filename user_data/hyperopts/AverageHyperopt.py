@@ -71,7 +71,7 @@ class AverageHyperopt(IHyperOpt):
         for short in range(shortRangeBegin, shortRangeEnd):
             for medium in range(mediumRangeBegin, mediumRangeEnd):
                 """
-				The output will be '{short}-{long}' so we can split it on the trigger
+                The output will be '{short}-{long}' so we can split it on the trigger
                 this will prevent an error on scikit-optimize not accepting tuples as
                 first argument to Categorical
                 """
@@ -120,8 +120,8 @@ class AverageHyperopt(IHyperOpt):
         sellTriggerList = []
         for short in range(shortRangeBegin, shortRangeEnd):
             for medium in range(mediumRangeBegin, mediumRangeEnd):
-				"""
-				The output will be '{short}-{long}' so we can split it on the trigger
+                """
+                The output will be '{short}-{long}' so we can split it on the trigger
                 this will prevent an error on scikit-optimize not accepting tuples as
                 first argument to Categorical
                 """
