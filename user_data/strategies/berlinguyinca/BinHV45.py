@@ -53,5 +53,5 @@ class BinHV45(IStrategy):
         """
         no sell signal
         """
-        dataframe[:, 'sell'] = 0
+        dataframe.loc[:, 'sell'] = 0
         return dataframe
