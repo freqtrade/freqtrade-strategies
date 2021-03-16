@@ -50,9 +50,7 @@ class FixedRiskRewardLoss(IStrategy):
             # using current_time/open_date directly via custom_info_pair[trade.open_daten]
             # would only work in backtesting/hyperopt.
             # in live/dry-run, we have to search for nearest row before it
-            timezone = custom_info_pair.index.tz
-            open_date = trade.open_date.replace(tzinfo=timezone)
-            open_date_mask = custom_info_pair.index.unique().get_loc(open_date, method='ffill')
+            open_date_mask = custom_info_pair.index.unique().get_loc(trade.open_date_utc, method='ffill')
             open_df = custom_info_pair.iloc[open_date_mask]
             initial_sl_abs = open_df['stoploss_rate']
 
