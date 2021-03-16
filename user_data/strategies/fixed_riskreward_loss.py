@@ -45,7 +45,7 @@ class FixedRiskRewardLoss(IStrategy):
             custom_stoploss using a risk/reward ratio
         """
         result = break_even_sl = takeprofit_sl = -1
-        custom_info_pair = self.custom_info[pair]
+        custom_info_pair = self.custom_info.get(pair)
         if custom_info_pair is not None:
             # using current_time/open_date directly via custom_info_pair[trade.open_daten]
             # would only work in backtesting/hyperopt.
