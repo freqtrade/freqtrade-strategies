@@ -52,6 +52,12 @@ class FixedRiskRewardLoss(IStrategy):
             # in live/dry-run, we have to search for nearest row before it
             open_date_mask = custom_info_pair.index.unique().get_loc(trade.open_date_utc, method='ffill')
             open_df = custom_info_pair.iloc[open_date_mask]
+
+            # trade might be open too long for us to find opening candle
+            if(len(open_df) != 1):
+                self.sell_profit = False # re-activate sell signal at any profit
+                return -1 # won't update current stoploss
+
             initial_sl_abs = open_df['stoploss_rate']
 
             # calculate initial stoploss at open_date
