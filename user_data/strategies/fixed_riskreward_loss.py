@@ -35,8 +35,6 @@ class FixedRiskRewardLoss(IStrategy):
     }
     use_custom_stoploss = True
     stoploss = -0.9
-    sell_profit_only = True
-    sell_profit_offset = 1 # 100%, get's set dynamically in trail
 
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
@@ -55,7 +53,6 @@ class FixedRiskRewardLoss(IStrategy):
 
             # trade might be open too long for us to find opening candle
             if(len(open_df) != 1):
-                self.sell_profit = False # re-activate sell signal at any profit
                 return -1 # won't update current stoploss
 
             initial_sl_abs = open_df['stoploss_rate']
@@ -86,9 +83,6 @@ class FixedRiskRewardLoss(IStrategy):
             if(current_profit >= take_profit_pct):
                 takeprofit_sl = take_profit_price_abs/current_rate-1
                 result = takeprofit_sl
-
-            # enable sell signal only after take_profit treshold is reached
-            self.sell_profit_offset = take_profit_pct
 
         return result
 
