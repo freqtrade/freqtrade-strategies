@@ -87,9 +87,8 @@ class FixedRiskRewardLoss(IStrategy):
         return result
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe['min'] = dataframe['low'].rolling(48).min()
         dataframe['atr'] = ta.ATR(dataframe)
-        dataframe['stoploss_rate'] = dataframe['min']-(dataframe['atr'])
+        dataframe['stoploss_rate'] = dataframe['close']-(dataframe['atr']*2)
         self.custom_info[metadata['pair']] = dataframe[['date', 'stoploss_rate']].copy().set_index('date')
 
         # all "normal" indicators:
@@ -116,6 +115,6 @@ class FixedRiskRewardLoss(IStrategy):
         :return: DataFrame with buy column
         """
 
-        # Always sells
-        dataframe.loc[:, 'sell'] = 1
+        # Never sells
+        dataframe.loc[:, 'sell'] = 0
         return dataframe
