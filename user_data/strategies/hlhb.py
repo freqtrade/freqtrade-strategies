@@ -32,10 +32,10 @@ class hlhb(IStrategy):
     stoploss = -0.3211,
 
     # Trailing stoploss
-    trailing_stop = "True",
-    trailing_stop_positive = 0.0117,
-    trailing_stop_positive_offset = 0.0186,
-    trailing_only_offset_is_reached = "True",
+    trailing_stop = True
+    trailing_stop_positive = 0.0117
+    trailing_stop_positive_offset = 0.0186
+    trailing_only_offset_is_reached = True
 
     # Optimal timeframe for the strategy.
     timeframe = '4h'
