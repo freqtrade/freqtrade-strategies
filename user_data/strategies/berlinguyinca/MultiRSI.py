@@ -1,6 +1,7 @@
 # --- Do not remove these libs ---
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
+from numpy import nan
 # --------------------------------
 import talib.abstract as ta
 from technical.util import resample_to_interval, resampled_merge
@@ -35,6 +36,10 @@ class MultiRSI(IStrategy):
         # resample our dataframes
         dataframe_short = resample_to_interval(dataframe, self.get_ticker_indicator() * 2)
         dataframe_long = resample_to_interval(dataframe, self.get_ticker_indicator() * 8)
+        if 'resample_8_rsi' not in dataframe.index:
+            dataframe['resample_8_rsi'] = nan
+        if 'resample_2_rsi' not in dataframe.index:
+            dataframe['resample_2_rsi'] = nan
 
         # compute our RSI's
         dataframe_short['rsi'] = ta.RSI(dataframe_short, timeperiod=14)
