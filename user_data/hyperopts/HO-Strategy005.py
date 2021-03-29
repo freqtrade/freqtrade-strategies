@@ -45,20 +45,17 @@ minusdiValueMax = 100
 fishRsiNormaValueMin = 1
 fishRsiNormaValueMax = 100
 
-class HODobby(IHyperOpt):
 
+class HODobby(IHyperOpt):
     """
-    If you trade on Binance then the API endopoint is "api.binance.com".
-    It's based in Tokyo. You can get a VPS in Tokyo on Vultr with 2ms latency.
-    I feel free to share my referral link (you get a bonus too):
-        > https://www.vultr.com/?ref=8806640
+    Hyperopt file for Strategy005
     """
-    
+
     ############### THIS STRATEGY IS DESIGNED FOR 5m TIMEFRAME ###############
-    
+
     @staticmethod
     def populate_indicators(dataframe: DataFrame, metadata: dict) -> DataFrame:
-        
+
         # MACD
         # tadoc.org/indicator/MACD.htm
         macd = ta.MACD(dataframe)
@@ -83,24 +80,24 @@ class HODobby(IHyperOpt):
         dataframe['fastd'] = stoch_fast['fastd']
         dataframe['fastk'] = stoch_fast['fastk']
 
-        # SAR 
+        # SAR
         dataframe['sar'] = ta.SAR(dataframe)
 
         # SMA
         dataframe['sma'] = ta.SMA(dataframe, timeperiod=50)
-            
+
         return dataframe
 
     @staticmethod
     def buy_strategy_generator(params: Dict[str, Any]) -> Callable:
-   
+
         def populate_buy_trend(dataframe: DataFrame, metadata: dict) -> DataFrame:
-        
+
             conditions = []
-                
+
             # TRIGGER and GUARD
             if 'buy-trigger' in params:
-                
+
                 conditions.append(dataframe['close'] > 0.00000200)
                 conditions.append(dataframe['volume'] > dataframe['volume'].rolling(params['volumeAVG-buy-value']).mean())
                 conditions.append(dataframe['close'] < dataframe['sma'])
@@ -108,7 +105,7 @@ class HODobby(IHyperOpt):
                 conditions.append(dataframe['fastd'] > dataframe['fastk'])
                 conditions.append(dataframe['fastd'] > params['fastd-buy-value'])
                 conditions.append(dataframe['fisher_rsi_norma'] < params['fishRsiNorma-buy-value'])
-                
+
             if conditions:
                 dataframe.loc[reduce(lambda x, y: x & y, conditions), 'buy'] = 1
 
@@ -118,9 +115,9 @@ class HODobby(IHyperOpt):
 
     @staticmethod
     def indicator_space() -> List[Dimension]:
-        
+
         buyTriggerList = ["True"]
-        
+
         return [
             Integer(volumeAvgValueMin, volumeAvgValueMax, name='volumeAVG-buy-value'),
             Integer(rsiValueMin, rsiValueMax, name='rsi-buy-value'),
@@ -133,24 +130,24 @@ class HODobby(IHyperOpt):
     def sell_strategy_generator(params: Dict[str, Any]) -> Callable:
 
         def populate_sell_trend(dataframe: DataFrame, metadata: dict) -> DataFrame:
-           
+
             # TRIGGERS and GUARDS
-            # Solving a mistery: Which sell trigger is better? 
+            # Solving a mistery: Which sell trigger is better?
             # The winner of both will be displayed in the output of the hyperopt.
-           
+
             conditions = []
-                 
+
             if 'sell-trigger' in params:
                 if params['sell-trigger'] == 'rsi-macd-minusdi':
                     conditions.append(qtpylib.crossed_above(dataframe['rsi'], params['rsi-sell-value']))
                     conditions.append(dataframe['macd'] < 0)
                     conditions.append(dataframe['minus_di'] > params['minusdi-sell-value'])
-                    
+
             if 'sell-trigger' in params:
                 if params['sell-trigger'] == 'sar-fisherRsi':
                     conditions.append(dataframe['sar'] > dataframe['close'])
                     conditions.append(dataframe['fisher_rsi'] > params['fishRsiNorma-sell-value'])
-                
+
             if conditions:
                 dataframe.loc[reduce(lambda x, y: x & y, conditions), 'sell'] = 1
 
@@ -160,9 +157,9 @@ class HODobby(IHyperOpt):
 
     @staticmethod
     def sell_indicator_space() -> List[Dimension]:
-       
+
         sellTriggerList = ["rsi-macd-minusdi", "sar-fisherRsi"]
-            
+
         return [
             Integer(rsiValueMin, rsiValueMax, name='rsi-sell-value'),
             Integer(minusdiValueMin, minusdiValueMax, name='minusdi-sell-value'),
