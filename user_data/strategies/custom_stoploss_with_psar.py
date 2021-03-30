@@ -15,6 +15,7 @@ from datetime import datetime
 from freqtrade.persistence import Trade
 from freqtrade.state import RunMode
 
+
 class CustomStoplossWithPSAR(IStrategy):
     """
     this is an example class, implementing a PSAR based trailing stop loss
@@ -23,7 +24,8 @@ class CustomStoplossWithPSAR(IStrategy):
 
     the populate_buy_trend() function is pretty nonsencial
     """
-
+    timeframe = '1h'
+    stoploss = -0.2
     custom_info = {}
     use_custom_stoploss = True
 
