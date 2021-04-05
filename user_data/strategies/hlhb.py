@@ -16,7 +16,7 @@ class hlhb(IStrategy):
 
     INTERFACE_VERSION = 2
 
-    position_stacking = "True",
+    position_stacking = "True"
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
@@ -25,11 +25,11 @@ class hlhb(IStrategy):
         "703": 0.2187,
         "2849": 0.0363,
         "5520": 0
-    },
+    }
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.3211,
+    stoploss = -0.3211
 
     # Trailing stoploss
     trailing_stop = True
