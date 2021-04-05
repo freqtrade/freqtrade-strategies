@@ -30,7 +30,7 @@ rsiSellVal = 88
     
 class SwingHighToSky(IStrategy):
 
-    ticker_interval = '15m'
+    timeframe = '15m'
     
     stoploss = -0.34338
     
