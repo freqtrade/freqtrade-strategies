@@ -41,38 +41,38 @@ class mabStra(IStrategy):
     trailing_stop = True
     trailing_stop_positive = 0.01573
     trailing_stop_positive_offset = 0.06651
-     trailing_only_offset_is_reached = True
-      # Optimal timeframe use it in your config
-      timeframe = '1h'
+    trailing_only_offset_is_reached = True
+    # Optimal timeframe use it in your config
+    timeframe = '1h'
 
-       def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-            # SMA - ex Moving Average
-            dataframe['buy-fastMA'] = ta.SMA(dataframe, timeperiod=FTF)
-            dataframe['buy-slowMA'] = ta.SMA(dataframe, timeperiod=STF)
-            dataframe['sell-fastMA'] = ta.SMA(dataframe, timeperiod=FTF)
-            dataframe['sell-slowMA'] = ta.SMA(dataframe, timeperiod=STF)
-            return dataframe
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        # SMA - ex Moving Average
+        dataframe['buy-fastMA'] = ta.SMA(dataframe, timeperiod=FTF)
+        dataframe['buy-slowMA'] = ta.SMA(dataframe, timeperiod=STF)
+        dataframe['sell-fastMA'] = ta.SMA(dataframe, timeperiod=FTF)
+        dataframe['sell-slowMA'] = ta.SMA(dataframe, timeperiod=STF)
+        return dataframe
 
-        def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
-            dataframe.loc[
-                (
-                    (dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
-                        > self.buy_params['buy-div-min']) &
-                    (dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
-                        < self.buy_params['buy-div-max'])
-                ),
-                'buy'] = 1
+        dataframe.loc[
+            (
+                (dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
+                    > self.buy_params['buy-div-min']) &
+                (dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
+                    < self.buy_params['buy-div-max'])
+            ),
+            'buy'] = 1
 
-            return dataframe
+        return dataframe
 
-        def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-            dataframe.loc[
-                (
-                    (dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
-                        > self.sell_params['sell-div-min']) &
-                    (dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
-                        < self.sell_params['sell-div-max'])
-                ),
-                'sell'] = 1
-            return dataframe
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            (
+                (dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
+                    > self.sell_params['sell-div-min']) &
+                (dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
+                    < self.sell_params['sell-div-max'])
+            ),
+            'sell'] = 1
+        return dataframe
