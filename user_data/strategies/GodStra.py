@@ -1,11 +1,6 @@
 # GodStra Strategy
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# IMPORTANT:Add to your pairlists inside config.json (Under StaticPairList):
-#   {
-#       "method": "AgeFilter",
-#       "min_days_listed": 30
-#   },
 # IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
 # IMPORTANT: Use Smallest "max_open_trades" for getting best results inside config.json
 
@@ -73,14 +68,14 @@ class GodStra(IStrategy):
     trailing_only_offset_is_reached = True
     # Buy hypers
     timeframe = '12h'
-    print('Add {\n\t"method": "AgeFilter",\n\t"min_days_listed": 30\n},\n to your pairlists in config (Under StaticPairList)')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
-        dataframe = dropna(dataframe)
+        # dataframe = dropna(dataframe)
         dataframe = add_all_ta_features(
-            dataframe, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
+            dataframe, open="open", high="high", low="low", close="close", volume="volume", fillna=False)
         # dataframe.to_csv("df.csv", index=True)
+        print(metadata['pair'])
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
