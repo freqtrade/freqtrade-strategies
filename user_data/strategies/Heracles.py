@@ -5,7 +5,7 @@
 # IMPORTANT:Add to your pairlists inside config.json (Under StaticPairList):
 #   {
 #       "method": "AgeFilter",
-#       "min_days_listed": 30
+#       "min_days_listed": 70
 #   },
 # IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
 # ######################################################################
