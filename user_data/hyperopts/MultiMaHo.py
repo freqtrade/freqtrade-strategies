@@ -99,7 +99,7 @@ class MultiMaHo(IHyperOpt):
                             dataframe[f'sell-ma-{i}'].shift(shift) < dataframe[f'sell-ma-{i-1}'].shift(shift))
             if conditions:
                 dataframe.loc[
-                    reduce(lambda x, y: x | y, conditions),
+                    reduce(lambda x, y: x & y, conditions),
                     'sell'] = 1
 
             return dataframe
