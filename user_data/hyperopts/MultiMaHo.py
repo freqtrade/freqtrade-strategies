@@ -96,7 +96,7 @@ class MultiMaHo(IHyperOpt):
                 if i > 1:
                     for shift in range(params['sell-ma-shift']):
                         conditions.append(
-                            dataframe[f'sell-ma-{i}'].shift(shift) > dataframe[f'sell-ma-{i-1}'].shift(shift))
+                            dataframe[f'sell-ma-{i}'].shift(shift) < dataframe[f'sell-ma-{i-1}'].shift(shift))
             if conditions:
                 dataframe.loc[
                     reduce(lambda x, y: x | y, conditions),
