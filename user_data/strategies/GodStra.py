@@ -1,7 +1,6 @@
 # GodStra Strategy
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# hyperopt befour run
 # --- Do not remove these libs ---
 import logging
 
@@ -22,7 +21,7 @@ from functools import reduce
 import numpy as np
 
 
-tplist = [7, 14]
+tplist = [7, 14, 28]
 GodGeneIndicators = ['ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
                      'AROON', 'AROONOSC', 'ASIN', 'ATAN', 'ATR', 'AVGPRICE', 'BBANDS', 'BETA',
                      'BOP', 'CCI', 'CDL2CROWS', 'CDL3BLACKCROWS', 'CDL3INSIDE', 'CDL3LINESTRIKE',
@@ -56,7 +55,7 @@ GodGeneIndicators = ['ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
 
 class GodStra(IStrategy):
     # 62/500:    300 trades. 270/14/16 Wins/Draws/Losses. Avg profit   4.15%. Median profit   3.23%. Total profit  0.13750577 BTC ( 1244.80Σ%). Avg duration 2408.8 min. Objective: -96.12528
-    
+
     # Buy hyperspace params:
     buy_params = {
         'buy-cross-0': 'CDLSPINNINGTOP-14',
@@ -114,7 +113,7 @@ class GodStra(IStrategy):
                 if type(res) == pd.core.series.Series and gene != 'MAVP':
                     dataframe[f'{gene}-{tp}'] = res
                 else:
-                    for idx, df in enumerate(res):
+                    for idx in range(len(res.keys())):
                         dataframe[f'{gene}{idx}-{tp}'] = res.iloc[:, idx]
 
         print(metadata['pair'])
