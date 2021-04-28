@@ -1,9 +1,7 @@
 # GodStra Strategy
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
-# IMPORTANT: Use Smallest "max_open_trades" for getting best results inside config.json
-
+# hyperopt befour run
 # --- Do not remove these libs ---
 import logging
 
@@ -57,21 +55,39 @@ GodGeneIndicators = ['ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
 
 
 class GodStra(IStrategy):
+    # 62/500:    300 trades. 270/14/16 Wins/Draws/Losses. Avg profit   4.15%. Median profit   3.23%. Total profit  0.13750577 BTC ( 1244.80Σ%). Avg duration 2408.8 min. Objective: -96.12528
+    
     # Buy hyperspace params:
     buy_params = {
+        'buy-cross-0': 'CDLSPINNINGTOP-14',
+        'buy-indicator-0': 'MAMA1-14',
+        'buy-int-0': 100,
+        'buy-oper-0': '<I',
+        'buy-real-0': -0.97467
     }
 
     # Sell hyperspace params:
     sell_params = {
+        'sell-cross-0': 'RSI-7',
+        'sell-indicator-0': 'CDLHAMMER-7',
+        'sell-int-0': 86,
+        'sell-oper-0': '=R',
+        'sell-real-0': 0.27656
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.3556,
-        "4818": 0.21275,
-        "6395": 0.09024,
-        "22372": 0
+        "0": 0.25707,
+        "1415": 0.19249,
+        "3356": 0.12085,
+        "8420": 0
     }
+
+    # Trailing stop:
+    trailing_stop = True
+    trailing_stop_positive = 0.02803
+    trailing_stop_positive_offset = 0.04082
+    trailing_only_offset_is_reached = False
 
     # Stoploss:
     stoploss = -1
