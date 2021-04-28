@@ -3,7 +3,8 @@
 # github: https://github.com/mablue/
 # IMPORTANT: INSTALL TA BEFOUR RUN:
 # :~$ pip install ta
-# freqtrade hyperopt --hyperopt GodStraHo --hyperopt-loss SharpeHyperOptLossDaily --gene all --strategy GodStra --config config.json -e 100
+# IMPORTANT: Hyperopt without stoploss space to find the best strategy.
+# freqtrade hyperopt --hyperopt GodStraHo --hyperopt-loss SharpeHyperOptLossDaily --spaces buy sell roi trailing --strategy GodStra --config config.json -e 100
 
 # --- Do not remove these libs ---
 from functools import reduce
