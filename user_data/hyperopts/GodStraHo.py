@@ -1,8 +1,6 @@
 # GodStra Strategy Hyperopt
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# IMPORTANT: INSTALL TA BEFOUR RUN:
-# :~$ pip install ta
 # IMPORTANT: Hyperopt without stoploss space to find the best strategy.
 # freqtrade hyperopt --hyperopt GodStraHo --hyperopt-loss SharpeHyperOptLossDaily --spaces buy sell roi trailing --strategy GodStra --config config.json -e 100
 
