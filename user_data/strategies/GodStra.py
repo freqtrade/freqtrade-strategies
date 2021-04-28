@@ -10,44 +10,59 @@ import logging
 from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
+
 # --------------------------------
 
 # Add your lib to import here
-# import talib.abstract as ta
+# TODO: talib is fast but have not more indicators
+import talib.abstract as ta
+# TODO: ta library is not speedy!
+# from ta import add_all_ta_features, add_trend_ta, add_volatility_ta
 import pandas as pd
-# import talib.abstract as ta
-from ta import add_all_ta_features
-from ta.utils import dropna
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
 
 
-class GodStra(IStrategy):
-    # 5/66:      9 trades. 8/0/1 Wins/Draws/Losses. Avg profit  21.83%. Median profit  35.52%. Total profit  1060.11476586 USDT ( 196.50Σ%). Avg duration 3440.0 min. Objective: -7.06960
-    # +--------+---------+----------+------------------+--------------+-------------------------------+----------------+-------------+
-    # |   Best |   Epoch |   Trades |    Win Draw Loss |   Avg profit |                        Profit |   Avg duration |   Objective |
-    # |--------+---------+----------+------------------+--------------+-------------------------------+----------------+-------------|
-    # | * Best |   1/500 |       11 |      2    1    8 |        5.22% |  280.74230393 USDT   (57.40%) |      2,421.8 m |    -2.85206 |
-    # | * Best |   2/500 |       10 |      7    0    3 |       18.76% |  983.46414442 USDT  (187.58%) |        360.0 m |    -4.32665 |
-    # | * Best |   5/500 |        9 |      8    0    1 |       21.83% | 1,060.11476586 USDT  (196.50%) |      3,440.0 m |     -7.0696 |
+tplist = [7, 14]
+GodGeneIndicators = ['ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
+                     'AROON', 'AROONOSC', 'ASIN', 'ATAN', 'ATR', 'AVGPRICE', 'BBANDS', 'BETA',
+                     'BOP', 'CCI', 'CDL2CROWS', 'CDL3BLACKCROWS', 'CDL3INSIDE', 'CDL3LINESTRIKE',
+                     'CDL3OUTSIDE', 'CDL3STARSINSOUTH', 'CDL3WHITESOLDIERS', 'CDLABANDONEDBABY',
+                     'CDLADVANCEBLOCK', 'CDLBELTHOLD', 'CDLBREAKAWAY', 'CDLCLOSINGMARUBOZU',
+                     'CDLCONCEALBABYSWALL', 'CDLCOUNTERATTACK', 'CDLDARKCLOUDCOVER', 'CDLDOJI',
+                     'CDLDOJISTAR', 'CDLDRAGONFLYDOJI', 'CDLENGULFING', 'CDLEVENINGDOJISTAR',
+                     'CDLEVENINGSTAR', 'CDLGAPSIDESIDEWHITE', 'CDLGRAVESTONEDOJI', 'CDLHAMMER',
+                     'CDLHANGINGMAN', 'CDLHARAMI', 'CDLHARAMICROSS', 'CDLHIGHWAVE', 'CDLHIKKAKE',
+                     'CDLHIKKAKEMOD', 'CDLHOMINGPIGEON', 'CDLIDENTICAL3CROWS', 'CDLINNECK',
+                     'CDLINVERTEDHAMMER', 'CDLKICKING', 'CDLKICKINGBYLENGTH', 'CDLLADDERBOTTOM',
+                     'CDLLONGLEGGEDDOJI', 'CDLLONGLINE', 'CDLMARUBOZU', 'CDLMATCHINGLOW',
+                     'CDLMATHOLD', 'CDLMORNINGDOJISTAR', 'CDLMORNINGSTAR', 'CDLONNECK',
+                     'CDLPIERCING', 'CDLRICKSHAWMAN', 'CDLRISEFALL3METHODS', 'CDLSEPARATINGLINES',
+                     'CDLSHOOTINGSTAR', 'CDLSHORTLINE', 'CDLSPINNINGTOP', 'CDLSTALLEDPATTERN',
+                     'CDLSTICKSANDWICH', 'CDLTAKURI', 'CDLTASUKIGAP', 'CDLTHRUSTING', 'CDLTRISTAR',
+                     'CDLUNIQUE3RIVER', 'CDLUPSIDEGAP2CROWS', 'CDLXSIDEGAP3METHODS', 'CEIL', 'CMO',
+                     'CORREL', 'COS', 'COSH', 'DEMA', 'DIV', 'DX', 'EMA', 'EXP', 'FLOOR',
+                     'HT_DCPERIOD', 'HT_DCPHASE', 'HT_PHASOR', 'HT_SINE', 'HT_TRENDLINE',
+                     'HT_TRENDMODE', 'KAMA', 'LINEARREG', 'LINEARREG_ANGLE', 'LINEARREG_INTERCEPT',
+                     'LINEARREG_SLOPE', 'LN', 'LOG10', 'MA', 'MACD', 'MACDEXT', 'MACDFIX',
+                     'MAMA', 'MAX', 'MAXINDEX', 'MEDPRICE', 'MFI', 'MIDPOINT', 'MIDPRICE',
+                     'MIN', 'MININDEX', 'MINMAX', 'MINMAXINDEX', 'MINUS_DI', 'MINUS_DM', 'MOM',
+                     'MULT', 'NATR', 'OBV', 'PLUS_DI', 'PLUS_DM', 'PPO', 'ROC', 'ROCP', 'ROCR',
+                     'ROCR100', 'RSI', 'SAR', 'SAREXT', 'SIN', 'SINH', 'SMA', 'SQRT', 'STDDEV',
+                     'STOCH', 'STOCHF', 'STOCHRSI', 'SUB', 'SUM', 'T3', 'TAN', 'TANH', 'TEMA',
+                     'TRANGE', 'TRIMA', 'TRIX', 'TSF', 'TYPPRICE', 'ULTOSC', 'VAR', 'WCLPRICE',
+                     'WILLR', 'WMA']
+#  TODO: this gene is removed 'MAVP' cuz or error on periods
 
+
+class GodStra(IStrategy):
     # Buy hyperspace params:
     buy_params = {
-        'buy-cross-0': 'volatility_kcc',
-        'buy-indicator-0': 'trend_ichimoku_base',
-        'buy-int-0': 42,
-        'buy-oper-0': '<R',
-        'buy-real-0': 0.06295
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'sell-cross-0': 'volume_mfi',
-        'sell-indicator-0': 'trend_kst_diff',
-        'sell-int-0': 98,
-        'sell-oper-0': '=R',
-        'sell-real-0': 0.8779
     }
 
     # ROI table:
@@ -59,29 +74,39 @@ class GodStra(IStrategy):
     }
 
     # Stoploss:
-    stoploss = -0.34549
-
-    # Trailing stop:
-    trailing_stop = True
-    trailing_stop_positive = 0.22673
-    trailing_stop_positive_offset = 0.2684
-    trailing_only_offset_is_reached = True
+    stoploss = -1
     # Buy hypers
-    timeframe = '12h'
+    timeframe = '4h'
+
+    # devided to 5: Cuz We have 5 Group of
+    # variables inside buy_param:
+    # (cross, indicator, int, oper, real)
+    Buy_DNA_Size = int(len(buy_params)/5)
+    Sell_DNA_Size = int(len(sell_params)/5)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
-        # dataframe = dropna(dataframe)
-        dataframe = add_all_ta_features(
-            dataframe, open="open", high="high", low="low", close="close", volume="volume", fillna=False)
-        # dataframe.to_csv("df.csv", index=True)
+
+        for gene in GodGeneIndicators:
+            for tp in tplist:
+                # print(gene)
+                res = getattr(ta, gene)(
+                    dataframe,
+                    timeperiod=tp,
+                )
+                # TODO: fix MAVP error
+                if type(res) == pd.core.series.Series and gene != 'MAVP':
+                    dataframe[f'{gene}-{tp}'] = res
+                else:
+                    for idx, df in enumerate(res):
+                        dataframe[f'{gene}{idx}-{tp}'] = res.iloc[:, idx]
+
         print(metadata['pair'])
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = list()
-        # /5: Cuz We have 5 Group of variables inside buy_param
-        for i in range(int(len(self.buy_params)/5)):
+        for i in range(self.Buy_DNA_Size):
 
             OPR = self.buy_params[f'buy-oper-{i}']
             IND = self.buy_params[f'buy-indicator-{i}']
@@ -114,16 +139,16 @@ class GodStra(IStrategy):
             elif OPR == "<R":
                 conditions.append(DFIND < REAL)
 
-        print(conditions)
-        dataframe.loc[
-            reduce(lambda x, y: x & y, conditions),
-            'buy'] = 1
+        if self.Buy_DNA_Size > 0:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'buy'] = 1
 
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = list()
-        for i in range(int(len(self.sell_params)/5)):
+        for i in range(self.Sell_DNA_Size):
             OPR = self.sell_params[f'sell-oper-{i}']
             IND = self.sell_params[f'sell-indicator-{i}']
             CRS = self.sell_params[f'sell-cross-{i}']
@@ -155,8 +180,9 @@ class GodStra(IStrategy):
             elif OPR == "<R":
                 conditions.append(DFIND < REAL)
 
-        dataframe.loc[
-            reduce(lambda x, y: x & y, conditions),
-            'sell'] = 1
+        if self.Sell_DNA_Size > 0:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'sell'] = 1
 
         return dataframe
