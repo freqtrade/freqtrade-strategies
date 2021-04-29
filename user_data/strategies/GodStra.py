@@ -50,6 +50,7 @@ GodGeneIndicators = ['ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
                      'STOCH', 'STOCHF', 'STOCHRSI', 'SUB', 'SUM', 'T3', 'TAN', 'TANH', 'TEMA',
                      'TRANGE', 'TRIMA', 'TRIX', 'TSF', 'TYPPRICE', 'ULTOSC', 'VAR', 'WCLPRICE',
                      'WILLR', 'WMA']
+
 #  TODO: this gene is removed 'MAVP' cuz or error on periods
 
 
@@ -58,20 +59,20 @@ class GodStra(IStrategy):
 
     # Buy hyperspace params:
     buy_params = {
-        'buy-cross-0': 'CDLSPINNINGTOP-14',
-        'buy-indicator-0': 'MAMA1-14',
-        'buy-int-0': 100,
-        'buy-oper-0': '<I',
-        'buy-real-0': -0.97467
+        # 'buy-cross-0': 'CDLSPINNINGTOP-14',
+        # 'buy-indicator-0': 'MAMA1-14',
+        # 'buy-int-0': 100,
+        # 'buy-oper-0': '<I',
+        # 'buy-real-0': -0.97467
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'sell-cross-0': 'RSI-7',
-        'sell-indicator-0': 'CDLHAMMER-7',
-        'sell-int-0': 86,
-        'sell-oper-0': '=R',
-        'sell-real-0': 0.27656
+        # 'sell-cross-0': 'RSI-7',
+        # 'sell-indicator-0': 'CDLHAMMER-7',
+        # 'sell-int-0': 86,
+        # 'sell-oper-0': '=R',
+        # 'sell-real-0': 0.27656
     }
 
     # ROI table:
@@ -88,8 +89,63 @@ class GodStra(IStrategy):
     trailing_stop_positive_offset = 0.04082
     trailing_only_offset_is_reached = False
 
+    # ##################################################################
+    # 60/168:   2873 trades. 2734/41/98 Wins/Draws/Losses. Avg profit   3.84 % . Median profit   2.23 % . Total profit  0.35693811 BTC (11021.90Σ %). Avg duration 1396.6 min. Objective: -536.74376
+
+    # Buy hyperspace params:
+    buy_params = {
+        'buy-cross-0': 'MACDFIX0-14',
+        'buy-cross-1': 'ROCR100-7',
+        'buy-cross-2': 'CCI-28',
+        'buy-indicator-0': 'WCLPRICE-28',
+        'buy-indicator-1': 'BBANDS1-7',
+        'buy-indicator-2': 'AD-7',
+        'buy-int-0': 100,
+        'buy-int-1': -1,
+        'buy-int-2': 4,
+        'buy-oper-0': '>R',
+        'buy-oper-1': '<R',
+        'buy-oper-2': '<I',
+        'buy-real-0': -0.19368,
+        'buy-real-1': 0.00088,
+        'buy-real-2': -0.72783
+    }
+
+    # Sell hyperspace params:
+    sell_params = {
+        'sell-cross-0': 'STOCH1-28',
+        'sell-cross-1': 'ROC-28',
+        'sell-cross-2': 'CDLDOJI-7',
+        'sell-indicator-0': 'MIDPOINT-14',
+        'sell-indicator-1': 'CDLTRISTAR-14',
+        'sell-indicator-2': 'CDLSEPARATINGLINES-28',
+        'sell-int-0': 98,
+        'sell-int-1': 90,
+        'sell-int-2': 88,
+        'sell-oper-0': '<',
+        'sell-oper-1': '>I',
+        'sell-oper-2': '>R',
+        'sell-real-0': 0.53165,
+        'sell-real-1': 0.35276,
+        'sell-real-2': 0.03242
+    }
+
+    # ROI table:
+    minimal_roi = {
+        "0": 0.67238,
+        "843": 0.14465,
+        "3466": 0.11295,
+        "6682": 0
+    }
+
+    # Trailing stop:
+    trailing_stop = True
+    trailing_stop_positive = 0.01579
+    trailing_stop_positive_offset = 0.01683
+    trailing_only_offset_is_reached = True
+    # ##################################################################
     # Stoploss:
-    stoploss = -1
+    stoploss = -0.1
     # Buy hypers
     timeframe = '4h'
 
@@ -101,20 +157,25 @@ class GodStra(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
-
         for gene in GodGeneIndicators:
-            for tp in tplist:
-                # print(gene)
-                res = getattr(ta, gene)(
-                    dataframe,
-                    timeperiod=tp,
-                )
-                # TODO: fix MAVP error
-                if type(res) == pd.core.series.Series and gene != 'MAVP':
-                    dataframe[f'{gene}-{tp}'] = res
-                else:
-                    for idx in range(len(res.keys())):
-                        dataframe[f'{gene}{idx}-{tp}'] = res.iloc[:, idx]
+            condition = True
+
+            # enable this line if you are not in hyperopt, for ultra Speedup the algorythm.
+            # condition = gene in str(self.buy_params.values())+str(self.sell_params.values())
+
+            if condition:
+                for tp in tplist:
+                    # print(gene)
+                    res = getattr(ta, gene)(
+                        dataframe,
+                        timeperiod=tp,
+                    )
+                    # TODO: fix MAVP error
+                    if type(res) == pd.core.series.Series and gene != 'MAVP':
+                        dataframe[f'{gene}-{tp}'] = res
+                    else:
+                        for idx in range(len(res.keys())):
+                            dataframe[f'{gene}{idx}-{tp}'] = res.iloc[:, idx]
 
         print(metadata['pair'])
         return dataframe
