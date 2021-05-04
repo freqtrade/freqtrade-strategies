@@ -1,5 +1,6 @@
-# by: Mablue (Masoud Azizi)
-
+# Author: @Mablue (Masoud Azizi)
+# github: https://github.com/mablue/
+# freqtrade hyperopt --hyperopt mabStraHo --hyperopt-loss SharpeHyperOptLoss --spaces all --strategy mabStra --config config.json -e 100
 # --- Do not remove these libs ---
 from functools import reduce
 from typing import Any, Callable, Dict, List
@@ -25,8 +26,10 @@ class mabStraHo(IHyperOpt):
         Define your Hyperopt space for searching buy strategy parameters.
         """
         return [
-            Real(0, 1, name='buy-div-min'),
-            Real(0, 1, name='buy-div-max'),
+            # (will between 0~1 )+ 0.1variance
+            Real(0, 5, name='buy-div-min'),
+            Real(0, 5, name='buy-div-max'),
+
         ]
 
     @staticmethod
@@ -43,6 +46,10 @@ class mabStraHo(IHyperOpt):
 
             # div result limited to 0~1 so allways in buy position slowMa is lower than fastMa
             # optimum number will calculate by this two lines
+            conditions.append(dataframe['buy-mojoMA'].div(dataframe['buy-fastMA'])
+                              > params['buy-div-min'])
+            conditions.append(dataframe['buy-mojoMA'].div(dataframe['buy-fastMA'])
+                              < params['buy-div-max'])
             conditions.append(dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
                               > params['buy-div-min'])
             conditions.append(dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
@@ -63,8 +70,8 @@ class mabStraHo(IHyperOpt):
         Define your Hyperopt space for searching sell strategy parameters.
         """
         return [
-            Real(0, 1, name='sell-div-min'),
-            Real(0, 1, name='sell-div-max'),
+            Real(0, 5, name='sell-div-min'),
+            Real(0, 5, name='sell-div-max'),
         ]
 
     @staticmethod
@@ -79,7 +86,10 @@ class mabStraHo(IHyperOpt):
             conditions = []
 
             # GUARDS AND TRENDS
-
+            conditions.append(dataframe['sell-fastMA'].div(dataframe['sell-mojoMA'])
+                              > params['sell-div-min'])
+            conditions.append(dataframe['buy-fastMA'].div(dataframe['sell-mojoMA'])
+                              < params['sell-div-max'])
             conditions.append(dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
                               > params['sell-div-min'])
             conditions.append(dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
