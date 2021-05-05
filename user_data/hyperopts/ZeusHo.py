@@ -40,8 +40,8 @@ class ZeusHo(IHyperOpt):
         """
         gene = list()
         # Operations
-        gene.append(Integer(-100, 100, name='buy-real-0'))
-        gene.append(Categorical([">I", "=I", "<I"], name='buy-oper-0'))
+        gene.append(Real(-1, 1, name='buy-real-0'))
+        gene.append(Categorical([">R", "=R", "<R"], name='buy-oper-0'))
         return gene
 
     @staticmethod
@@ -61,11 +61,11 @@ class ZeusHo(IHyperOpt):
 
             DFIND = dataframe[IND]
 
-            if OPR == ">I":
+            if OPR == ">R":
                 conditions.append(DFIND > REAL)
-            elif OPR == "=I":
+            elif OPR == "=R":
                 conditions.append(np.isclose(DFIND, REAL))
-            elif OPR == "<I":
+            elif OPR == "<R":
                 conditions.append(DFIND < REAL)
 
             if conditions:
@@ -84,8 +84,8 @@ class ZeusHo(IHyperOpt):
         """
         gene = list()
         # Operations
-        gene.append(Integer(-100, 100, name='sell-real-0'))
-        gene.append(Categorical([">I", "=I", "<I"], name='sell-oper-0'))
+        gene.append(Real(-1, 1, name='sell-real-0'))
+        gene.append(Categorical([">R", "=R", "<R"], name='sell-oper-0'))
         return gene
 
     @ staticmethod
@@ -104,11 +104,11 @@ class ZeusHo(IHyperOpt):
             REAL = params['sell-real-0']
             DFIND = dataframe[IND]
 
-            if OPR == ">I":
+            if OPR == ">R":
                 conditions.append(DFIND > REAL)
-            elif OPR == "=I":
+            elif OPR == "=R":
                 conditions.append(np.isclose(DFIND, REAL))
-            elif OPR == "<I":
+            elif OPR == "<R":
                 conditions.append(DFIND < REAL)
 
             if conditions:
