@@ -20,9 +20,10 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from random import randint
 # this is your trading strategy DNA Size
 # you can change it and see the results...
-DNA_SIZE = 1
-SELL_DNA_SIZE = 1
-tplist = [5, 10, 50, 100]
+DNA_SIZE = 2
+SELL_DNA_SIZE = 2
+# This will be same as tplist in GodStraHo.py
+tplist = [7, 14]
 GodGeneIndicators = [
     'ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
     'AROON0', 'AROON1', 'AROONOSC', 'ASIN', 'ATAN', 'ATR', 'AVGPRICE',
@@ -48,7 +49,9 @@ GodGeneIndicators = [
     'HT_TRENDMODE', 'KAMA', 'LINEARREG', 'LINEARREG_ANGLE', 'LINEARREG_INTERCEPT',
     'LINEARREG_SLOPE', 'LN', 'LOG10', 'MA',
     'MACD0', 'MACD1', 'MACD2', 'MACDEXT0', 'MACDEXT1', 'MACDEXT2',
-    'MACDFIX0', 'MACDFIX1', 'MACDFIX2', 'MAMA0', 'MAMA1',
+    'MACDFIX0', 'MACDFIX1', 'MACDFIX2',
+    # 'MAVP',
+    'MAMA0', 'MAMA1',
     'MAX', 'MAXINDEX', 'MEDPRICE', 'MFI', 'MIDPOINT', 'MIDPRICE',
     'MIN', 'MININDEX', 'MINMAX0', 'MINMAX1', 'MINMAXINDEX0', 'MINMAXINDEX1',
     'MINUS_DI', 'MINUS_DM', 'MOM',
@@ -59,7 +62,14 @@ GodGeneIndicators = [
     'TRANGE', 'TRIMA', 'TRIX', 'TSF', 'TYPPRICE', 'ULTOSC', 'VAR', 'WCLPRICE',
     'WILLR', 'WMA'
 ]
-
+# This will be same as tplist in GodStra.py
+# If you need aroon just add here ['AROON0', 'AROON1'] in GodStraHo,
+# And add just ['AROON'] in GodStra.py
+# Cuz some indicators returns more than one number in ta-lib.
+# Examples:
+# GodGeneIndicators = ['RSI', 'MFI', 'AROON0', 'AROON1', 'SMA']
+# GodGeneIndicators = ['BBANDS0', 'BBANDS1', 'BBANDS2']
+# GodGeneIndicators = ['FLOOR']
 
 GodGenes = list()
 
@@ -82,7 +92,7 @@ class GodStraHo(IHyperOpt):
         for i in range(DNA_SIZE):
             gene.append(Categorical(GodGenes, name=f'buy-indicator-{i}'))
             gene.append(Categorical(GodGenes, name=f'buy-cross-{i}'))
-            gene.append(Real(-1, 1, name=f'buy-real-{i}'))
+            gene.append(Real(-0.1, 1.1, name=f'buy-real-{i}'))
             # Operations
             # CA: Crossed Above, CB: Crossed Below,
             # R: Real, D: Disabled
@@ -155,7 +165,7 @@ class GodStraHo(IHyperOpt):
         for i in range(SELL_DNA_SIZE):
             gene.append(Categorical(GodGenes, name=f'sell-indicator-{i}'))
             gene.append(Categorical(GodGenes, name=f'sell-cross-{i}'))
-            gene.append(Real(-1, 1, name=f'sell-real-{i}'))
+            gene.append(Real(-0.1, 1.1, name=f'sell-real-{i}'))
             # Operations
             # CA: Crossed Above, CB: Crossed Below,
             # R: Real, D: Disabled
