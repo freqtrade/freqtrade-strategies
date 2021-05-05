@@ -29,31 +29,41 @@ import numpy as np
 
 
 class Zeus(IStrategy):
-
-    # 64/100:     29 trades. 22/4/3 Wins/Draws/Losses. Avg profit  11.09%. Median profit  10.52%. Total profit  12.90910475 BNB ( 321.58Σ%). Avg duration 3533.8 min. Objective: -11.62011
+    # +--------+-------------+----------+------------------+--------------+-------------------------------+----------------+-------------+
+    # |   Best |       Epoch |   Trades |    Win Draw Loss |   Avg profit |                        Profit |   Avg duration |   Objective |
+    # |--------+-------------+----------+------------------+--------------+-------------------------------+----------------+-------------|
+    # | * Best |     3/10000 |      173 |     85   81    7 |        3.01% |  620.75905077 USDT  (520.87%) |      2,888.3 m |    -40.2497 |
+    # | * Best |     5/10000 |      191 |    103   78   10 |        2.86% |  750.69797015 USDT  (547.02%) |      2,675.5 m |    -60.2058 |
+    # | * Best |     7/10000 |      194 |    107   80    7 |        3.41% | 1,175.92643785 USDT  (661.67%) |      2,576.3 m |     -62.129 |
+    # | * Best |    13/10000 |      191 |    104   78    9 |        3.07% |  767.17774276 USDT  (586.41%) |      2,676.1 m |    -64.2776 |
+    # | * Best |    20/10000 |      395 |    279  108    8 |        3.94% | 4,750.85816781 USDT (1,558.19%) |      1,238.4 m |    -121.725 |
+    # [Epoch 33 of 10000 (  0%)] |/                                                              | [ETA:   2:56:10, Elapsed Time: 0:00:34]^C
+    # User interrupted..
+    # Best result:
+    # *   20/10000:    395 trades. 279/108/8 Wins/Draws/Losses. Avg profit   3.94%. Median profit   2.52%. Total profit  4750.85816781 USDT ( 1558.19Σ%). Avg duration 1238.4 min. Objective: -121.72542
 
     # Buy hyperspace params:
     buy_params = {
-        'buy-oper-0': '<R', 'buy-real-0': 95
+        'buy-oper-0': '<R', 'buy-real-0': 0.95244
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'sell-oper-0': '<R', 'sell-real-0': -67
+        'sell-oper-0': '=R', 'sell-real-0': 0.29348
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.35113,
-        "1035": 0.19467,
-        "1917": 0.1116,
-        "7190": 0
+        "0": 0.50334,
+        "282": 0.1246,
+        "552": 0.02526,
+        "1100": 0
     }
 
     # Trailing stop:
     trailing_stop = True
-    trailing_stop_positive = 0.01661
-    trailing_stop_positive_offset = 0.08806
+    trailing_stop_positive = 0.05256
+    trailing_stop_positive_offset = 0.08016
     trailing_only_offset_is_reached = True
 
     stoploss = -1
@@ -89,28 +99,54 @@ class Zeus(IStrategy):
 
         dataframe['trend_kst_diff'] = KST.kst_diff()
 
+        # Normalization
+        dataframe['trend_ichimoku_base'] = dataframe['trend_ichimoku_base']/(
+            dataframe['trend_ichimoku_base'].max()-dataframe['trend_ichimoku_base'].min()
+        )
+
+        dataframe['trend_kst_diff'] = dataframe['trend_kst_diff']/(
+            dataframe['trend_kst_diff'].max()-dataframe['trend_kst_diff'].min()
+        )
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-
+        conditions = []
         IND = 'trend_ichimoku_base'
         REAL = self.buy_params['buy-real-0']
+        OPR = self.buy_params['buy-oper-0']
         DFIND = dataframe[IND]
 
-        dataframe.loc[
-            (DFIND > REAL),
-            'buy'] = 1
+        if OPR == ">R":
+            conditions.append(DFIND > REAL)
+        elif OPR == "=R":
+            conditions.append(np.isclose(DFIND, REAL))
+        elif OPR == "<R":
+            conditions.append(DFIND < REAL)
+
+        if conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'buy'] = 1
 
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-
+        conditions = []
         IND = 'trend_kst_diff'
         REAL = self.sell_params['sell-real-0']
         DFIND = dataframe[IND]
+        OPR = self.sell_params['sell-oper-0']
 
-        dataframe.loc[
-            (np.isclose(DFIND, REAL)),
-            'sell'] = 1
+        if OPR == ">R":
+            conditions.append(DFIND > REAL)
+        elif OPR == "=R":
+            conditions.append(np.isclose(DFIND, REAL))
+        elif OPR == "<R":
+            conditions.append(DFIND < REAL)
+
+        if conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'sell'] = 1
 
         return dataframe
