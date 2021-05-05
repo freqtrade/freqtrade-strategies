@@ -31,18 +31,39 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 # this is your trading strategy DNA Size
 # you can change it and see the results...
 # A real number(0.01~0.99)
-searchRange = 0.6
+searchRange = 0.01
 # past all generated buy and sell params (from GodStraHo) here:
 
 # Copy Generated Strategy params here
+# in this example nothing will changed in buy and sell params cuz
+# we dont have >R or <R or =R operator and real-0 and real-1
+# dont effect the strategy anymore!:)
+
 # *********************************PARAMS*****************************
 # Buy hyperspace params:
 buy_params = {
+    'buy-cross-0': 'BBANDS1-7',
+    'buy-cross-1': 'BBANDS1-14',
+    'buy-indicator-0': 'BBANDS0-7',
+    'buy-indicator-1': 'BBANDS0-14',
+    'buy-oper-0': 'CA',
+    'buy-oper-1': '>',
+    'buy-real-0': 0.42666,
+    'buy-real-1': 1.08515
 }
 
 # Sell hyperspace params:
 sell_params = {
+    'sell-cross-0': 'BBANDS1-7',
+    'sell-cross-1': 'BBANDS2-7',
+    'sell-indicator-0': 'BBANDS2-14',
+    'sell-indicator-1': 'BBANDS2-7',
+    'sell-oper-0': 'CA',
+    'sell-oper-1': '=',
+    'sell-real-0': 1.0595,
+    'sell-real-1': 0.48984
 }
+
 
 # *******************************END PARAMS***************************
 
