@@ -31,21 +31,20 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 # this is your trading strategy DNA Size
 # you can change it and see the results...
 # A real number(0.01~0.99)
-searchRange = 0.5
+searchRange = 0.6
 # past all generated buy and sell params (from GodStraHo) here:
 
-# **************************************** Copy Generated Strategy params here *************************************************
+# Copy Generated Strategy params here
+# *********************************PARAMS*****************************
 # Buy hyperspace params:
 buy_params = {
-
 }
 
 # Sell hyperspace params:
 sell_params = {
-
 }
-# ******************************************************* End ******************************************************************
 
+# *******************************END PARAMS***************************
 
 fil = filter(lambda k: 'indicator' in k, buy_params.keys())
 lst = list(fil)
@@ -67,18 +66,9 @@ class GodStraHoHo(IHyperOpt):
 
         for i in range(DNA_SIZE):
             OPR = buy_params[f'buy-oper-{i}']
-            INT = buy_params[f'buy-int-{i}']
             REAL = buy_params[f'buy-real-{i}']
 
-            if OPR in [">I", "=I", "<I"]:
-                min = int(INT*(1-searchRange))
-                max = int(INT*(1+searchRange))
-                try:
-                    gene.append(Integer(min, max, name=f'buy-int-{i}'))
-                except:
-                    gene.append(Integer(max, min, name=f'buy-int-{i}'))
-
-            elif OPR in [">R", "=R", "<R"]:
+            if OPR in [">R", "=R", "<R"]:
 
                 min = REAL*(1-searchRange)
                 max = REAL*(1+searchRange)
@@ -104,16 +94,9 @@ class GodStraHoHo(IHyperOpt):
 
                 OPR = buy_params[f'buy-oper-{i}']
                 IND = buy_params[f'buy-indicator-{i}']
-                INT = buy_params[f'buy-int-{i}']
                 REAL = buy_params[f'buy-real-{i}']
                 DFIND = dataframe[IND]
-                if OPR == ">I":
-                    conditions.append(DFIND > INT)
-                elif OPR == "=I":
-                    conditions.append(DFIND == INT)
-                elif OPR == "<I":
-                    conditions.append(DFIND < INT)
-                elif OPR == ">R":
+                if OPR == ">R":
                     conditions.append(DFIND > REAL)
                 elif OPR == "=R":
                     conditions.append(np.isclose(DFIND, REAL))
@@ -138,17 +121,9 @@ class GodStraHoHo(IHyperOpt):
 
         for i in range(SELL_DNA_SIZE):
             OPR = sell_params[f'sell-oper-{i}']
-            INT = sell_params[f'sell-int-{i}']
             REAL = sell_params[f'sell-real-{i}']
 
-            if OPR in [">I", "=I", "<I"]:
-                min = int(INT*(1-searchRange))
-                max = int(INT*(1+searchRange))
-                try:
-                    gene.append(Integer(min, max, name=f'sell-int-{i}'))
-                except:
-                    gene.append(Integer(max, min, name=f'sell-int-{i}'))
-            elif OPR in [">R", "=R", "<R"]:
+            if OPR in [">R", "=R", "<R"]:
                 min = REAL*(1-searchRange)
                 max = REAL*(1+searchRange)
                 try:
@@ -174,16 +149,9 @@ class GodStraHoHo(IHyperOpt):
 
                 OPR = sell_params[f'sell-oper-{i}']
                 IND = sell_params[f'sell-indicator-{i}']
-                INT = sell_params[f'sell-int-{i}']
                 REAL = sell_params[f'sell-real-{i}']
                 DFIND = dataframe[IND]
-                if OPR == ">I":
-                    conditions.append(DFIND > INT)
-                elif OPR == "=I":
-                    conditions.append(DFIND == INT)
-                elif OPR == "<I":
-                    conditions.append(DFIND < INT)
-                elif OPR == ">R":
+                if OPR == ">R":
                     conditions.append(DFIND > REAL)
                 elif OPR == "=R":
                     conditions.append(np.isclose(DFIND, REAL))
