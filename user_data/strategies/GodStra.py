@@ -19,8 +19,8 @@ import pandas as pd
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
+# from sklearn.preprocessing import MinMaxScaler
+# scaler = MinMaxScaler()
 
 tplist = [5, 10, 50, 100]
 GodGeneIndicators = [
@@ -45,6 +45,7 @@ GodGeneIndicators = [
     'HT_DCPERIOD', 'HT_DCPHASE', 'HT_PHASOR', 'HT_SINE', 'HT_TRENDLINE',
     'HT_TRENDMODE', 'KAMA', 'LINEARREG', 'LINEARREG_ANGLE', 'LINEARREG_INTERCEPT',
     'LINEARREG_SLOPE', 'LN', 'LOG10', 'MA', 'MACD', 'MACDEXT', 'MACDFIX',
+    # 'MAVP',
     'MAMA', 'MAX', 'MAXINDEX', 'MEDPRICE', 'MFI', 'MIDPOINT', 'MIDPRICE',
     'MIN', 'MININDEX', 'MINMAX', 'MINMAXINDEX', 'MINUS_DI', 'MINUS_DM', 'MOM',
     'MULT', 'NATR', 'OBV', 'PLUS_DI', 'PLUS_DM', 'PPO', 'ROC', 'ROCP', 'ROCR',
@@ -54,10 +55,11 @@ GodGeneIndicators = [
     'WILLR', 'WMA'
 ]
 
-#  TODO: this gene is removed 'MAVP' cuz or error on periods
+#  TODO: this gene is removed 'MAVP' & 'ACOS' cuz or error on periods
 
 
 class GodStra(IStrategy):
+    #
     # Buy hyperspace params:
     buy_params = {
     }
@@ -68,9 +70,11 @@ class GodStra(IStrategy):
 
     # ROI table:
     minimal_roi = {
-        "0": 1,
+        "0": 0.53065,
+        "996": 0.21064,
+        "1713": 0.10048,
+        "5812": 0
     }
-
     # Stoploss:
     stoploss = -1
     # Buy hypers
@@ -97,16 +101,26 @@ class GodStra(IStrategy):
                         timeperiod=tp,
                     )
                     # TODO: fix MAVP error
+
                     if type(res) == pd.core.series.Series and gene != 'MAVP':
-                        dataframe[f'{gene}-{tp}'] = scaler.fit_transform(
-                            res.values.reshape(-1, 1)
-                        )
+                        # print(gene)
+                        dataframe[f'{gene}-{tp}'] = res/(res.max()-res.min())
+
+                        # scaler.fit_transform(
+                        #     res.replace(
+                        #         [np.inf, -np.inf], np.zeros, inplace=True
+                        #     ).values.reshape(-1, 1)
+                        # )
 
                     else:
                         for idx in range(len(res.keys())):
-                            dataframe[f'{gene}{idx}-{tp}'] = scaler.fit_transform(
-                                res.iloc[:, idx].values.reshape(-1, 1)
-                            )
+                            ress = res.iloc[:, idx]
+                            dataframe[f'{gene}{idx}-{tp}'] = ress/(ress.max()-ress.min())
+                            # scaler.fit_transform(
+                            #     res.iloc[:, idx].replace(
+                            #         [np.inf, -np.inf], np.zeros, inplace=True
+                            #     ).values.reshape(-1, 1)
+                            # )
         print(metadata['pair'])
         return dataframe
 
@@ -141,7 +155,7 @@ class GodStra(IStrategy):
         if self.Buy_DNA_Size > 0:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'buy']=1
+                'buy'] = 1
 
         return dataframe
 
@@ -175,6 +189,6 @@ class GodStra(IStrategy):
         if self.Sell_DNA_Size > 0:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'sell']=1
+                'sell'] = 1
 
         return dataframe
