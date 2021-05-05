@@ -19,10 +19,14 @@ import pandas as pd
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
+# TODO: Will use new normalization methods to reduce noisy data and increase comparing quality
 # from sklearn.preprocessing import MinMaxScaler
 # scaler = MinMaxScaler()
 
-tplist = [5, 10, 50, 100]
+# This will be same as tplist in GodStraHo.py
+tplist = [7, 14]
+
+#  TODO: this gene is removed 'MAVP' cuz or error on periods
 GodGeneIndicators = [
     'ACOS', 'AD', 'ADD', 'ADOSC', 'ADX', 'ADXR', 'APO',
     'AROON', 'AROONOSC', 'ASIN', 'ATAN', 'ATR', 'AVGPRICE', 'BBANDS', 'BETA',
@@ -55,26 +59,56 @@ GodGeneIndicators = [
     'WILLR', 'WMA'
 ]
 
-#  TODO: this gene is removed 'MAVP' cuz or error on periods
+# This will be same as tplist in GodStraHo.py
+# If you need aroon just add here ['AROON0', 'AROON1'] in GodStraHo,
+# And add just ['AROON'] in GodStra.py
+# Cuz some indicators returns more than one number in ta-lib.
+# Examples:
+# GodGeneIndicators = ['RSI', 'MFI', 'AROON', 'SMA']
+# GodGeneIndicators = ['BBANDS']
+# GodGeneIndicators = ['FLOOR']
 
 
 class GodStra(IStrategy):
-    #
+    # *   29/5000:     56 trades. 35/3/18 Wins/Draws/Losses. Avg profit   4.39%. Median profit   3.86%. Total profit  11.07139661 BNB ( 245.89Σ%). Avg duration 2010.0 min. Objective: -13.44284
+
     # Buy hyperspace params:
     buy_params = {
+        'buy-cross-0': 'BBANDS1-7',
+        'buy-cross-1': 'BBANDS1-14',
+        'buy-indicator-0': 'BBANDS0-7',
+        'buy-indicator-1': 'BBANDS0-14',
+        'buy-oper-0': 'CA',
+        'buy-oper-1': '>',
+        'buy-real-0': 0.42666,
+        'buy-real-1': 1.08515
     }
 
     # Sell hyperspace params:
     sell_params = {
+        'sell-cross-0': 'BBANDS1-7',
+        'sell-cross-1': 'BBANDS2-7',
+        'sell-indicator-0': 'BBANDS2-14',
+        'sell-indicator-1': 'BBANDS2-7',
+        'sell-oper-0': 'CA',
+        'sell-oper-1': '=',
+        'sell-real-0': 1.0595,
+        'sell-real-1': 0.48984
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.53065,
-        "996": 0.21064,
-        "1713": 0.10048,
-        "5812": 0
+        "0": 0.34719,
+        "676": 0.11262,
+        "1497": 0.03862,
+        "4706": 0
     }
+
+    # Trailing stop:
+    trailing_stop = True
+    trailing_stop_positive = 0.13352
+    trailing_stop_positive_offset = 0.18623
+    trailing_only_offset_is_reached = True
     # Stoploss:
     stoploss = -1
     # Buy hypers
@@ -101,25 +135,25 @@ class GodStra(IStrategy):
                         timeperiod=tp,
                     )
                     # TODO: fix MAVP error
-
                     if type(res) == pd.core.series.Series and gene != 'MAVP':
                         # print(gene)
-                        dataframe[f'{gene}-{tp}'] = res/(res.max()-res.min())
-
+                        dataframe[f'{gene}-{tp}'] = (res-res.min())/(res.max()-res.min())
+                        # TODO: use other normalisation methods to reduce noisy data
                         # scaler.fit_transform(
                         #     res.replace(
                         #         [np.inf, -np.inf], np.zeros, inplace=True
-                        #     ).values.reshape(-1, 1)
+                        #     ).values.reshape(0, 1)
                         # )
 
                     else:
                         for idx in range(len(res.keys())):
                             ress = res.iloc[:, idx]
-                            dataframe[f'{gene}{idx}-{tp}'] = ress/(ress.max()-ress.min())
+                            dataframe[f'{gene}{idx}-{tp}'] = \
+                                (ress - ress.min())/(ress.max()-ress.min())
                             # scaler.fit_transform(
                             #     res.iloc[:, idx].replace(
                             #         [np.inf, -np.inf], np.zeros, inplace=True
-                            #     ).values.reshape(-1, 1)
+                            #     ).values.reshape(0, 1)
                             # )
         print(metadata['pair'])
         return dataframe
