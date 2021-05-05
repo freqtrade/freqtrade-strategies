@@ -3,7 +3,7 @@
 # github: https://github.com/mablue/
 # IMPORTANT: INSTALL TA BEFOUR RUN:
 # :~$ pip install ta
-# freqtrade hyperopt --hyperopt GodStraHo --hyperopt-loss SharpeHyperOptLossDaily --gene all --strategy GodStra --config config.json -e 100
+# freqtrade hyperopt --hyperopt GodStraHo --hyperopt-loss SharpeHyperOptLossDaily --spaces all --strategy GodStra --config config.json -e 100
 
 # --- Do not remove these libs ---
 from functools import reduce
@@ -22,13 +22,6 @@ from freqtrade.optimize.hyperopt_interface import IHyperOpt
 from ta import add_all_ta_features
 from ta.utils import dropna
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-# this is your trading strategy DNA Size
-# you can change it and see the results...
-buyGodGenes = ['trend_ichimoku_base']
-sellGodGenes = ['trend_kst_diff']
-
-# you can filter GodGenes with this:
-# GodGenes = list(filter(lambda k: 'momentum' in k, GodGenes))
 
 
 class ZeusHo(IHyperOpt):
@@ -40,7 +33,7 @@ class ZeusHo(IHyperOpt):
         """
         gene = list()
         # Operations
-        gene.append(Real(-1, 1, name='buy-real-0'))
+        gene.append(Real(-0.1, 1.1, name='buy-real-0'))
         gene.append(Categorical([">R", "=R", "<R"], name='buy-oper-0'))
         return gene
 
@@ -84,7 +77,7 @@ class ZeusHo(IHyperOpt):
         """
         gene = list()
         # Operations
-        gene.append(Real(-1, 1, name='sell-real-0'))
+        gene.append(Real(-0.1, 1.1, name='sell-real-0'))
         gene.append(Categorical([">R", "=R", "<R"], name='sell-oper-0'))
         return gene
 
