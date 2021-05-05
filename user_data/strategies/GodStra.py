@@ -55,7 +55,7 @@ GodGeneIndicators = [
     'WILLR', 'WMA'
 ]
 
-#  TODO: this gene is removed 'MAVP' & 'ACOS' cuz or error on periods
+#  TODO: this gene is removed 'MAVP' cuz or error on periods
 
 
 class GodStra(IStrategy):
