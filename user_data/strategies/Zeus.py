@@ -2,13 +2,6 @@
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
-# IMPORTANT: Use Smallest "max_open_trades" for getting best results inside config.json
-# "max_open_trades": 3,
-# "stake_currency": "BNB",
-# "stake_amount": "unlimited",
-# "tradable_balance_ratio": 1,
-# "fiat_display_currency": "USD",
-# "timeframe": "4h",
 # freqtrade hyperopt --hyperopt ZeusHo --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi trailing --strategy Zeus --config bnbhunter.json
 # --- Do not remove these libs ---
 import logging
@@ -29,44 +22,35 @@ import numpy as np
 
 
 class Zeus(IStrategy):
-    # +--------+-------------+----------+------------------+--------------+-------------------------------+----------------+-------------+
-    # |   Best |       Epoch |   Trades |    Win Draw Loss |   Avg profit |                        Profit |   Avg duration |   Objective |
-    # |--------+-------------+----------+------------------+--------------+-------------------------------+----------------+-------------|
-    # | * Best |     3/10000 |      173 |     85   81    7 |        3.01% |  620.75905077 USDT  (520.87%) |      2,888.3 m |    -40.2497 |
-    # | * Best |     5/10000 |      191 |    103   78   10 |        2.86% |  750.69797015 USDT  (547.02%) |      2,675.5 m |    -60.2058 |
-    # | * Best |     7/10000 |      194 |    107   80    7 |        3.41% | 1,175.92643785 USDT  (661.67%) |      2,576.3 m |     -62.129 |
-    # | * Best |    13/10000 |      191 |    104   78    9 |        3.07% |  767.17774276 USDT  (586.41%) |      2,676.1 m |    -64.2776 |
-    # | * Best |    20/10000 |      395 |    279  108    8 |        3.94% | 4,750.85816781 USDT (1,558.19%) |      1,238.4 m |    -121.725 |
-    # [Epoch 33 of 10000 (  0%)] |/                                                              | [ETA:   2:56:10, Elapsed Time: 0:00:34]^C
-    # User interrupted..
-    # Best result:
-    # *   20/10000:    395 trades. 279/108/8 Wins/Draws/Losses. Avg profit   3.94%. Median profit   2.52%. Total profit  4750.85816781 USDT ( 1558.19Σ%). Avg duration 1238.4 min. Objective: -121.72542
+
+    # 33/200:    506 trades. 424/64/18 Wins/Draws/Losses. Avg profit   2.40%. Median profit   2.10%. Total profit  12349.45456035 USDT ( 1212.89Σ%). Avg duration 682.4 min. Objective: -116.68109
 
     # Buy hyperspace params:
     buy_params = {
-        'buy-oper-0': '<R', 'buy-real-0': 0.95244
+        'buy-oper-0': '<R', 'buy-real-0': 0.09117
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'sell-oper-0': '=R', 'sell-real-0': 0.29348
+        'sell-oper-0': '=R', 'sell-real-0': 0.46353
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.50334,
-        "282": 0.1246,
-        "552": 0.02526,
-        "1100": 0
+        "0": 0.38489,
+        "383": 0.19302,
+        "961": 0.04516,
+        "1399": 0
     }
+
+    # Stoploss:
+    stoploss = -0.18723
 
     # Trailing stop:
     trailing_stop = True
-    trailing_stop_positive = 0.05256
-    trailing_stop_positive_offset = 0.08016
+    trailing_stop_positive = 0.01755
+    trailing_stop_positive_offset = 0.02783
     trailing_only_offset_is_reached = True
-
-    stoploss = -1
     # Buy hypers
     timeframe = '4h'
 
@@ -100,13 +84,10 @@ class Zeus(IStrategy):
         dataframe['trend_kst_diff'] = KST.kst_diff()
 
         # Normalization
-        dataframe['trend_ichimoku_base'] = dataframe['trend_ichimoku_base']/(
-            dataframe['trend_ichimoku_base'].max()-dataframe['trend_ichimoku_base'].min()
-        )
-
-        dataframe['trend_kst_diff'] = dataframe['trend_kst_diff']/(
-            dataframe['trend_kst_diff'].max()-dataframe['trend_kst_diff'].min()
-        )
+        tib = dataframe['trend_ichimoku_base']
+        dataframe['trend_ichimoku_base'] = (tib-tib.min())/(tib.max()-tib.min())
+        tkd = dataframe['trend_kst_diff']
+        dataframe['trend_kst_diff'] = (tkd-tkd.min())/(tkd.max()-tkd.min())
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
