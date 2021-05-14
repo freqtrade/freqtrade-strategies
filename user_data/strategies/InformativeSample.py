@@ -1,6 +1,6 @@
 
 # --- Do not remove these libs ---
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IStrategy, merge_informative_pair
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
@@ -39,8 +39,8 @@ class InformativeSample(IStrategy):
 
     # trailing stoploss
     trailing_stop = False
-    trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.02
+    trailing_stop_positive = 0.02
+    trailing_stop_positive_offset = 0.04
 
     # run "populate_indicators" only for new candle
     ta_on_candle = False
@@ -69,7 +69,7 @@ class InformativeSample(IStrategy):
                             ("BTC/USDT", "15m"),
                             ]
         """
-        return [(f"{self.config['stake_currency']}/USDT", self.timeframe)]
+        return [(f"BTC/USDT", '15m')]
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
@@ -84,15 +84,18 @@ class InformativeSample(IStrategy):
         dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
         if self.dp:
-            # Get ohlcv data for informative pair.
-            data = self.dp.get_pair_dataframe(pair=f"{self.stake_currency}/USDT",
-                                              timeframe=self.timeframe)
-            # Combine the 2 dataframes using 'close'.
-            # This will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
-            dataframe = dataframe.merge(data[["date", "close"]], on="date", how="left", suffixes=("", self.config['stake_currency']))
+            # Get ohlcv data for informative pair at 15m interval.
+            inf_tf = '15m'
+            informative = self.dp.get_pair_dataframe(pair=f"BTC/USDT",
+                                                     timeframe=inf_tf)
 
-            # Calculate SMA20 on 'close' data for stake_currency/USDT. Resulting column is named as 'smaETH20' (if stake_currency is ETH)
-            dataframe[f"sma{self.config['stake_currency']}20"] = dataframe[f'close{self.stake_currency}'].rolling(20).mean()
+            # calculate SMA20 on informative pair
+            informative['sma20'] = informative['close'].rolling(20).mean()
+
+            # Combine the 2 dataframe
+            # This will result in a column named 'closeETH' or 'closeBTC' - depending on stake_currency.
+            dataframe = merge_informative_pair(dataframe, informative,
+                                               self.timeframe, inf_tf, ffill=True)
 
         return dataframe
 
@@ -106,7 +109,7 @@ class InformativeSample(IStrategy):
             (
                 (dataframe['ema20'] > dataframe['ema50']) &
                 # stake/USDT above sma(stake/USDT, 20)
-                (dataframe[f'close{self.stake_currency}'] > dataframe[f'sma{self.stake_currency}20'])
+                (dataframe['close_15m'] > dataframe['sma20_15m'])
             ),
             'buy'] = 1
 
@@ -122,7 +125,7 @@ class InformativeSample(IStrategy):
             (
                 (dataframe['ema20'] < dataframe['ema50']) &
                 # stake/USDT below sma(stake/USDT, 20)
-                (dataframe[f'close{self.stake_currency}'] < dataframe[f'sma{self.stake_currency}20'])
+                (dataframe['close_15m'] < dataframe['sma20_15m'])
             ),
             'sell'] = 1
         return dataframe
