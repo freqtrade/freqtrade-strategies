@@ -4,6 +4,7 @@
 # freqtrade hyperopt --hyperopt mabStraHo --hyperopt-loss SharpeHyperOptLoss --spaces all --strategy mabStra --config config.json -e 100
 
 # --- Do not remove these libs ---
+from freqtrade.strategy.hyper import IntParameter, RealParameter
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 # --------------------------------
@@ -12,36 +13,20 @@ from pandas import DataFrame
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
-MTF, FTF, STF = 7, 14, 28
-
 
 class mabStra(IStrategy):
-    # 10
-    # 617/5000:    364 trades. 344/11/9 Wins/Draws/Losses. Avg profit   2.70%. Median profit   1.77%. Total profit  0.41965282 BTC ( 983.46Σ%). Avg duration 794.5 min. Objective: -354.49129
-
-    # Buy hyperspace params:
-    buy_params = {
-        'buy-div-max': 2.25446, 'buy-div-min': 0.29497
-    }
-
-    # Sell hyperspace params:
-    sell_params = {
-        'sell-div-max': 1.54593, 'sell-div-min': 2.81436
-    }
-
-    # ROI table:
-    minimal_roi = {
-        "0": 0.80087,
-        "1430": 0.2385,
-        "2075": 0.07112,
-        "4162": 0
-    }
-
-    # Trailing stop:
-    trailing_stop = False
-    trailing_stop_positive = 1
-    trailing_stop_positive_offset = 1
-    trailing_only_offset_is_reached = False
+    # buy params
+    buy_mojo_ma_timeframe = IntParameter(2, 100, default=7, space='buy')
+    buy_fast_ma_timeframe = IntParameter(2, 100, default=14, space='buy')
+    buy_slow_ma_timeframe = IntParameter(2, 100, default=28, space='buy')
+    buy_div_max = RealParameter(0, 2, default=2.25446, space='buy')
+    buy_div_min = RealParameter(0, 2, default=0.29497, space='buy')
+    # sell params
+    sell_mojo_ma_timeframe = IntParameter(2, 100, default=7, space='sell')
+    sell_fast_ma_timeframe = IntParameter(2, 100, default=14, space='sell')
+    sell_slow_ma_timeframe = IntParameter(2, 100, default=28, space='sell')
+    sell_div_max = RealParameter(0, 2, default=1.54593, space='sell')
+    sell_div_min = RealParameter(0, 2, default=2.81436, space='sell')
 
     stoploss = -1
 
@@ -50,12 +35,18 @@ class mabStra(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # SMA - ex Moving Average
-        dataframe['buy-mojoMA'] = ta.SMA(dataframe, timeperiod=MTF)
-        dataframe['buy-fastMA'] = ta.SMA(dataframe, timeperiod=FTF)
-        dataframe['buy-slowMA'] = ta.SMA(dataframe, timeperiod=STF)
-        dataframe['sell-mojoMA'] = ta.SMA(dataframe, timeperiod=MTF)
-        dataframe['sell-fastMA'] = ta.SMA(dataframe, timeperiod=FTF)
-        dataframe['sell-slowMA'] = ta.SMA(dataframe, timeperiod=STF)
+        dataframe['buy-mojoMA'] = ta.SMA(dataframe,
+                                         timeperiod=self.buy_mojo_ma_timeframe.value)
+        dataframe['buy-fastMA'] = ta.SMA(dataframe,
+                                         timeperiod=self.buy_fast_ma_timeframe.value)
+        dataframe['buy-slowMA'] = ta.SMA(dataframe,
+                                         timeperiod=self.buy_slow_ma_timeframe.value)
+        dataframe['sell-mojoMA'] = ta.SMA(dataframe,
+                                          timeperiod=self.sell_mojo_ma_timeframe.value)
+        dataframe['sell-fastMA'] = ta.SMA(dataframe,
+                                          timeperiod=self.sell_fast_ma_timeframe.value)
+        dataframe['sell-slowMA'] = ta.SMA(dataframe,
+                                          timeperiod=self.sell_slow_ma_timeframe.value)
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -63,13 +54,13 @@ class mabStra(IStrategy):
         dataframe.loc[
             (
                 (dataframe['buy-mojoMA'].div(dataframe['buy-fastMA'])
-                    > self.buy_params['buy-div-min']) &
+                    > self.buy_div_min.value) &
                 (dataframe['buy-mojoMA'].div(dataframe['buy-fastMA'])
-                    < self.buy_params['buy-div-max']) &
+                    < self.buy_div_max.value) &
                 (dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
-                    > self.buy_params['buy-div-min']) &
+                    > self.buy_div_min.value) &
                 (dataframe['buy-fastMA'].div(dataframe['buy-slowMA'])
-                    < self.buy_params['buy-div-max'])
+                    < self.buy_div_max.value)
             ),
             'buy'] = 1
 
@@ -79,13 +70,13 @@ class mabStra(IStrategy):
         dataframe.loc[
             (
                 (dataframe['sell-fastMA'].div(dataframe['sell-mojoMA'])
-                    > self.sell_params['sell-div-min']) &
+                    > self.sell_div_min.value) &
                 (dataframe['sell-fastMA'].div(dataframe['sell-mojoMA'])
-                    < self.sell_params['sell-div-max']) &
+                    < self.sell_div_max.value) &
                 (dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
-                    > self.sell_params['sell-div-min']) &
+                    > self.sell_div_min.value) &
                 (dataframe['sell-slowMA'].div(dataframe['sell-fastMA'])
-                    < self.sell_params['sell-div-max'])
+                    < self.sell_div_max.value)
             ),
             'sell'] = 1
         return dataframe

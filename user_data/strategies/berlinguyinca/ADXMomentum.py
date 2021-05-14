@@ -2,7 +2,6 @@
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 import talib.abstract as ta
-from functools import reduce
 
 
 # --------------------------------
@@ -18,36 +17,16 @@ class ADXMomentum(IStrategy):
         https://github.com/sthewissen/Mynt/blob/master/src/Mynt.Core/Strategies/AdxMomentum.cs
 
     """
-    # Buy hyperspace params:
-    buy_params = {
-        'buy-adx-enabled': True,
-        'buy-adx-value': 25,
-        'buy-com-enabled': True,
-        'buy-mom-enabled': True,
-        'buy-mom-value': 0,
-        'buy-pd-value': 25,
-        'buy-pd-enabled': True
-    }
 
-    # Sell hyperspace params:
-    sell_params = {
-        'sell-adx-enabled': True,
-        'sell-adx-value': 25,
-        'sell-com-enabled': True,
-        'sell-min-enabled': True,
-        'sell-min-value': 25,
-        'sell-mom-enabled': True,
-        'sell-mom-value': 0
-    }
     # Minimal ROI designed for the strategy.
-    # adjust based on market
+    # adjust based on market conditions. We would recommend to keep it low for quick turn arounds
+    # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {
         "0": 0.01
     }
 
     # Optimal stoploss designed for the strategy
-    # stoploss = -0.25
-    stoploss = -1
+    stoploss = -0.25
 
     # Optimal timeframe for the strategy
     timeframe = '1h'
@@ -59,40 +38,31 @@ class ADXMomentum(IStrategy):
         dataframe['adx'] = ta.ADX(dataframe, timeperiod=14)
         dataframe['plus_di'] = ta.PLUS_DI(dataframe, timeperiod=25)
         dataframe['minus_di'] = ta.MINUS_DI(dataframe, timeperiod=25)
-        # dataframe['sar'] = ta.SAR(dataframe)
+        dataframe['sar'] = ta.SAR(dataframe)
         dataframe['mom'] = ta.MOM(dataframe, timeperiod=14)
 
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        conditions = []
-        if self.buy_params.get('buy-adx-enabled'):
-            conditions.append(dataframe['adx'] > self.buy_params['buy-adx-value'])
-        if self.buy_params.get('buy-mom-enabled'):
-            conditions.append(dataframe['mom'] > self.buy_params['buy-mom-value'])
-        if self.buy_params.get('buy-pd-enabled'):
-            conditions.append(dataframe['plus_di'] > self.buy_params['buy-pd-value'])
-        if self.buy_params.get('buy-com-enabled'):
-            conditions.append(dataframe['plus_di'] > dataframe['minus_di'])
-        if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'buy'] = 1
+        dataframe.loc[
+            (
+                (dataframe['adx'] > 25) &
+                (dataframe['mom'] > 0) &
+                (dataframe['plus_di'] > 25) &
+                (dataframe['plus_di'] > dataframe['minus_di'])
+
+            ),
+            'buy'] = 1
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        conditions = []
-        if self.sell_params.get('sell-adx-enabled'):
-            conditions.append(dataframe['adx'] > self.sell_params['sell-adx-value'])
-        if self.sell_params.get('sell-mom-enabled'):
-            conditions.append(dataframe['mom'] < self.sell_params['sell-mom-value'])
-        if self.sell_params.get('sell-min-enabled'):
-            conditions.append(dataframe['minus_di'] > self.sell_params['sell-min-value'])
-        if self.sell_params.get('sell-com-enabled'):
-            conditions.append(dataframe['plus_di'] < dataframe['minus_di'])
+        dataframe.loc[
+            (
+                (dataframe['adx'] > 25) &
+                (dataframe['mom'] < 0) &
+                (dataframe['minus_di'] > 25) &
+                (dataframe['plus_di'] < dataframe['minus_di'])
 
-        if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'sell'] = 1
+            ),
+            'sell'] = 1
         return dataframe

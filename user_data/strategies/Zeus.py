@@ -1,10 +1,12 @@
-# Zeus Strategy: First Generation of GodStra Strategy with maximum AVG/MID profit in USDT
+# Zeus Strategy: First Generation of GodStra Strategy with maximum
+# AVG/MID profit in USDT
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
-# freqtrade hyperopt --hyperopt ZeusHo --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi trailing --strategy Zeus --config bnbhunter.json
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi trailing --strategy Zeus
 # --- Do not remove these libs ---
 import logging
+from freqtrade.strategy.hyper import CategoricalParameter, RealParameter
 
 from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
@@ -22,35 +24,31 @@ import numpy as np
 
 
 class Zeus(IStrategy):
-
-    # 33/200:    506 trades. 424/64/18 Wins/Draws/Losses. Avg profit   2.40%. Median profit   2.10%. Total profit  12349.45456035 USDT ( 1212.89Σ%). Avg duration 682.4 min. Objective: -116.68109
+    # *    2/1000:     38 trades. 34/0/4 Wins/Draws/Losses. Avg profit  320.22%. Median profit  21.85%. Total profit  1.21764343 BTC ( 1217.64Σ%). Avg duration 9 days, 19:54:00 min. Objective: -10.91136
 
     # Buy hyperspace params:
     buy_params = {
-        'buy-oper-0': '<R', 'buy-real-0': 0.09117
+        "buy_cat": '<R',
+        "buy_real": 0.11908,
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'sell-oper-0': '=R', 'sell-real-0': 0.46353
+        "sell_cat": '>R',
+        "sell_real": 0.59608,
     }
-
-    # ROI table:
-    minimal_roi = {
-        "0": 0.38489,
-        "383": 0.19302,
-        "961": 0.04516,
-        "1399": 0
-    }
+    buy_real = RealParameter(
+        0.001, 0.999, default=0.11908, space='buy')
+    buy_cat = CategoricalParameter(
+        [">R", "=R", "<R"], default='<R', space='buy')
+    sell_real = RealParameter(
+        0.001, 0.999, default=0.59608, space='sell')
+    sell_cat = CategoricalParameter(
+        [">R", "=R", "<R"], default='>R', space='sell')
 
     # Stoploss:
-    stoploss = -0.18723
+    stoploss = -1
 
-    # Trailing stop:
-    trailing_stop = True
-    trailing_stop_positive = 0.01755
-    trailing_stop_positive_offset = 0.02783
-    trailing_only_offset_is_reached = True
     # Buy hypers
     timeframe = '4h'
 
@@ -85,7 +83,8 @@ class Zeus(IStrategy):
 
         # Normalization
         tib = dataframe['trend_ichimoku_base']
-        dataframe['trend_ichimoku_base'] = (tib-tib.min())/(tib.max()-tib.min())
+        dataframe['trend_ichimoku_base'] = (
+            tib-tib.min())/(tib.max()-tib.min())
         tkd = dataframe['trend_kst_diff']
         dataframe['trend_kst_diff'] = (tkd-tkd.min())/(tkd.max()-tkd.min())
         return dataframe
@@ -93,10 +92,10 @@ class Zeus(IStrategy):
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         IND = 'trend_ichimoku_base'
-        REAL = self.buy_params['buy-real-0']
-        OPR = self.buy_params['buy-oper-0']
+        REAL = self.buy_real.value
+        OPR = self.buy_cat.value
         DFIND = dataframe[IND]
-
+        # print(DFIND.mean())
         if OPR == ">R":
             conditions.append(DFIND > REAL)
         elif OPR == "=R":
@@ -114,9 +113,10 @@ class Zeus(IStrategy):
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         IND = 'trend_kst_diff'
-        REAL = self.sell_params['sell-real-0']
+        REAL = self.sell_real.value
+        OPR = self.sell_cat.value
         DFIND = dataframe[IND]
-        OPR = self.sell_params['sell-oper-0']
+        # print(DFIND.mean())
 
         if OPR == ">R":
             conditions.append(DFIND > REAL)

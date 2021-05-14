@@ -32,25 +32,6 @@ import numpy as np
 
 
 class Heracles(IStrategy):
-    # 65/600:   2275 trades. 1438/7/830 W/D/L.
-    # Avg profit   3.10%. Median profit   3.06%.
-    # Total profit  113171 USDT ( 7062 Σ%).
-    # Avg duration 345 min. Objective: -23.0
-
-    # Buy hyperspace params:
-    buy_params = {
-        'buy-cross-0': 'volatility_kcw',
-        'buy-indicator-0': 'volatility_dcp',
-        'buy-oper-0': '<',
-    }
-
-    # Sell hyperspace params:
-    sell_params = {
-        'sell-cross-0': 'trend_macd_signal',
-        'sell-indicator-0': 'trend_ema_fast',
-        'sell-oper-0': '=',
-    }
-
     # ROI table:
     minimal_roi = {
         "0": 0.32836,
@@ -108,10 +89,8 @@ class Heracles(IStrategy):
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
-        IND = self.buy_params['buy-indicator-0']
-        CRS = self.buy_params['buy-cross-0']
-        DFIND = dataframe[IND]
-        DFCRS = dataframe[CRS]
+        DFIND = dataframe['volatility_dcp']
+        DFCRS = dataframe['volatility_kcw']
 
         dataframe.loc[
             (DFIND < DFCRS),
@@ -120,14 +99,11 @@ class Heracles(IStrategy):
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        IND = self.sell_params['sell-indicator-0']
-        CRS = self.sell_params['sell-cross-0']
-
-        DFIND = dataframe[IND]
-        DFCRS = dataframe[CRS]
+        DFIND = dataframe['trend_ema_fast']
+        DFCRS = dataframe['trend_macd_signal']
 
         dataframe.loc[
-            (qtpylib.crossed_below(DFIND, DFCRS)),
+            (np.isclose(DFIND, DFCRS)),
             'sell'] = 1
 
         return dataframe
