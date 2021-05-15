@@ -75,6 +75,14 @@ class GodStra(IStrategy):
     timeframe = '12h'
     print('Add {\n\t"method": "AgeFilter",\n\t"min_days_listed": 30\n},\n to your pairlists in config (Under StaticPairList)')
 
+    def dna_size(dct: dict):
+        def int_from_str(st: str):
+            str_int = ''.join([d for d in st if d.isdigit()])
+            if str_int:
+                return int(str_int)
+            return -1 # in case if the parameter somehow doesn't have index
+        return len({int_from_str(digit) for digit in dct.keys()})
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
         dataframe = dropna(dataframe)
@@ -86,7 +94,7 @@ class GodStra(IStrategy):
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = list()
         # /5: Cuz We have 5 Group of variables inside buy_param
-        for i in range(int(len(self.buy_params)/5)):
+        for i in range(self.dna_size(self.buy_params)):
 
             OPR = self.buy_params[f'buy-oper-{i}']
             IND = self.buy_params[f'buy-indicator-{i}']
@@ -128,7 +136,7 @@ class GodStra(IStrategy):
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = list()
-        for i in range(int(len(self.sell_params)/5)):
+        for i in range(self.dna_size(self.sell_params)):
             OPR = self.sell_params[f'sell-oper-{i}']
             IND = self.sell_params[f'sell-indicator-{i}']
             CRS = self.sell_params[f'sell-cross-{i}']
