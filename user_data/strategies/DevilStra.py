@@ -554,7 +554,7 @@ class DevilStra(IStrategy):
     sell_spell = CategoricalParameter(spell_pot, default=spell_pot[0], space='sell')
 
     # Stoploss:
-    stoploss = -1
+    stoploss = -0.1
     # Buy hypers
     timeframe = '1h'
 
