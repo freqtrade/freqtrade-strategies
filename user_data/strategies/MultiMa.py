@@ -51,7 +51,7 @@ class MultiMa(IStrategy):
         for i in range(1, self.sell_ma_count.value+1):
             dataframe[f'sell-ma-{i}'] = ta.SMA(dataframe,
                                                timeperiod=int(i * self.sell_ma_gap.value))
-        print(dataframe.keys())
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
