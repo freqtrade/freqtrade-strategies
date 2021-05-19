@@ -36,7 +36,7 @@ class MultiMa(IStrategy):
     }
 
     # Stoploss:
-    stoploss = -1
+    stoploss = -0.1
 
     # Buy hypers
     timeframe = '4h'
