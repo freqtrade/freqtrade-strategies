@@ -43,7 +43,7 @@ class MultiMa(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
        
-        # We shoud dinamicly generate indicators
+        # We will dinamicly generate the indicators
         # cuz this method just run one time in hyperopts
         # if you have static timeframes you can move first loop of buy and sell trends populators inside this method
 
