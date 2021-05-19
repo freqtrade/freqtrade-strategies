@@ -42,19 +42,19 @@ class MultiMa(IStrategy):
     timeframe = '4h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # SMA - Simple Moving Average
-
-        for i in range(1, self.buy_ma_count.value+1):
-            dataframe[f'buy-ma-{i}'] = ta.SMA(dataframe,
-                                              timeperiod=int(i * self.buy_ma_gap.value))
-
-        for i in range(1, self.sell_ma_count.value+1):
-            dataframe[f'sell-ma-{i}'] = ta.SMA(dataframe,
-                                               timeperiod=int(i * self.sell_ma_gap.value))
+       
+        # We shoud dinamicly generate indicators
+        # cuz this method just run one time in hyperopts
+        # if you have static timeframes you can move first loop of buy and sell trends populators inside this method
 
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        
+        for i in range(1, self.buy_ma_count.value+1):
+            dataframe[f'buy-ma-{i}'] = ta.SMA(dataframe,
+                                              timeperiod=int(i * self.buy_ma_gap.value))
+        
         conditions = []
 
         for i in range(1, self.buy_ma_count.value):
@@ -73,6 +73,10 @@ class MultiMa(IStrategy):
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        for i in range(1, self.sell_ma_count.value+1):
+            dataframe[f'sell-ma-{i}'] = ta.SMA(dataframe,
+                                               timeperiod=int(i * self.sell_ma_gap.value))
+
         conditions = []
 
         for i in range(1, self.sell_ma_count.value):
