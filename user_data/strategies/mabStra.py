@@ -28,7 +28,7 @@ class mabStra(IStrategy):
     sell_div_max = DecimalParameter(0, 2, decimals=4, default=1.54593, space='sell')
     sell_div_min = DecimalParameter(0, 2, decimals=4, default=2.81436, space='sell')
 
-    stoploss = -1
+    stoploss = -0.1
 
     # Optimal timeframe use it in your config
     timeframe = '4h'
