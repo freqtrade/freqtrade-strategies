@@ -51,16 +51,16 @@ class MultiMa(IStrategy):
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         
-        for i in range(1, self.buy_ma_count.value+1):
-            dataframe[f'buy-ma-{i}'] = ta.SMA(dataframe,
-                                              timeperiod=int(i * self.buy_ma_gap.value))
+        for i in self.buy_ma_count.range:
+            dataframe[f'buy-ma-{i+1}'] = ta.SMA(dataframe,
+                                              timeperiod=int((i+1) * self.buy_ma_gap.value))
         
         conditions = []
 
-        for i in range(1, self.buy_ma_count.value):
+        for i in self.buy_ma_count.range:
             if i > 1:
                 shift = self.buy_ma_shift.value
-                for shift in range(self.buy_ma_shift.value):
+                for shift in self.buy_ma_shift.range:
                     conditions.append(
                         dataframe[f'buy-ma-{i}'].shift(shift) >
                         dataframe[f'buy-ma-{i-1}'].shift(shift)
@@ -73,16 +73,16 @@ class MultiMa(IStrategy):
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        for i in range(1, self.sell_ma_count.value+1):
-            dataframe[f'sell-ma-{i}'] = ta.SMA(dataframe,
-                                               timeperiod=int(i * self.sell_ma_gap.value))
+        for i in self.sell_ma_count.range:
+            dataframe[f'sell-ma-{i+1}'] = ta.SMA(dataframe,
+                                               timeperiod=int((i+1) * self.sell_ma_gap.value))
 
         conditions = []
 
-        for i in range(1, self.sell_ma_count.value):
+        for i in self.sell_ma_count.range:
             if i > 1:
                 shift = self.sell_ma_shift.value
-                for shift in range(self.sell_ma_shift.value):
+                for shift in self.sell_ma_shift.range:
                     conditions.append(
                         dataframe[f'sell-ma-{i}'].shift(shift) <
                         dataframe[f'sell-ma-{i-1}'].shift(shift)
