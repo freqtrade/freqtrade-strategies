@@ -1,10 +1,10 @@
 # DevilStra Strategy
-# 𝔇𝔢𝔳𝔦𝔩 𝔦𝔰 𝔞𝔩𝔴𝔞𝔶𝔰 𝔰𝔱𝔯𝔬𝔫𝔤𝔢𝔯 𝔱𝔥𝔞𝔫 𝔊𝔬𝔡. 
-# 𝔅𝔲𝔱 𝔱𝔥𝔢 𝔬𝔫𝔩𝔶 𝔬𝔫𝔢 𝔴𝔥𝔬 𝔥𝔞𝔰 𝔱𝔥𝔢 𝔞𝔟𝔦𝔩𝔦𝔱𝔶 
+# 𝔇𝔢𝔳𝔦𝔩 𝔦𝔰 𝔞𝔩𝔴𝔞𝔶𝔰 𝔰𝔱𝔯𝔬𝔫𝔤𝔢𝔯 𝔱𝔥𝔞𝔫 𝔊𝔬𝔡.
+# 𝔅𝔲𝔱 𝔱𝔥𝔢 𝔬𝔫𝔩𝔶 𝔬𝔫𝔢 𝔴𝔥𝔬 𝔥𝔞𝔰 𝔱𝔥𝔢 𝔞𝔟𝔦𝔩𝔦𝔱𝔶
 # 𝔱𝔬 𝔠𝔯𝔢𝔞𝔱𝔢 𝔫𝔢𝔴 𝔠𝔯𝔢𝔞𝔱𝔲𝔯𝔢𝔰 𝔦𝔰 𝔊𝔬𝔡.
-# 𝔄𝔫𝔡 𝔱𝔥𝔢 𝔡𝔢𝔳𝔦𝔩 𝔪𝔞𝔨𝔢𝔰 𝔭𝔬𝔴𝔢𝔯𝔣𝔲𝔩 𝔰𝔭𝔢𝔩𝔩𝔰 
-# 𝔣𝔯𝔬𝔪 𝔱𝔥𝔦𝔰 𝔰𝔪𝔞𝔩𝔩 𝔠𝔯𝔢𝔞𝔱𝔲𝔯𝔢𝔰 (𝔩𝔦𝔨𝔢 𝔣𝔯𝔬𝔤𝔰, 𝔢𝔱𝔠.) 
-# 𝔱𝔬 𝔪𝔞𝔨𝔢 𝔥𝔦𝔰 𝔰𝔭𝔢𝔩𝔩𝔰 𝔴𝔦𝔱𝔥 𝔉𝔯𝔞𝔤𝔪𝔢𝔫𝔱𝔞𝔱𝔦𝔬𝔫 𝔞𝔫𝔡 𝔪𝔦𝔵𝔦𝔫𝔤 𝔱𝔥𝔢𝔪.
+# 𝔄𝔫𝔡 𝔱𝔥𝔢 𝔡𝔢𝔳𝔦𝔩 𝔪𝔞𝔨𝔢𝔰 𝔭𝔬𝔴𝔢𝔯𝔣𝔲𝔩 𝔰𝔭𝔢𝔩𝔩𝔰
+# 𝔉𝔯𝔬𝔪 𝔱𝔥𝔦𝔰 𝔰𝔪𝔞𝔩𝔩 𝔠𝔯𝔢𝔞𝔱𝔲𝔯𝔢𝔰 (𝔩𝔦𝔨𝔢 𝔣𝔯𝔬𝔤𝔰, 𝔢𝔱𝔠.)
+# 𝔴𝔦𝔱𝔥 𝔣𝔯𝔞𝔤𝔪𝔢𝔫𝔱𝔞𝔱𝔦𝔬𝔫 𝔞𝔫𝔡 𝔪𝔦𝔵𝔦𝔫𝔤 𝔱𝔥𝔢𝔪.
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell --strategy GodStraNew
@@ -27,10 +27,12 @@ import numpy as np
 #  TODO: this gene is removed 'MAVP' cuz or error on periods
 
 ########################### SETTINGS ##############################
+# pairlist lenght(use exact count of pairs you used in whitelist size+1):
+PAIR_LIST_LENGHT = 300
 # you can find exact value of is inside GodStra
 TREND_CHECK_CANDLES = 4
-# Set the pain range of devil(2~infinite)
-PAIN_RANGE = 30000
+# Set the pain range of devil(2~9999)
+PAIN_RANGE = 300
 # Add GodStra Generated Results As spells inside SPELLS.
 # Set them unic phonemes like 'Zi' 'Gu' or 'Lu'!
 # * Use below replacement on GodStra results to
@@ -406,11 +408,13 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
     # TODO : it ill callculated in populate indicators.
 
     dataframe[indicator] = gene_calculator(dataframe, indicator)
-    dataframe[crossed_indicator] = gene_calculator(dataframe, crossed_indicator)
+    dataframe[crossed_indicator] = gene_calculator(
+        dataframe, crossed_indicator)
 
     indicator_trend_sma = f"{indicator}-SMA-{TREND_CHECK_CANDLES}"
     if operator in ["UT", "DT", "OT", "CUT", "CDT", "COT"]:
-        dataframe[indicator_trend_sma] = gene_calculator(dataframe, indicator_trend_sma)
+        dataframe[indicator_trend_sma] = gene_calculator(
+            dataframe, indicator_trend_sma)
 
     if operator == ">":
         condition = (
@@ -427,11 +431,13 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
     elif operator == "C":
         condition = (
             (qtpylib.crossed_below(dataframe[indicator], dataframe[crossed_indicator])) |
-            (qtpylib.crossed_above(dataframe[indicator], dataframe[crossed_indicator]))
+            (qtpylib.crossed_above(
+                dataframe[indicator], dataframe[crossed_indicator]))
         )
     elif operator == "CA":
         condition = (
-            qtpylib.crossed_above(dataframe[indicator], dataframe[crossed_indicator])
+            qtpylib.crossed_above(
+                dataframe[indicator], dataframe[crossed_indicator])
         )
     elif operator == "CB":
         condition = (
@@ -456,7 +462,8 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
         )
     elif operator == "/=R":
         condition = (
-            np.isclose(dataframe[indicator].div(dataframe[crossed_indicator]), real_num)
+            np.isclose(dataframe[indicator].div(
+                dataframe[crossed_indicator]), real_num)
         )
     elif operator == "/<R":
         condition = (
@@ -528,30 +535,34 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
 
 class DevilStra(IStrategy):
     # #################### RESULTS PASTE PLACE ####################
-    # * 11/1000:    123 trades. 80/0/43 Wins/Draws/Losses. Avg profit  18.06%. Median profit   7.08%. Total profit  0.02199610 BTC (  22.00Σ%). Avg duration 22 days, 18:28:00 min. Objective: -36.39438
+    # *    4/1000:      9 trades. 7/0/2 Wins/Draws/Losses. Avg profit  91.39%. Median profit  53.30%. Total profit  0.08233278 BTC (  82.33Σ%). Avg duration 23 days, 8:00:00 min. Objective: -3.27019
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_spell": ('Lu', 'Lu', 'Si', 'Pa', 'Zi', 'Si', 'Gu', 'Zi', 'Si', 'Gu', 'Ra', 'Lu', 'Gu', 'A', 'Pa', 'A', 'Zi', 'De', 'Cu', 'Gu', 'Cu', 'Ra', 'Cu', 'Pa', 'Lu', 'Gu', 'Cu', 'Zi', 'Si', 'Zi', 'Cu', 'A', 'Ra', 'De', 'Si', 'Zi', 'A', 'Ra', 'Gu', 'De', 'De', 'Lu', 'Si', 'Gu', 'Gu', 'Pa', 'De', 'Lu', 'Si', 'Zi', 'Pa', 'Si', 'Gu', 'Zi', 'De', 'Cu', 'Gu', 'Si', 'Pa', 'Pa', 'Si', 'A', 'Zi', 'De', 'Ra', 'Si', 'Gu', 'Si', 'De', 'Gu', 'Pa', 'De', 'A', 'Si', 'De', 'Pa', 'Ra', 'Zi', 'De', 'Pa', 'Zi', 'Ra', 'A', 'Cu', 'Pa', 'Pa', 'Lu', 'Pa', 'De', 'Gu', 'Gu', 'Ra', 'Lu', 'De', 'Cu', 'Ra', 'Zi', 'Si', 'Ra', 'Lu', 'De', 'A', 'Zi', 'Cu', 'Gu', 'Pa', 'De', 'Ra', 'Pa', 'Pa', 'A', 'Si', 'Ra', 'Cu', 'De', 'Gu', 'Si', 'Gu', 'Zi', 'Cu', 'A', 'Lu', 'Lu', 'A', 'Si', 'Pa', 'Zi', 'Zi', 'Cu', 'Ra', 'Lu', 'Ra', 'De', 'De', 'A', 'Si', 'Pa', 'De', 'Lu', 'Pa', 'De', 'Ra', 'Ra', 'Pa', 'Pa', 'Gu', 'Gu', 'Ra', 'Gu', 'Ra', 'Pa', 'Lu', 'A', 'Zi', 'Gu', 'Lu', 'Lu', 'Zi', 'Gu', 'A', 'Ra', 'Gu', 'Zi', 'Si', 'A', 'Cu', 'Pa', 'De', 'Lu', 'Cu', 'A', 'Zi', 'A', 'Lu', 'Lu', 'Gu', 'Pa', 'Gu', 'A', 'Gu', 'Gu', 'Cu', 'Si', 'Lu', 'Zi', 'De', 'Gu', 'Zi', 'Si', 'Ra', 'De', 'Pa', 'Gu', 'Gu', 'Zi', 'Lu', 'Zi', 'Lu', 'Si', 'Zi', 'Gu', 'Si', 'Ra', 'Lu', 'Pa', 'A', 'A', 'Lu', 'Pa', 'De', 'De', 'Cu', 'Ra', 'Lu', 'De', 'Si', 'Cu', 'Si', 'Si', 'Zi', 'De', 'Si', 'Si', 'Cu', 'Gu', 'Si', 'Ra', 'Si', 'Cu', 'A', 'Zi', 'De', 'Gu', 'Pa', 'Lu', 'Cu', 'Cu', 'Pa', 'Cu', 'A', 'Si', 'Zi', 'Cu', 'Zi', 'Ra', 'Si', 'Lu', 'Lu', 'De', 'Cu', 'Cu', 'Lu', 'Pa', 'Ra', 'Cu', 'Lu', 'Ra', 'Zi', 'Gu', 'Ra', 'Cu', 'A', 'De', 'Cu', 'Ra', 'Ra', 'De', 'Zi', 'De', 'De', 'A', 'Pa', 'A', 'Gu', 'Lu', 'De', 'De', 'A', 'Pa', 'Gu', 'Gu', 'De', 'Gu', 'Cu', 'Zi', 'Si', 'Gu', 'Ra', 'Pa', 'Gu', 'Lu', 'A', 'Lu', 'A', 'Si', 'Si', 'Pa', 'Ra', 'Cu', 'Lu'),
+        "buy_spell": "Pa,Gu,Lu,Gu,Ra,Gu,Cu,Si,Lu,De,Si,Cu,De,Lu,Cu,Cu,Zi,De,Ra,Lu,Lu,Lu,De,Gu,Lu,Cu,Cu,Gu,Pa,Si,A,Zi,Gu,Ra,Ra,Ra,Ra,Pa,De,Gu,A,Ra,Pa,A,De,Si,Zi,Lu,De,De,Zi,Ra,De,Zi,Lu,Si,Zi,Pa,Gu,De,Lu,Pa,Cu,Lu,Ra,De,Ra,De,Ra,Cu,Pa,Si,Pa,Gu,Gu,A,A,Si,A,Cu,Zi,Ra,De,Si,A,Cu,Zi,Ra,Zi,De,Ra,De,Lu,Si,Lu,Pa,Ra,A,Ra,Ra,Lu,Gu,Zi,Zi,De,Zi,Cu,Pa,Si,Ra,A,Si,De,Zi,Gu,Ra,Gu,Gu,Zi,Lu,Lu,Cu,Pa,Cu,Si,Gu,Si,Cu,Si,Zi,Gu,A,Pa,Zi,Ra,Cu,A,De,Gu,A,Si,Cu,Gu,Cu,Pa,Lu,Gu,Gu,Lu,Ra,Cu,Gu,Zi,A,Pa,Si,Si,De,Ra,Gu,Pa,Cu,Lu,Cu,Lu,Si,Lu,Gu,Ra,De,De,Pa,Lu,Ra,Cu,Si,Pa,Pa,Gu,Si,Zi,Zi,Zi,Zi,Lu,Cu,Si,A,Zi,Zi,De,A,De,Zi,Lu,A,Pa,A,Si,Zi,Pa,A,Zi,Zi,Gu,Zi,De,Ra,A,De,Lu,Pa,A,Gu,Gu,Si,Ra,Ra,De,Zi,Lu,Lu,De,Si,Pa,Ra,Si,Pa,Zi,De,Lu,Cu,Pa,Cu,Cu,Lu,Cu,Pa,A,Zi,Lu,Cu,Lu,Cu,De,Ra,Gu,Cu,Zi,Pa,Gu,A,Ra,Zi,Pa,Zi,Cu,De,Pa,Si,Si,Pa,Zi,Pa,Si,Lu,Gu,Gu,Zi,A,De,De,A,Gu,Cu,Gu,De,Zi,Lu,Lu,A,Cu,Gu,Zi,Pa,Gu,Lu,Si,Zi,Zi,A,Zi,Lu,Pa,Zi,Zi,A,Si,Gu,Cu",
     }
 
     # Sell hyperspace params:
     sell_params = {
-        "sell_spell": ('A', 'Lu', 'Lu', 'Cu', 'De', 'Zi', 'Si', 'Lu', 'Cu', 'A', 'A', 'Pa', 'Si', 'Pa', 'Si', 'Zi', 'Si', 'Zi', 'Pa', 'Cu', 'Zi', 'A', 'De', 'Si', 'A', 'Gu', 'Gu', 'Pa', 'Lu', 'Ra', 'De', 'Gu', 'Pa', 'Gu', 'Ra', 'Gu', 'Gu', 'Zi', 'Lu', 'Gu', 'Ra', 'Si', 'Lu', 'Ra', 'Zi', 'De', 'Gu', 'Ra', 'Si', 'Ra', 'De', 'Si', 'Ra', 'Cu', 'Lu', 'Lu', 'Ra', 'Cu', 'A', 'De', 'Pa', 'Cu', 'Pa', 'Pa', 'A', 'Zi', 'Lu', 'Zi', 'Lu', 'Si', 'A', 'Lu', 'Zi', 'Pa', 'Gu', 'Ra', 'Zi', 'De', 'Cu', 'A', 'Si', 'Gu', 'De', 'Cu', 'De', 'Ra', 'Cu', 'Si', 'Gu', 'De', 'Cu', 'Pa', 'Si', 'Zi', 'Cu', 'Lu', 'Lu', 'Si', 'Cu', 'Zi', 'A', 'Pa', 'De', 'Zi', 'Si', 'Si', 'Cu', 'Pa', 'Zi', 'Si', 'Si', 'Lu', 'Pa', 'Lu', 'De', 'Si', 'Cu', 'Cu', 'Zi', 'Gu', 'Si', 'Ra', 'Pa', 'Gu', 'Gu', 'Lu', 'Pa', 'Cu', 'Zi', 'Pa', 'Si', 'Ra', 'A', 'Gu', 'Pa', 'A', 'A', 'A', 'A', 'Si', 'Cu', 'Gu', 'De', 'Pa', 'De', 'Cu', 'Zi', 'Pa', 'A', 'Cu', 'Zi', 'Gu', 'Gu', 'Lu', 'Zi', 'A', 'Gu', 'Pa', 'Lu', 'Si', 'Zi', 'A', 'A', 'Pa', 'Gu', 'Zi', 'De', 'Ra', 'De', 'Cu', 'Ra', 'Pa', 'Pa', 'Lu', 'Zi', 'Si', 'Gu', 'Zi', 'Ra', 'De', 'Cu', 'Zi', 'Cu', 'Gu', 'De', 'Lu', 'A', 'A', 'Si', 'De', 'Si', 'Zi', 'Gu', 'Si', 'Cu', 'Ra', 'Lu', 'Lu', 'De', 'Gu', 'Cu', 'Pa', 'Ra', 'Lu', 'Si', 'Ra', 'Gu', 'Cu', 'De', 'Si', 'Pa', 'Gu', 'Zi', 'Si', 'A', 'Cu', 'Lu', 'Si', 'Si', 'Zi', 'Si', 'Gu', 'A', 'Cu', 'A', 'Gu', 'A', 'Zi', 'Ra', 'Zi', 'Zi', 'Zi', 'Ra', 'Gu', 'De', 'Zi', 'Ra', 'Zi', 'A', 'De', 'De', 'Ra', 'A', 'Gu', 'De', 'Lu', 'Cu', 'Gu', 'Si', 'A', 'Cu', 'Lu', 'Cu', 'A', 'Zi', 'De', 'Gu', 'Si', 'Zi', 'Gu', 'Pa', 'Si', 'Gu', 'Lu', 'Cu', 'Gu', 'De', 'Cu', 'Cu', 'Ra', 'Gu', 'Pa', 'Cu', 'De', 'De', 'Zi', 'Pa', 'A', 'Cu', 'Zi', 'A', 'Zi', 'De', 'Lu', 'Cu', 'Cu', 'De', 'Cu', 'Ra', 'Ra', 'Zi', 'Si', 'Cu', 'Ra', 'De', 'Cu', 'Gu', 'Lu', 'Pa', 'Gu'),
+        "sell_spell": "Cu,Si,Pa,Lu,Zi,De,Zi,A,A,Si,Si,Lu,Pa,Cu,Lu,Si,De,Ra,Lu,Zi,Lu,Pa,De,Gu,Si,Cu,A,Pa,Gu,Zi,De,Gu,Cu,Gu,Pa,Cu,Gu,Pa,Si,Pa,Ra,Si,De,Zi,Ra,Zi,A,Pa,De,A,Zi,Si,Zi,Si,Lu,De,Si,A,Si,Ra,Pa,Ra,Cu,Lu,Pa,Cu,Ra,Zi,Ra,Lu,Cu,Cu,Pa,Si,Ra,De,Zi,A,Cu,Si,Si,A,Zi,Cu,A,Pa,Lu,Zi,Zi,Gu,Cu,Zi,De,Lu,A,De,De,Zi,Ra,A,Pa,Cu,Zi,Ra,Ra,Cu,De,De,Ra,Pa,Si,Lu,Si,Cu,Zi,A,Si,De,Ra,Cu,Si,Cu,Cu,De,Zi,Gu,Zi,A,Gu,Cu,Gu,Ra,De,Zi,Ra,Ra,Zi,Gu,Gu,Gu,De,Pa,Si,De,Lu,Si,A,Cu,Ra,Gu,A,Zi,A,Cu,De,Lu,Ra,Ra,Cu,Cu,Cu,Zi,De,De,Si,A,Pa,De,Lu,A,A,Ra,Lu,Gu,Zi,Ra,A,Gu,Gu,Ra,Cu,A,Pa,A,Pa,Lu,Ra,Pa,Lu,Si,Ra,Si,Zi,A,Lu,De,Cu,De,Gu,A,Zi,De,De,Si,A,Gu,Pa,A,Si,A,A,Gu,Ra,Cu,Cu,Si,Si,Cu,A,Cu,Cu,Pa,A,Gu,Gu,Ra,Lu,Si,Lu,A,Gu,Lu,Gu,Ra,Zi,Gu,Cu,Zi,Lu,De,Ra,Ra,A,Zi,Si,A,De,Gu,Ra,A,Si,Cu,Lu,De,Lu,Zi,Pa,Cu,De,Lu,Pa,Si,Pa,Si,Si,A,Lu,Ra,A,Gu,Cu,Cu,Ra,Gu,Cu,Cu,Gu,A,Gu,Zi,Pa,De,Lu,Zi,A,Gu,Ra,De,De,Lu,Pa,Si,Si,Si,Cu,Gu,Pa,Zi,Pa,Gu",
     }
     # #################### END OF RESULT PLACE ####################
     spell_pot = [
-        tuple(
-            random.choices(
-                list(SPELLS.keys()),
-                # TODO: k will be change to len(pairlist)
-                k=300
+        ",".join(
+            tuple(
+                random.choices(
+                    list(SPELLS.keys()),
+                    # TODO: k will be change to len(pairlist)
+                    k=PAIR_LIST_LENGHT
+                )
             )
         )for i in range(PAIN_RANGE)
     ]
 
-    buy_spell = CategoricalParameter(spell_pot, default=spell_pot[0], space='buy')
-    sell_spell = CategoricalParameter(spell_pot, default=spell_pot[0], space='sell')
+    buy_spell = CategoricalParameter(
+        spell_pot, default=spell_pot[0], space='buy')
+    sell_spell = CategoricalParameter(
+        spell_pot, default=spell_pot[0], space='sell')
 
     # Stoploss:
     stoploss = -0.1
@@ -565,7 +576,7 @@ class DevilStra(IStrategy):
 
         pairs = self.dp.current_whitelist()
         pair_index = pairs.index(metadata['pair'])
-        buy_params_index = self.buy_spell.value[pair_index]
+        buy_params_index = self.buy_spell.value.split(",")[pair_index]
 
         params = spell_finder(buy_params_index, 'buy')
         conditions = list()
@@ -623,7 +634,7 @@ class DevilStra(IStrategy):
 
         pairs = self.dp.current_whitelist()
         pair_index = pairs.index(metadata['pair'])
-        sell_params_index = self.sell_spell.value[pair_index]
+        sell_params_index = self.sell_spell.value.split(",")[pair_index]
 
         params = spell_finder(sell_params_index, 'sell')
 
