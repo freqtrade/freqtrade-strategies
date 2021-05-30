@@ -1,14 +1,24 @@
 # DevilStra Strategy
 # 𝔇𝔢𝔳𝔦𝔩 𝔦𝔰 𝔞𝔩𝔴𝔞𝔶𝔰 𝔰𝔱𝔯𝔬𝔫𝔤𝔢𝔯 𝔱𝔥𝔞𝔫 𝔊𝔬𝔡.
 # 𝔅𝔲𝔱 𝔱𝔥𝔢 𝔬𝔫𝔩𝔶 𝔬𝔫𝔢 𝔴𝔥𝔬 𝔥𝔞𝔰 𝔱𝔥𝔢 𝔞𝔟𝔦𝔩𝔦𝔱𝔶
-# 𝔱𝔬 𝔠𝔯𝔢𝔞𝔱𝔢 𝔫𝔢𝔴 𝔠𝔯𝔢𝔞𝔱𝔲𝔯𝔢𝔰 𝔦𝔰 𝔊𝔬𝔡.
-# 𝔄𝔫𝔡 𝔱𝔥𝔢 𝔡𝔢𝔳𝔦𝔩 𝔪𝔞𝔨𝔢𝔰 𝔭𝔬𝔴𝔢𝔯𝔣𝔲𝔩 𝔰𝔭𝔢𝔩𝔩𝔰
+# 𝔗𝔬 𝔠𝔯𝔢𝔞𝔱𝔢 𝔫𝔢𝔴 𝔠𝔯𝔢𝔞𝔱𝔲𝔯𝔢𝔰 𝔦𝔰 𝔊𝔬𝔡.
+# 𝔄𝔫𝔡 𝔱𝔥𝔢 𝔇𝔢𝔳𝔦𝔩 𝔪𝔞𝔨𝔢𝔰 𝔭𝔬𝔴𝔢𝔯𝔣𝔲𝔩 𝔰𝔭𝔢𝔩𝔩𝔰
 # 𝔉𝔯𝔬𝔪 𝔱𝔥𝔦𝔰 𝔰𝔪𝔞𝔩𝔩 𝔠𝔯𝔢𝔞𝔱𝔲𝔯𝔢𝔰 (𝔩𝔦𝔨𝔢 𝔣𝔯𝔬𝔤𝔰, 𝔢𝔱𝔠.)
-# 𝔴𝔦𝔱𝔥 𝔣𝔯𝔞𝔤𝔪𝔢𝔫𝔱𝔞𝔱𝔦𝔬𝔫 𝔞𝔫𝔡 𝔪𝔦𝔵𝔦𝔫𝔤 𝔱𝔥𝔢𝔪.
+# 𝔚𝔦𝔱𝔥 𝔣𝔯𝔞𝔤𝔪𝔢𝔫𝔱𝔞𝔱𝔦𝔬𝔫 𝔞𝔫𝔡 𝔪𝔦𝔵𝔦𝔫𝔤 𝔱𝔥𝔢𝔪.
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell --strategy GodStraNew
+# * IMPORTANT: You Need An "STATIC" Pairlist On Your Config.json !
+# * IMPORTANT: First set PAIR_LIST_LENGHT={pair_whitelist size}
+# * And re-hyperopt the Sell strategy And paste result in exact
+# * place(lines 535~564)")
+
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces all -s 𝕯𝖊𝖛𝖎𝖑𝕾𝖙𝖗𝖆
+
 # --- Do not remove these libs ---
+import numpy as np
+from functools import reduce
+import freqtrade.vendor.qtpylib.indicators as qtpylib
+import talib.abstract as ta
 import random
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
 
@@ -16,39 +26,29 @@ from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 
-# --------------------------------
-
-# Add your lib to import here
-# TODO: talib is fast but have not more indicators
-import talib.abstract as ta
-import freqtrade.vendor.qtpylib.indicators as qtpylib
-from functools import reduce
-import numpy as np
-#  TODO: this gene is removed 'MAVP' cuz or error on periods
-
-########################### SETTINGS ##############################
+# ########################## SETTINGS ##############################
 # pairlist lenght(use exact count of pairs you used in whitelist size+1):
-PAIR_LIST_LENGHT = 300
+PAIR_LIST_LENGHT = 269
 # you can find exact value of is inside GodStra
 TREND_CHECK_CANDLES = 4
 # Set the pain range of devil(2~9999)
-PAIN_RANGE = 300
-# Add GodStra Generated Results As spells inside SPELLS.
+PAIN_RANGE = 1000
+# Add "GodStraNew" Generated Results As spells inside SPELLS.
 # Set them unic phonemes like 'Zi' 'Gu' or 'Lu'!
 # * Use below replacement on GodStra results to
 # * Change God Generated Creatures to Spells:
-# +--------------------------+----------------------+
-# | GodStra Hyperopt Results |   DevilStra Spells   |
-# +--------------------------+----------------------+
-# |                          | "phonem" : {         |
-# | buy_params =  {          |    "buy_params" : {  |
-# |   ...                    |      ...             |
-# | }                        |    },                |
-# | sell_params = {          |    "sell_params" : { |
-# |   ...                    |      ...             |
-# | }                        |    }                 |
-# |                          | },                   |
-# +--------------------------+----------------------+
+# +-----------------------------+----------------------+
+# | GodStraNew Hyperopt Results |   DevilStra Spells   |
+# +-----------------------------+----------------------+
+# |                             | "phonem" : {         |
+# |    buy_params =  {          |    "buy_params" : {  |
+# |      ...                    |      ...             |
+# |    }                        |    },                |
+# |    sell_params = {          |    "sell_params" : { |
+# |      ...                    |      ...             |
+# |    }                        |    }                 |
+# |                             | },                   |
+# +-----------------------------+----------------------+
 SPELLS = {
     "Zi": {
         "buy_params": {
@@ -140,7 +140,7 @@ SPELLS = {
             "sell_real_num2": 0.8467,
         }
     },
-    "A": {
+    "La": {
         "buy_params": {
             "buy_crossed_indicator0": "WMA-14",
             "buy_crossed_indicator1": "MAMA-1-14",
@@ -321,7 +321,7 @@ SPELLS = {
         }
     }
 }
-######################### END SETTINGS ############################
+# ######################## END SETTINGS ############################
 
 
 def spell_finder(index, space):
@@ -534,19 +534,40 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
 
 
 class DevilStra(IStrategy):
-    # #################### RESULTS PASTE PLACE ####################
-    # *    4/1000:      9 trades. 7/0/2 Wins/Draws/Losses. Avg profit  91.39%. Median profit  53.30%. Total profit  0.08233278 BTC (  82.33Σ%). Avg duration 23 days, 8:00:00 min. Objective: -3.27019
+    # #################### RESULT PASTE PLACE ####################
+    # *    9/100:    207 trades. 159/36/12 Wins/Draws/Losses. Avg profit   1.76%. Median profit   2.19%. Total profit  0.12158029 BTC ( 121.58Σ%). Avg duration 18:51:00 min. Objective: -30.36214
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_spell": "Pa,Gu,Lu,Gu,Ra,Gu,Cu,Si,Lu,De,Si,Cu,De,Lu,Cu,Cu,Zi,De,Ra,Lu,Lu,Lu,De,Gu,Lu,Cu,Cu,Gu,Pa,Si,A,Zi,Gu,Ra,Ra,Ra,Ra,Pa,De,Gu,A,Ra,Pa,A,De,Si,Zi,Lu,De,De,Zi,Ra,De,Zi,Lu,Si,Zi,Pa,Gu,De,Lu,Pa,Cu,Lu,Ra,De,Ra,De,Ra,Cu,Pa,Si,Pa,Gu,Gu,A,A,Si,A,Cu,Zi,Ra,De,Si,A,Cu,Zi,Ra,Zi,De,Ra,De,Lu,Si,Lu,Pa,Ra,A,Ra,Ra,Lu,Gu,Zi,Zi,De,Zi,Cu,Pa,Si,Ra,A,Si,De,Zi,Gu,Ra,Gu,Gu,Zi,Lu,Lu,Cu,Pa,Cu,Si,Gu,Si,Cu,Si,Zi,Gu,A,Pa,Zi,Ra,Cu,A,De,Gu,A,Si,Cu,Gu,Cu,Pa,Lu,Gu,Gu,Lu,Ra,Cu,Gu,Zi,A,Pa,Si,Si,De,Ra,Gu,Pa,Cu,Lu,Cu,Lu,Si,Lu,Gu,Ra,De,De,Pa,Lu,Ra,Cu,Si,Pa,Pa,Gu,Si,Zi,Zi,Zi,Zi,Lu,Cu,Si,A,Zi,Zi,De,A,De,Zi,Lu,A,Pa,A,Si,Zi,Pa,A,Zi,Zi,Gu,Zi,De,Ra,A,De,Lu,Pa,A,Gu,Gu,Si,Ra,Ra,De,Zi,Lu,Lu,De,Si,Pa,Ra,Si,Pa,Zi,De,Lu,Cu,Pa,Cu,Cu,Lu,Cu,Pa,A,Zi,Lu,Cu,Lu,Cu,De,Ra,Gu,Cu,Zi,Pa,Gu,A,Ra,Zi,Pa,Zi,Cu,De,Pa,Si,Si,Pa,Zi,Pa,Si,Lu,Gu,Gu,Zi,A,De,De,A,Gu,Cu,Gu,De,Zi,Lu,Lu,A,Cu,Gu,Zi,Pa,Gu,Lu,Si,Zi,Zi,A,Zi,Lu,Pa,Zi,Zi,A,Si,Gu,Cu",
+        "buy_spell": "La,Gu,Ra,Zi,Gu,Lu,Pa,Pa,La,De,Cu,Gu,Gu,Pa,Ra,Ra,La,Cu,Zi,Pa,Pa,Lu,Gu,Gu,Cu,Gu,Gu,La,Gu,La,La,De,Ra,Zi,Lu,Gu,Lu,Pa,Gu,Cu,De,Si,Pa,Pa,Lu,Zi,Lu,Gu,Cu,De,La,La,De,Cu,Si,Gu,Pa,La,La,De,Si,Si,La,Gu,Si,Cu,Cu,Ra,Si,Ra,Si,Gu,Si,Ra,La,Zi,Si,Lu,Gu,De,Ra,Zi,Gu,Pa,Si,Lu,Si,Pa,Ra,Ra,Zi,Zi,Cu,Gu,Lu,De,Lu,La,De,Ra,Ra,La,Gu,Ra,Pa,Si,La,De,Cu,Gu,Cu,Pa,Zi,Si,Ra,Si,Gu,Ra,De,Ra,Gu,Pa,Gu,Pa,Cu,La,Cu,De,Pa,Si,De,Ra,Pa,Ra,Si,Ra,Zi,Zi,Cu,Zi,Lu,Ra,De,La,La,Si,Pa,Zi,Lu,Zi,Pa,Cu,Si,Si,Gu,Cu,La,Pa,De,Lu,Gu,De,Gu,Lu,Cu,Gu,De,Gu,La,Si,Gu,Gu,La,Pa,Zi,Cu,La,De,Cu,Lu,Cu,Pa,Cu,Cu,De,La,Zi,Lu,Lu,Si,Zi,Si,Si,Si,Ra,Cu,Gu,Pa,Lu,Lu,Zi,Zi,Gu,Lu,De,Gu,Zi,Lu,La,Pa,Lu,La,Zi,La,Ra,Zi,Gu,Si,Ra,Ra,Gu,Pa,Lu,Cu,Pa,La,Ra,La,Ra,Cu,Pa,Gu,Gu,Lu,Si,Ra,De,La,La,De,La,Lu,Gu,La,Lu,Cu,Cu,Cu,La,Pa,Cu,Lu,Pa,Si,Si,De,Gu,Pa,Gu,Gu,Ra,Lu,Ra,Cu,Si,Gu,La,La,La",
     }
 
     # Sell hyperspace params:
     sell_params = {
-        "sell_spell": "Cu,Si,Pa,Lu,Zi,De,Zi,A,A,Si,Si,Lu,Pa,Cu,Lu,Si,De,Ra,Lu,Zi,Lu,Pa,De,Gu,Si,Cu,A,Pa,Gu,Zi,De,Gu,Cu,Gu,Pa,Cu,Gu,Pa,Si,Pa,Ra,Si,De,Zi,Ra,Zi,A,Pa,De,A,Zi,Si,Zi,Si,Lu,De,Si,A,Si,Ra,Pa,Ra,Cu,Lu,Pa,Cu,Ra,Zi,Ra,Lu,Cu,Cu,Pa,Si,Ra,De,Zi,A,Cu,Si,Si,A,Zi,Cu,A,Pa,Lu,Zi,Zi,Gu,Cu,Zi,De,Lu,A,De,De,Zi,Ra,A,Pa,Cu,Zi,Ra,Ra,Cu,De,De,Ra,Pa,Si,Lu,Si,Cu,Zi,A,Si,De,Ra,Cu,Si,Cu,Cu,De,Zi,Gu,Zi,A,Gu,Cu,Gu,Ra,De,Zi,Ra,Ra,Zi,Gu,Gu,Gu,De,Pa,Si,De,Lu,Si,A,Cu,Ra,Gu,A,Zi,A,Cu,De,Lu,Ra,Ra,Cu,Cu,Cu,Zi,De,De,Si,A,Pa,De,Lu,A,A,Ra,Lu,Gu,Zi,Ra,A,Gu,Gu,Ra,Cu,A,Pa,A,Pa,Lu,Ra,Pa,Lu,Si,Ra,Si,Zi,A,Lu,De,Cu,De,Gu,A,Zi,De,De,Si,A,Gu,Pa,A,Si,A,A,Gu,Ra,Cu,Cu,Si,Si,Cu,A,Cu,Cu,Pa,A,Gu,Gu,Ra,Lu,Si,Lu,A,Gu,Lu,Gu,Ra,Zi,Gu,Cu,Zi,Lu,De,Ra,Ra,A,Zi,Si,A,De,Gu,Ra,A,Si,Cu,Lu,De,Lu,Zi,Pa,Cu,De,Lu,Pa,Si,Pa,Si,Si,A,Lu,Ra,A,Gu,Cu,Cu,Ra,Gu,Cu,Cu,Gu,A,Gu,Zi,Pa,De,Lu,Zi,A,Gu,Ra,De,De,Lu,Pa,Si,Si,Si,Cu,Gu,Pa,Zi,Pa,Gu",
+        "sell_spell": "Zi,Pa,De,Si,Zi,Pa,Ra,Ra,Gu,La,Si,Pa,Ra,Gu,Cu,Cu,De,Si,Cu,Ra,La,Pa,Pa,De,De,La,Zi,Lu,Gu,Lu,Si,De,Zi,Si,Lu,Cu,De,Cu,De,Zi,Ra,De,La,Lu,De,Gu,La,De,Lu,Zi,Zi,Zi,Ra,Cu,La,Lu,Si,Ra,La,Ra,Zi,Lu,Ra,Pa,De,Lu,La,De,Ra,Si,Pa,Gu,Lu,Zi,Lu,Si,Zi,De,Si,La,Cu,Cu,Cu,Si,De,Si,Si,Si,Zi,La,Pa,De,Pa,Zi,La,Lu,Pa,Pa,Lu,La,Lu,Zi,Pa,La,La,Si,Cu,Si,Zi,De,Ra,Ra,Cu,Ra,Zi,Cu,La,Cu,Si,La,La,Gu,Si,Zi,Pa,De,Pa,Ra,Ra,Pa,Si,Gu,Ra,Cu,Ra,Ra,Ra,Lu,De,Lu,Lu,Ra,Pa,Pa,La,Si,Ra,Cu,Pa,De,Cu,Pa,Cu,Gu,Cu,Gu,Lu,Ra,Ra,Cu,Pa,La,Lu,Gu,Cu,Si,La,La,Si,La,Lu,Gu,Cu,Pa,De,Cu,La,La,Lu,Si,Pa,Si,Ra,Pa,Lu,Zi,Si,Ra,Si,Pa,Pa,Gu,Zi,De,Ra,Pa,Pa,Zi,Gu,Cu,Zi,Ra,Zi,Si,De,La,Zi,Pa,Zi,Si,De,De,Zi,De,La,Gu,Zi,Ra,La,La,Si,Pa,Pa,Si,De,Ra,Gu,Zi,Pa,Ra,Ra,La,De,Ra,Si,Gu,Pa,Pa,Pa,De,De,De,Si,Zi,Gu,La,Ra,Lu,La,La,La,Ra,Ra,Lu,Gu,Lu,Pa,Lu,Pa,Lu,Ra,Si,Ra,Lu,Si,Lu,Zi,Gu,De",
     }
+
+    # ROI table:
+    minimal_roi = {
+        "0": 0.498,
+        "427": 0.18,
+        "1000": 0.031,
+        "1561": 0
+    }
+
+    # Stoploss:
+    stoploss = -0.301
+
+    # Trailing stop:
+    trailing_stop = True
+    trailing_stop_positive = 0.01
+    trailing_stop_positive_offset = 0.027
+    trailing_only_offset_is_reached = True
     # #################### END OF RESULT PLACE ####################
+
+    # 𝖂𝖔𝖗𝖘𝖙, 𝖀𝖓𝖎𝖉𝖊𝖆𝖑, 𝕾𝖚𝖇𝖔𝖕𝖙𝖎𝖒𝖆𝖑, 𝕸𝖆𝖑𝖆𝖕𝖗𝖔𝖕𝖔𝖘 𝕬𝖓𝖉 𝕯𝖎𝖘𝖒𝖆𝖑 𝖙𝖎𝖒𝖊𝖋𝖗𝖆𝖒𝖊 𝖋𝖔𝖗 𝖙𝖍𝖎𝖘 𝖘𝖙𝖗𝖆𝖙𝖊𝖌𝖞:
+    timeframe = '1h'
+
     spell_pot = [
         ",".join(
             tuple(
@@ -564,19 +585,27 @@ class DevilStra(IStrategy):
     sell_spell = CategoricalParameter(
         spell_pot, default=spell_pot[0], space='sell')
 
-    # Stoploss:
-    stoploss = -0.1
-    # Buy hypers
-    timeframe = '1h'
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         pairs = self.dp.current_whitelist()
+        pairs_len = len(pairs)
         pair_index = pairs.index(metadata['pair'])
-        buy_params_index = self.buy_spell.value.split(",")[pair_index]
+
+        buy_spells = self.buy_spell.value.split(",")
+        buy_spells_len = len(buy_spells)
+
+        if pairs_len > buy_spells_len:
+            print(
+                f"First set PAIR_LIST_LENGHT={pairs_len + 1} And re-hyperopt the")
+            print("Buy strategy And paste result in exact place(lines 535~564)")
+            print("IMPORTANT: You Need An 'STATIC' Pairlist On Your Config.json !!!")
+            exit()
+
+        buy_params_index = buy_spells[pair_index]
 
         params = spell_finder(buy_params_index, 'buy')
         conditions = list()
@@ -624,7 +653,7 @@ class DevilStra(IStrategy):
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'buy'] = 1
+                'buy']=1
 
         # print(len(dataframe.keys()))
 
@@ -633,8 +662,20 @@ class DevilStra(IStrategy):
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         pairs = self.dp.current_whitelist()
+        pairs_len = len(pairs)
         pair_index = pairs.index(metadata['pair'])
-        sell_params_index = self.sell_spell.value.split(",")[pair_index]
+
+        sell_spells = self.sell_spell.value.split(",")
+        sell_spells_len = len(sell_spells)
+
+        if pairs_len > sell_spells_len:
+            print(
+                f"First set PAIR_LIST_LENGHT={pairs_len + 1} And re-hyperopt the")
+            print("Sell strategy And paste result in exact place(lines 535~564)")
+            print("IMPORTANT: You Need An 'STATIC' Pairlist On Your Config.json !!!")
+            exit()
+
+        sell_params_index = sell_spells[pair_index]
 
         params = spell_finder(sell_params_index, 'sell')
 
