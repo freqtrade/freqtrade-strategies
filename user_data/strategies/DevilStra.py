@@ -10,9 +10,9 @@
 # * IMPORTANT: You Need An "STATIC" Pairlist On Your Config.json !
 # * IMPORTANT: First set PAIR_LIST_LENGHT={pair_whitelist size}
 # * And re-hyperopt the Sell strategy And paste result in exact
-# * place(lines 535~564)")
+# * place(lines 535~564)
 
-# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces all -s 𝕯𝖊𝖛𝖎𝖑𝕾𝖙𝖗𝖆
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell -s 𝕯𝖊𝖛𝖎𝖑𝕾𝖙𝖗𝖆
 
 # --- Do not remove these libs ---
 import numpy as np
@@ -29,13 +29,13 @@ from pandas import DataFrame
 # ########################## SETTINGS ##############################
 # pairlist lenght(use exact count of pairs you used in whitelist size+1):
 PAIR_LIST_LENGHT = 269
-# you can find exact value of is inside GodStra
+# you can find exact value of this inside GodStraNew
 TREND_CHECK_CANDLES = 4
 # Set the pain range of devil(2~9999)
 PAIN_RANGE = 1000
 # Add "GodStraNew" Generated Results As spells inside SPELLS.
 # Set them unic phonemes like 'Zi' 'Gu' or 'Lu'!
-# * Use below replacement on GodStra results to
+# * Use below replacement on GodStraNew results to
 # * Change God Generated Creatures to Spells:
 # +-----------------------------+----------------------+
 # | GodStraNew Hyperopt Results |   DevilStra Spells   |
@@ -535,38 +535,32 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
 
 class DevilStra(IStrategy):
     # #################### RESULT PASTE PLACE ####################
-    # *    9/100:    207 trades. 159/36/12 Wins/Draws/Losses. Avg profit   1.76%. Median profit   2.19%. Total profit  0.12158029 BTC ( 121.58Σ%). Avg duration 18:51:00 min. Objective: -30.36214
+    # 16/16:    108 trades. 75/18/15 Wins/Draws/Losses. Avg profit   7.77%. Median profit   8.89%. Total profit  0.08404983 BTC (  84.05Σ%). Avg duration 3 days, 6:49:00 min. Objective: -11.22849
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_spell": "La,Gu,Ra,Zi,Gu,Lu,Pa,Pa,La,De,Cu,Gu,Gu,Pa,Ra,Ra,La,Cu,Zi,Pa,Pa,Lu,Gu,Gu,Cu,Gu,Gu,La,Gu,La,La,De,Ra,Zi,Lu,Gu,Lu,Pa,Gu,Cu,De,Si,Pa,Pa,Lu,Zi,Lu,Gu,Cu,De,La,La,De,Cu,Si,Gu,Pa,La,La,De,Si,Si,La,Gu,Si,Cu,Cu,Ra,Si,Ra,Si,Gu,Si,Ra,La,Zi,Si,Lu,Gu,De,Ra,Zi,Gu,Pa,Si,Lu,Si,Pa,Ra,Ra,Zi,Zi,Cu,Gu,Lu,De,Lu,La,De,Ra,Ra,La,Gu,Ra,Pa,Si,La,De,Cu,Gu,Cu,Pa,Zi,Si,Ra,Si,Gu,Ra,De,Ra,Gu,Pa,Gu,Pa,Cu,La,Cu,De,Pa,Si,De,Ra,Pa,Ra,Si,Ra,Zi,Zi,Cu,Zi,Lu,Ra,De,La,La,Si,Pa,Zi,Lu,Zi,Pa,Cu,Si,Si,Gu,Cu,La,Pa,De,Lu,Gu,De,Gu,Lu,Cu,Gu,De,Gu,La,Si,Gu,Gu,La,Pa,Zi,Cu,La,De,Cu,Lu,Cu,Pa,Cu,Cu,De,La,Zi,Lu,Lu,Si,Zi,Si,Si,Si,Ra,Cu,Gu,Pa,Lu,Lu,Zi,Zi,Gu,Lu,De,Gu,Zi,Lu,La,Pa,Lu,La,Zi,La,Ra,Zi,Gu,Si,Ra,Ra,Gu,Pa,Lu,Cu,Pa,La,Ra,La,Ra,Cu,Pa,Gu,Gu,Lu,Si,Ra,De,La,La,De,La,Lu,Gu,La,Lu,Cu,Cu,Cu,La,Pa,Cu,Lu,Pa,Si,Si,De,Gu,Pa,Gu,Gu,Ra,Lu,Ra,Cu,Si,Gu,La,La,La",
+        "buy_spell": "Zi,Lu,Ra,Ra,La,Si,Pa,Si,Cu,La,De,Lu,De,La,Zi,Zi,Zi,Zi,Zi,Lu,Lu,Lu,Si,La,Ra,Pa,La,Zi,Zi,Gu,Ra,De,Gu,Zi,Ra,Ra,Ra,Cu,Pa,De,De,La,Lu,Lu,Lu,La,Zi,Cu,Ra,Gu,Pa,La,Zi,Zi,Si,Lu,Ra,Cu,Cu,Pa,Si,Gu,De,De,Lu,Gu,Zi,Pa,Lu,Pa,Ra,Gu,Cu,La,Pa,Lu,Zi,La,Zi,Gu,Zi,De,Cu,Ra,Lu,Ra,Gu,Si,Ra,La,La,Lu,Gu,Zi,Si,La,Pa,Pa,Cu,Cu,Zi,Gu,Pa,Zi,Pa,Cu,Lu,Pa,Si,De,Gu,Lu,Lu,Cu,Ra,Si,Pa,Gu,Si,Cu,Pa,Zi,Pa,Zi,Gu,Lu,Ra,Pa,Ra,De,Ra,Pa,Zi,La,Pa,De,Pa,Cu,Gu,De,Lu,La,Ra,Zi,Si,Zi,Zi,Cu,Cu,De,Pa,Pa,Zi,De,Ra,La,Lu,De,Lu,Gu,Cu,Cu,La,De,Gu,Lu,Ra,Pa,Lu,Cu,Pa,Pa,De,Si,Zi,Cu,De,De,De,Lu,Si,Zi,Gu,Si,Si,Ra,Pa,Si,La,La,Lu,Lu,De,Gu,Gu,Zi,Ra,La,Lu,Lu,La,Si,Zi,Si,Zi,Si,Lu,Cu,Zi,Lu,De,La,Ra,Ra,Lu,De,Pa,Zi,Gu,Cu,Zi,Pa,De,Si,Lu,De,Cu,De,Zi,Ra,Gu,De,Si,Lu,Lu,Ra,De,Gu,Cu,Gu,La,De,Lu,Lu,Si,Cu,Lu,Zi,Lu,Cu,Gu,Lu,Lu,Ra,Si,Ra,Pa,Lu,De,Ra,Zi,Gu,Gu,Zi,Lu,Cu,Cu,Cu,Lu",
     }
 
     # Sell hyperspace params:
     sell_params = {
-        "sell_spell": "Zi,Pa,De,Si,Zi,Pa,Ra,Ra,Gu,La,Si,Pa,Ra,Gu,Cu,Cu,De,Si,Cu,Ra,La,Pa,Pa,De,De,La,Zi,Lu,Gu,Lu,Si,De,Zi,Si,Lu,Cu,De,Cu,De,Zi,Ra,De,La,Lu,De,Gu,La,De,Lu,Zi,Zi,Zi,Ra,Cu,La,Lu,Si,Ra,La,Ra,Zi,Lu,Ra,Pa,De,Lu,La,De,Ra,Si,Pa,Gu,Lu,Zi,Lu,Si,Zi,De,Si,La,Cu,Cu,Cu,Si,De,Si,Si,Si,Zi,La,Pa,De,Pa,Zi,La,Lu,Pa,Pa,Lu,La,Lu,Zi,Pa,La,La,Si,Cu,Si,Zi,De,Ra,Ra,Cu,Ra,Zi,Cu,La,Cu,Si,La,La,Gu,Si,Zi,Pa,De,Pa,Ra,Ra,Pa,Si,Gu,Ra,Cu,Ra,Ra,Ra,Lu,De,Lu,Lu,Ra,Pa,Pa,La,Si,Ra,Cu,Pa,De,Cu,Pa,Cu,Gu,Cu,Gu,Lu,Ra,Ra,Cu,Pa,La,Lu,Gu,Cu,Si,La,La,Si,La,Lu,Gu,Cu,Pa,De,Cu,La,La,Lu,Si,Pa,Si,Ra,Pa,Lu,Zi,Si,Ra,Si,Pa,Pa,Gu,Zi,De,Ra,Pa,Pa,Zi,Gu,Cu,Zi,Ra,Zi,Si,De,La,Zi,Pa,Zi,Si,De,De,Zi,De,La,Gu,Zi,Ra,La,La,Si,Pa,Pa,Si,De,Ra,Gu,Zi,Pa,Ra,Ra,La,De,Ra,Si,Gu,Pa,Pa,Pa,De,De,De,Si,Zi,Gu,La,Ra,Lu,La,La,La,Ra,Ra,Lu,Gu,Lu,Pa,Lu,Pa,Lu,Ra,Si,Ra,Lu,Si,Lu,Zi,Gu,De",
+        "sell_spell": "La,Pa,De,De,La,Si,Si,La,La,La,Si,Pa,Pa,Lu,De,Cu,Cu,Gu,Lu,Ra,Lu,Si,Ra,De,La,Cu,La,La,Gu,La,De,Ra,Ra,Ra,Gu,Lu,Si,Si,Zi,Zi,La,Pa,Pa,Zi,Cu,Gu,Gu,Pa,Gu,Cu,Si,Ra,Ra,La,Gu,De,Si,La,Ra,Pa,Si,Lu,Pa,De,Zi,De,Lu,Si,Gu,De,Lu,De,Ra,Ra,Zi,De,Cu,Zi,Gu,Pa,Ra,De,Pa,De,Pa,Ra,Si,Si,Zi,Cu,Lu,Zi,Ra,De,Ra,Zi,Zi,Pa,Lu,Zi,Cu,Pa,Gu,Pa,Cu,De,Zi,De,De,Pa,Pa,Zi,Lu,Ra,Pa,Ra,Lu,Zi,Gu,Zi,Si,Lu,Ra,Ra,Zi,Lu,Pa,Lu,Si,Pa,Pa,Pa,Si,Zi,La,La,Lu,De,Zi,Gu,Ra,Ra,Ra,Zi,Pa,Zi,Cu,Lu,Gu,Cu,De,Lu,Gu,Lu,Gu,Si,Pa,Pa,Si,La,Gu,Ra,Pa,Si,Si,Si,Cu,Cu,Cu,Si,De,Lu,Gu,Gu,Lu,De,Ra,Gu,Gu,Gu,Cu,La,De,Cu,Zi,Pa,Si,De,Pa,Pa,Pa,La,De,Gu,Zi,La,De,Cu,La,Pa,Ra,Si,Si,Zi,Cu,Ra,Pa,Gu,Pa,Ra,Zi,De,Zi,Gu,Gu,Pa,Cu,Lu,Gu,De,Si,Pa,La,Cu,Zi,Gu,De,Gu,La,Cu,Gu,De,Cu,Cu,Gu,Ra,Lu,Zi,De,La,Ra,Pa,Pa,Si,La,Lu,La,De,De,Ra,De,La,La,Pa,Cu,Lu,Pa,Ra,Pa,Pa,Cu,Zi,Gu,Cu,Gu,La,Si,Ra,Pa",
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.498,
-        "427": 0.18,
-        "1000": 0.031,
-        "1561": 0
+        "0": 0.574,
+        "1757": 0.158,
+        "3804": 0.089,
+        "6585": 0
     }
 
     # Stoploss:
-    stoploss = -0.301
-
-    # Trailing stop:
-    trailing_stop = True
-    trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.027
-    trailing_only_offset_is_reached = True
+    stoploss = -0.28
     # #################### END OF RESULT PLACE ####################
 
     # 𝖂𝖔𝖗𝖘𝖙, 𝖀𝖓𝖎𝖉𝖊𝖆𝖑, 𝕾𝖚𝖇𝖔𝖕𝖙𝖎𝖒𝖆𝖑, 𝕸𝖆𝖑𝖆𝖕𝖗𝖔𝖕𝖔𝖘 𝕬𝖓𝖉 𝕯𝖎𝖘𝖒𝖆𝖑 𝖙𝖎𝖒𝖊𝖋𝖗𝖆𝖒𝖊 𝖋𝖔𝖗 𝖙𝖍𝖎𝖘 𝖘𝖙𝖗𝖆𝖙𝖊𝖌𝖞:
-    timeframe = '1h'
+    timeframe = '4h'
 
     spell_pot = [
         ",".join(
