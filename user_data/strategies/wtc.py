@@ -112,11 +112,11 @@ class wtc(IStrategy):
             stoch = ta.STOCH(dataframe, 14)
             slowk = stoch['slowk']
             dataframe['slowk'] = slowk
-
-            x = dataframe.iloc[:, 1:].values  # returns a numpy array
+            # print(dataframe.iloc[:, 6:].keys())
+            x = dataframe.iloc[:, 6:].values  # returns a numpy array
             min_max_scaler = preprocessing.MinMaxScaler()
             x_scaled = min_max_scaler.fit_transform(x)
-            dataframe.iloc[:, 1:] = pd.DataFrame(x_scaled)
+            dataframe.iloc[:, 6:] = pd.DataFrame(x_scaled)
             # print('wt:\t', dataframe['wt'].min(), dataframe['wt'].max())
             # print('stoch:\t', dataframe['stoch'].min(), dataframe['stoch'].max())
             dataframe['def'] = dataframe['slowk']-dataframe['wt1']
