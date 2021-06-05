@@ -3,7 +3,7 @@
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
-# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi trailing --strategy Zeus
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi --strategy Zeus
 # --- Do not remove these libs ---
 import logging
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter
@@ -25,36 +25,36 @@ import numpy as np
 
 class Zeus(IStrategy):
 
-    # 53/167:    167 trades. 96/66/5 Wins/Draws/Losses. Avg profit   3.00%. Median profit   2.70%. Total profit  0.16479843 BTC ( 164.80Σ%). Avg duration 22:04:00 min. Objective: -63.49577
+    # *    1/43:     86 trades. 72/6/8 Wins/Draws/Losses. Avg profit  12.66%. Median profit  11.99%. Total profit  0.10894395 BTC ( 108.94Σ%). Avg duration 3 days, 0:31:00 min. Objective: -48.48793
+    # "max_open_trades": 10,
+    # "stake_currency": "BTC",
+    # "stake_amount": 0.01,
+    # "tradable_balance_ratio": 0.99,
+    # "timeframe": "4h",
+    # "dry_run_wallet": 0.1,
 
     # Buy hyperspace params:
     buy_params = {
         "buy_cat": "<R",
-        "buy_real": 0.0889,
+        "buy_real": 0.0128,
     }
 
     # Sell hyperspace params:
     sell_params = {
         "sell_cat": "=R",
-        "sell_real": 0.979,
+        "sell_real": 0.9455,
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.336,
-        "134": 0.113,
-        "759": 0.027,
-        "1049": 0
+        "0": 0.564,
+        "567": 0.273,
+        "2814": 0.12,
+        "7675": 0
     }
 
     # Stoploss:
-    stoploss = -0.245
-
-    # Trailing stop:
-    trailing_stop = True
-    trailing_stop_positive = 0.35
-    trailing_stop_positive_offset = 0.375
-    trailing_only_offset_is_reached = False
+    stoploss = -0.256
 
     buy_real = DecimalParameter(
         0.001, 0.999, decimals=4, default=0.11908, space='buy')
@@ -70,8 +70,6 @@ class Zeus(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
-        # Clean NaN values
-        dataframe = dropna(dataframe)
 
         dataframe['trend_ichimoku_base'] = ta.trend.ichimoku_base_line(
             dataframe['high'],
