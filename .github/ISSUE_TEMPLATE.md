@@ -1,6 +1,7 @@
 *For requestion a new strategy. Please use the template below.*  
 *Any strategy request that does not follow the template will be closed.*
-
+## Step 0: Are you switched specific branch of freqtrade and updated it and rechecked the error? 
+* If not solved than go to the next step
 ## Step 1: What indicators are required?
 *Please list all the indicators required for the buy and sell strategy.*
 
