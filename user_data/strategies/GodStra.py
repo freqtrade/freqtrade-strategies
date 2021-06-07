@@ -75,19 +75,20 @@ class GodStra(IStrategy):
     timeframe = '12h'
     print('Add {\n\t"method": "AgeFilter",\n\t"min_days_listed": 30\n},\n to your pairlists in config (Under StaticPairList)')
 
-    def dna_size(dct: dict):
+    def dna_size(self, dct: dict):
         def int_from_str(st: str):
             str_int = ''.join([d for d in st if d.isdigit()])
             if str_int:
                 return int(str_int)
-            return -1 # in case if the parameter somehow doesn't have index
+            return -1  # in case if the parameter somehow doesn't have index
         return len({int_from_str(digit) for digit in dct.keys()})
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
         dataframe = dropna(dataframe)
         dataframe = add_all_ta_features(
-            dataframe, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
+            dataframe, open="open", high="high", low="low", close="close", volume="volume",
+            fillna=True)
         # dataframe.to_csv("df.csv", index=True)
         return dataframe
 
