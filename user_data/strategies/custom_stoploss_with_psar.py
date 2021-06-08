@@ -13,7 +13,6 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from datetime import datetime
 from freqtrade.persistence import Trade
-from freqtrade.state import RunMode
 
 
 class CustomStoplossWithPSAR(IStrategy):
@@ -38,23 +37,17 @@ class CustomStoplossWithPSAR(IStrategy):
             # in live / dry-run, it'll be really the current time
             relative_sl = None
             if self.dp:
-                # backtesting/hyperopt
-                if self.dp.runmode.value in ('backtest', 'hyperopt'):
-                    relative_sl = self.custom_info[pair].loc[current_time]['sar']
-                # for live, dry-run, storing the dataframe is not really necessary,
-                # it's available from get_analyzed_dataframe()
-                else:
-                    # so we need to get analyzed_dataframe from dp
-                    dataframe, last_updated = self.dp.get_analyzed_dataframe(pair=pair,
-                                                                             timeframe=self.timeframe)
-                    # only use .iat[-1] in live mode, otherwise you will look into the future
-                    # see: https://www.freqtrade.io/en/latest/strategy-customization/#common-mistakes-when-developing-strategies
-                    relative_sl = dataframe['sar'].iat[-1]
+                # so we need to get analyzed_dataframe from dp
+                dataframe, _ = self.dp.get_analyzed_dataframe(pair=pair, timeframe=self.timeframe)
+                # only use .iat[-1] in callback methods, never in "populate_*" methods.
+                # see: https://www.freqtrade.io/en/latest/strategy-customization/#common-mistakes-when-developing-strategies
+                last_candle = dataframe.iloc[-1].squeeze()
+                relative_sl = last_candle['sar']
 
             if (relative_sl is not None):
                 # print("custom_stoploss().relative_sl: {}".format(relative_sl))
                 # calculate new_stoploss relative to current_rate
-                new_stoploss = (current_rate-relative_sl)/current_rate
+                new_stoploss = (current_rate - relative_sl) / current_rate
                 # turn into relative negative offset required by `custom_stoploss` return implementation
                 result = new_stoploss - 1
 

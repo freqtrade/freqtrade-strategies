@@ -13,7 +13,7 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from datetime import datetime
 from freqtrade.persistence import Trade
-from freqtrade.state import RunMode
+
 import logging
 logger = logging.getLogger(__name__)
 
