@@ -98,33 +98,3 @@ class MACDStrategy_hyperopt(IHyperOpt):
         return [
             Integer(0, 700, name='sell-cci-value'),
         ]
-
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        Based on TA indicators. Should be a copy of from strategy
-        must align to populate_indicators in this file
-        Only used when --spaces does not include buy
-        """
-        dataframe.loc[
-            (
-                (dataframe['macd'] > dataframe['macdsignal']) &
-                (dataframe['cci'] <= -50.0)
-            ),
-            'buy'] = 1
-
-        return dataframe
-
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        Based on TA indicators. Should be a copy of from strategy
-        must align to populate_indicators in this file
-        Only used when --spaces does not include sell
-        """
-        dataframe.loc[
-            (
-                (dataframe['macd'] < dataframe['macdsignal']) &
-                (dataframe['cci'] >= 100.0)
-            ),
-            'sell'] = 1
-
-        return dataframe

@@ -132,35 +132,3 @@ class AverageHyperopt(IHyperOpt):
         return [
             Categorical(sellTriggerList, name='sell-trigger')
         ]
-
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        Based on TA indicators. Should be a copy of from strategy
-        must align to populate_indicators in this file
-        Only used when --spaces does not include buy
-        """
-        dataframe.loc[
-            (
-                qtpylib.crossed_above(
-                    dataframe[f'maShort({shortRangeBegin})'],
-                    dataframe[f'maMedium({mediumRangeBegin})'])
-            ),
-            'buy'] = 1
-
-        return dataframe
-
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        Based on TA indicators. Should be a copy of from strategy
-        must align to populate_indicators in this file
-        Only used when --spaces does not include sell
-        """
-        dataframe.loc[
-            (
-                qtpylib.crossed_above(
-                    dataframe[f'maMedium({mediumRangeBegin})'],
-                    dataframe[f'maShort({shortRangeBegin})'])
-            ),
-            'sell'] = 1
-
-        return dataframe
