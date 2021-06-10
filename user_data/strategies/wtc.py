@@ -18,7 +18,6 @@ import talib.abstract as ta
 from freqtrade.strategy import DecimalParameter
 from freqtrade.strategy import IStrategy
 from pandas import DataFrame
-from datetime import datetime
 #
 # --- Do not remove these libs ---
 import numpy as np  # noqa
