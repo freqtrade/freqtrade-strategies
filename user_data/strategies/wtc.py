@@ -13,7 +13,6 @@
 # github: https://github.com/mablue/
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell --strategy wtc
 
-from freqtrade.strategy.hyper import DecimalParameter
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import talib.abstract as ta
 from freqtrade.strategy import DecimalParameter
