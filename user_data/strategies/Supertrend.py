@@ -7,7 +7,6 @@ Supertrend strategy:
 * github: https://github.com/juankysoriano/
 """
 
-# IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
 import logging
 from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
