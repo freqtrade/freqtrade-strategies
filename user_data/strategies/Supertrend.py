@@ -5,6 +5,11 @@ Supertrend strategy:
                Sells if the 3 'sell' indicators are 'down'
 * Author: @juankysoriano (Juan Carlos Soriano)
 * github: https://github.com/juankysoriano/
+
+*** NOTE: This Supertrend strategy is just one of many possible strategies using `Supertrend` as indicator. It should on any case used at your own risk. 
+          It comes with at least a couple of caveats:
+            1. The implementation for the `supertrend` indicator is based on the following discussion: https://github.com/freqtrade/freqtrade-strategies/issues/30 . Concretelly https://github.com/freqtrade/freqtrade-strategies/issues/30#issuecomment-853042401
+            2. The implementation for `supertrend` on this strategy is not validated; meaning this that is not proven to match the results by the paper where it was originally introduced or any other trusted academic resources
 """
 
 import logging
