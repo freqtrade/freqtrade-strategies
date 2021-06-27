@@ -71,8 +71,8 @@ class Heracles(IStrategy):
     buy_crossed_indicator_shift = IntParameter(-5, 5, default=1, space='buy')
 
     # sell params
-    sell_rtol = DecimalParameter(1.e-10, 1.e-0, default=0.05468, decimals=10, space='sell')
-    sell_atol = DecimalParameter(1.e-16, 1.e-0, default=0.00019, decimals=10, space='sell')
+    sell_rtol = DecimalParameter(1.e-10, 1.e-0, default=0.05468, decimals=4, space='sell')
+    sell_atol = DecimalParameter(1.e-16, 1.e-0, default=0.00019, decimals=4, space='sell')
     sell_indicator_shift = IntParameter(-5, 5, default=4, space='sell')
     sell_crossed_indicator_shift = IntParameter(-5, 5, default=1, space='sell')
 
