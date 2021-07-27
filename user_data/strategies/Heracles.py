@@ -8,19 +8,14 @@
 #       "min_days_listed": 100
 #   },
 # IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
+#
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces roi buy --strategy Heracles
 # ######################################################################
-# Optimal config settings:
-# "max_open_trades": 100,
-# "stake_amount": "unlimited",
-
 # --- Do not remove these libs ---
-import logging
-
-from numpy.lib import math
+from freqtrade.strategy.hyper import IntParameter, DecimalParameter
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 # --------------------------------
-
 # Add your lib to import here
 # import talib.abstract as ta
 import pandas as pd
@@ -32,47 +27,44 @@ import numpy as np
 
 
 class Heracles(IStrategy):
-    # 65/600:   2275 trades. 1438/7/830 W/D/L.
-    # Avg profit   3.10%. Median profit   3.06%.
-    # Total profit  113171 USDT ( 7062 Σ%).
-    # Avg duration 345 min. Objective: -23.0
+    ########################################## RESULT PASTE PLACE ##########################################
+    # 10/100:     25 trades. 18/4/3 Wins/Draws/Losses. Avg profit   5.92%. Median profit   6.33%. Total profit  0.04888306 BTC (  48.88Σ%). Avg duration 4 days, 6:24:00 min. Objective: -11.42103
 
     # Buy hyperspace params:
     buy_params = {
-        'buy-cross-0': 'volatility_kcw',
-        'buy-indicator-0': 'volatility_dcp',
-        'buy-oper-0': '<',
+        "buy_crossed_indicator_shift": 9,
+        "buy_div_max": 0.75,
+        "buy_div_min": 0.16,
+        "buy_indicator_shift": 15,
     }
 
     # Sell hyperspace params:
     sell_params = {
-        'sell-cross-0': 'trend_macd_signal',
-        'sell-indicator-0': 'trend_ema_fast',
-        'sell-oper-0': '=',
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.32836,
-        "1629": 0.17896,
-        "6302": 0.05372,
-        "10744": 0
+        "0": 0.598,
+        "644": 0.166,
+        "3269": 0.115,
+        "7289": 0
     }
 
     # Stoploss:
-    stoploss = -0.04655
+    stoploss = -0.256
 
-    # Trailing stop:
-    trailing_stop = True
-    trailing_stop_positive = 0.02444
-    trailing_stop_positive_offset = 0.04406
-    trailing_only_offset_is_reached = True
+    # Optimal timeframe use it in your config
+    timeframe = '4h'
 
-    # Buy hypers
-    timeframe = '12h'
+    ########################################## END RESULT PASTE PLACE ######################################
+
+    # buy params
+    buy_div_min = DecimalParameter(0, 1, default=0.16, decimals=2, space='buy')
+    buy_div_max = DecimalParameter(0, 1, default=0.75, decimals=2, space='buy')
+    buy_indicator_shift = IntParameter(0, 20, default=16, space='buy')
+    buy_crossed_indicator_shift = IntParameter(0, 20, default=9, space='buy')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Add all ta features
         dataframe = dropna(dataframe)
 
         dataframe['volatility_kcw'] = ta.volatility.keltner_channel_wband(
@@ -84,6 +76,7 @@ class Heracles(IStrategy):
             fillna=False,
             original_version=True
         )
+
         dataframe['volatility_dcp'] = ta.volatility.donchian_channel_pband(
             dataframe['high'],
             dataframe['low'],
@@ -92,42 +85,37 @@ class Heracles(IStrategy):
             offset=0,
             fillna=False
         )
-        dataframe['trend_macd_signal'] = ta.trend.macd_signal(
-            dataframe['close'],
-            window_slow=26,
-            window_fast=12,
-            window_sign=9,
-            fillna=False
-        )
-
-        dataframe['trend_ema_fast'] = ta.trend.EMAIndicator(
-            close=dataframe['close'], window=12, fillna=False
-        ).ema_indicator()
 
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Buy strategy Hyperopt will build and use.
+        """
+        conditions = []
 
-        IND = self.buy_params['buy-indicator-0']
-        CRS = self.buy_params['buy-cross-0']
+        IND = 'volatility_dcp'
+        CRS = 'volatility_kcw'
         DFIND = dataframe[IND]
         DFCRS = dataframe[CRS]
 
-        dataframe.loc[
-            (DFIND < DFCRS),
-            'buy'] = 1
+        d = DFIND.shift(self.buy_indicator_shift.value).div(
+            DFCRS.shift(self.buy_crossed_indicator_shift.value))
+
+        # print(d.min(), "\t", d.max())
+        conditions.append(
+            d.between(self.buy_div_min.value, self.buy_div_max.value))
+
+        if conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'buy']=1
 
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        IND = self.sell_params['sell-indicator-0']
-        CRS = self.sell_params['sell-cross-0']
-
-        DFIND = dataframe[IND]
-        DFCRS = dataframe[CRS]
-
-        dataframe.loc[
-            (qtpylib.crossed_below(DFIND, DFCRS)),
-            'sell'] = 1
+        """
+        Sell strategy Hyperopt will build and use.
+        """
 
         return dataframe
