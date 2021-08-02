@@ -117,5 +117,5 @@ class Heracles(IStrategy):
         """
         Sell strategy Hyperopt will build and use.
         """
-
+        dataframe.loc[:, 'sell'] = 0
         return dataframe
