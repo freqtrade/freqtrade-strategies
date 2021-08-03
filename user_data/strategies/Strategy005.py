@@ -87,7 +87,6 @@ class Strategy005(IStrategy):
         "sell_trigger": "rsi-macd-minusdi",
     }
 
-
     def informative_pairs(self):
         """
         Define additional, informative pair/interval combinations to be cached from the exchange.
