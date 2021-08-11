@@ -16,12 +16,13 @@ class CofiBitStrategy(IStrategy):
     
     # Buy hyperspace params:
     buy_params = {
-        "buy_lim": 25,
+        "buy_fastx": 25,
+        "buy_adx": 25,
     }
 
     # Sell hyperspace params:
     sell_params = {
-        "sell_lim": 75,
+        "sell_fastx": 75,
     }
 
     # Minimal ROI designed for the strategy.
@@ -40,8 +41,9 @@ class CofiBitStrategy(IStrategy):
     # Optimal timeframe for the strategy
     timeframe = '5m'
 
-    buy_lim = IntParameter(20, 30, default=25)
-    sell_lim = IntParameter(70, 80, default=75)
+    buy_fastx = IntParameter(20, 30, default=25)
+    buy_adx = IntParameter(20, 30, default=25)
+    sell_fastx = IntParameter(70, 80, default=75)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         stoch_fast = ta.STOCHF(dataframe, 5, 3, 0, 3, 0)
@@ -64,10 +66,9 @@ class CofiBitStrategy(IStrategy):
             (
                 (dataframe['open'] < dataframe['ema_low']) &
                 (qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd'])) &
-                # (dataframe['fastk'] > dataframe['fastd']) &
-                (dataframe['fastk'] < self.buy_lim.value) &
-                (dataframe['fastd'] < self.buy_lim.value) &
-                (dataframe['adx'] > self.buy_lim.value)
+                (dataframe['fastk'] < self.buy_fastx.value) &
+                (dataframe['fastd'] < self.buy_fastx.value) &
+                (dataframe['adx'] > self.buy_adx.value)
             ),
             'buy'] = 1
 
@@ -84,10 +85,8 @@ class CofiBitStrategy(IStrategy):
                 (dataframe['open'] >= dataframe['ema_high'])
             ) |
             (
-                # (dataframe['fastk'] > self.sell_lim.value) &
-                # (dataframe['fastd'] > self.sell_lim.value)
-                    (qtpylib.crossed_above(dataframe['fastk'], self.sell_lim.value)) |
-                    (qtpylib.crossed_above(dataframe['fastd'], self.sell_lim.value))
+                (qtpylib.crossed_above(dataframe['fastk'], self.sell_fastx.value)) |
+                (qtpylib.crossed_above(dataframe['fastd'], self.sell_fastx.value))
             ),
             'sell'] = 1
 
