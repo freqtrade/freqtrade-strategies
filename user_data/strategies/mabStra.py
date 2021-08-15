@@ -14,6 +14,10 @@ import talib.abstract as ta
 
 
 class mabStra(IStrategy):
+    minimal_roi = {
+        "0": 0.05,
+    }
+
     # buy params
     buy_mojo_ma_timeframe = IntParameter(2, 100, default=7, space='buy')
     buy_fast_ma_timeframe = IntParameter(2, 100, default=14, space='buy')
