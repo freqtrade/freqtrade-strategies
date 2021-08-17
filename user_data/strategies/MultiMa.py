@@ -16,6 +16,38 @@ from functools import reduce
 
 
 class MultiMa(IStrategy):
+    # #################### END OF RESULT PLACE ####################
+    # config: 3*333=1000USDT
+    # *    4/700:    102 trades. 68/33/1 Wins/Draws/Losses. Avg profit   0.68%. Median profit   0.53%. Total profit  232.72544754 USDT (  23.27Σ%). Avg duration 5:23:00 min. Objective: -45.59136
+
+    # Buy hyperspace params:
+    buy_params = {
+        "buy_ma_count": 3,
+        "buy_ma_gap": 6,
+        "buy_ma_shift": 6,
+    }
+
+    # Sell hyperspace params:
+    sell_params = {
+        "sell_ma_count": 4,
+        "sell_ma_gap": 2,
+        "sell_ma_shift": 7,
+    }
+
+    # ROI table:
+    minimal_roi = {
+        "0": 0.237,
+        "37": 0.08,
+        "89": 0.018,
+        "175": 0
+    }
+
+    # Stoploss:
+    stoploss = -0.256
+
+    # Buy hypers
+    timeframe = '5m'
+    # #################### END OF RESULT PLACE ####################
 
     buy_ma_count = IntParameter(2, 10, default=10, space='buy')
     buy_ma_gap = IntParameter(2, 10, default=2, space='buy')
@@ -27,20 +59,6 @@ class MultiMa(IStrategy):
     sell_ma_shift = IntParameter(0, 10, default=0, space='sell')
     # sell_ma_rolling = IntParameter(0, 10, default=0, space='sell')
 
-    # ROI table:
-    minimal_roi = {
-        "0": 0.30873,
-        "569": 0.16689,
-        "3211": 0.06473,
-        "7617": 0
-    }
-
-    # Stoploss:
-    stoploss = -0.128
-
-    # Buy hypers
-    timeframe = '4h'
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         # We will dinamicly generate the indicators
@@ -50,15 +68,17 @@ class MultiMa(IStrategy):
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-
+        # print(self.buy_ma_count.range)
         for i in self.buy_ma_count.range:
-            dataframe[f'buy-ma-{i+1}'] = ta.SMA(dataframe,
-                                                timeperiod=int((i+1) * self.buy_ma_gap.value))
+
+            dataframe[f'buy-ma-{i}'] = ta.SMA(dataframe,
+                                              timeperiod=int(i * self.buy_ma_gap.value))
+        # print(dataframe.keys())
 
         conditions = []
 
         for i in self.buy_ma_count.range:
-            if i > 1:
+            if i > 2:
                 shift = self.buy_ma_shift.value
                 for shift in self.buy_ma_shift.range:
                     conditions.append(
@@ -74,13 +94,13 @@ class MultiMa(IStrategy):
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         for i in self.sell_ma_count.range:
-            dataframe[f'sell-ma-{i+1}'] = ta.SMA(dataframe,
-                                                 timeperiod=int((i+1) * self.sell_ma_gap.value))
+            dataframe[f'sell-ma-{i}'] = ta.SMA(dataframe,
+                                               timeperiod=int(i * self.sell_ma_gap.value))
 
         conditions = []
 
         for i in self.sell_ma_count.range:
-            if i > 1:
+            if i > 2:
                 shift = self.sell_ma_shift.value
                 for shift in self.sell_ma_shift.range:
                     conditions.append(
