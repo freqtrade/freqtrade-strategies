@@ -1,7 +1,7 @@
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # IMPORTANT: DO NOT USE IT WITHOUT HYPEROPT:
-# freqtrade hyperopt --hyperopt mabStraHo --hyperopt-loss SharpeHyperOptLoss --spaces all --strategy mabStra --config config.json -e 100
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces all --strategy mabStra --config config.json -e 100
 
 # --- Do not remove these libs ---
 from freqtrade.strategy.hyper import IntParameter, DecimalParameter
@@ -11,10 +11,10 @@ from pandas import DataFrame
 
 # Add your lib to import here
 import talib.abstract as ta
-import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 class mabStra(IStrategy):
+
     # #################### RESULTS PASTE PLACE ####################
     # ROI table:
     minimal_roi = {
