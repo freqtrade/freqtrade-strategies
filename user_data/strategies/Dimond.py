@@ -16,8 +16,8 @@
 # you will change config.json variables and hyperoption commands
 # Thanks To @xmatthias if he was approve the last version of This strategy
 # That just a lazy code. I never can reach to this strategy(Now its really a dimond.)
-# * freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces all --strategy 𝒟𝒾𝓂𝑜𝓃𝒹 -e 700 -j 2 --timerange 20210810-20210813
-# * freqtrade backtesting --strategy 𝒟𝒾𝓂𝑜𝓃𝒹
+# * freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces all --strategy Dimond -e 700 -j 2 --timerange 20210810-20210813
+# * freqtrade backtesting --strategy Dimond
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # (First Hyperopt it.A hyperopt file is available)
