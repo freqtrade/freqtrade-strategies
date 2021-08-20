@@ -1,4 +1,4 @@
-# 𝐼𝓉 𝒾𝓈 𝒟𝒾𝓂𝑜𝓃𝒹 𝒮𝓉𝓇𝒶𝓉𝑒𝑔𝓎.
+# 𝐼𝓉 𝒾𝓈 𝒟𝒾𝒶𝓂𝑜𝓃𝒹 𝒮𝓉𝓇𝒶𝓉𝑒𝑔𝓎.
 # 𝒯𝒽𝒶𝓉 𝓉𝒶𝓀𝑒𝓈 𝒽𝑒𝓇 𝑜𝓌𝓃 𝓇𝒾𝑔𝒽𝓉𝓈 𝓁𝒾𝓀𝑒 𝒜𝒻𝑔𝒽𝒶𝓃𝒾𝓈𝓉𝒶𝓃 𝓌𝑜𝓂𝑒𝓃
 # 𝒯𝒽𝑜𝓈𝑒 𝓌𝒽𝑜 𝓈𝓉𝒾𝓁𝓁 𝓅𝓇𝑜𝓊𝒹 𝒶𝓃𝒹 𝒽𝑜𝓅𝑒𝒻𝓊𝓁.
 # 𝒯𝒽𝑜𝓈𝑒 𝓌𝒽𝑜 𝓉𝒽𝑒 𝓂𝑜𝓈𝓉 𝒷𝑒𝒶𝓊𝓉𝒾𝒻𝓊𝓁 𝒸𝓇𝑒𝒶𝓉𝓊𝓇𝑒𝓈 𝒾𝓃 𝓉𝒽𝑒 𝒹𝑒𝓅𝓉𝒽𝓈 𝑜𝒻 𝓉𝒽𝑒 𝒹𝒶𝓇𝓀𝑒𝓈𝓉.
@@ -15,9 +15,9 @@
 # loss and more avg, Its "NOT" normal result, and
 # you will change config.json variables and hyperoption commands
 # Thanks To @xmatthias if he was approve the last version of This strategy
-# That just a lazy code. I never can reach to this strategy(Now its really a dimond.)
-# * freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces all --strategy Dimond -e 700 -j 2 --timerange 20210810-20210813
-# * freqtrade backtesting --strategy Dimond
+# That just a lazy code. I never can reach to this strategy(Now its really a diamond.)
+# * freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces all --strategy Diamond -e 700 -j 2 --timerange 20210810-20210813
+# * freqtrade backtesting --strategy Diamond
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # (First Hyperopt it.A hyperopt file is available)
@@ -40,7 +40,7 @@ GAP = 3
 ### END SETINGS ###
 
 
-class Dimond(IStrategy):
+class Diamond(IStrategy):
     # ###################### RESULT PLACE ######################
     # *    6/700:      1 trades. 1/0/0 Wins/Draws/Losses. Avg profit  17.68%. Median profit  17.68%. Total profit  58.94100000 USDT (   5.89Σ%). Avg duration 0:00:00 min. Objective: 1.79949
 
