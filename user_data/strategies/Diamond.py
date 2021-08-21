@@ -10,17 +10,11 @@
 # 𝒲𝒽𝑒𝓇𝑒 𝒽𝒶𝓈 𝒽𝓊𝓂𝒶𝓃𝒾𝓉𝓎 𝑔𝑜𝓃𝑒?
 # 𝒲𝒽𝓎 𝓃𝑜𝓉 𝒽𝑒𝓁𝓅 𝓌𝒽𝑒𝓃 𝓌𝑒 𝒸𝒶𝓃?
 # IMPORTANT: This strategy
-# designed for "ZERO" loss and "UNDER"
-# 15 minuts avg duration.So if you have more
-# loss and more avg, Its "NOT" normal result, and
-# you will change config.json variables and hyperoption commands
-# Thanks To @xmatthias if he was approve the last version of This strategy
-# That just a lazy code. I never can reach to this strategy(Now its really a diamond.)
-# * freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces all --strategy Diamond -e 700 -j 2 --timerange 20210810-20210813
+# thanks to: @Kroissan, @drakes00 And @xmatthias for his patience and helps
+# * freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces buy sell roi trailing --strategy Diamond -e 700 -j 2
 # * freqtrade backtesting --strategy Diamond
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# (First Hyperopt it.A hyperopt file is available)
 # --- Do not remove these libs ---
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
 from freqtrade.strategy.interface import IStrategy
@@ -32,82 +26,65 @@ import talib.abstract as ta
 from functools import reduce
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
-##### SETINGS #####
-# It hyperopt just one set of params for all buy and sell strategies if true.
-DUALFIT = False
-COUNT = 10
-GAP = 3
-### END SETINGS ###
-
 
 class Diamond(IStrategy):
     # ###################### RESULT PLACE ######################
-    # *    6/700:      1 trades. 1/0/0 Wins/Draws/Losses. Avg profit  17.68%. Median profit  17.68%. Total profit  58.94100000 USDT (   5.89Σ%). Avg duration 0:00:00 min. Objective: 1.79949
-
+    # 1/700:     20 trades. 13/4/3 Wins/Draws/Losses. Avg profit   6.30%. Median profit   7.19%. Total profit  0.04159258 BTC (  41.59%). Avg duration 2 days, 22:24:00 min. Objective: 1.83361
     # Buy hyperspace params:
     buy_params = {
-        "buy_fast": 31,
-        "buy_push": 0.72,
-        "buy_shift": -7,
-        "buy_slow": 2,
+        "buy_fast": 22,
+        "buy_push": 1.65,
+        "buy_slow": 16,
     }
 
     # Sell hyperspace params:
     sell_params = {
-        "sell_fast": 17,
-        "sell_push": 1.493,
-        "sell_shift": -7,
-        "sell_slow": 28,
+        "sell_fast": 10,
+        "sell_push": 1.53,
+        "sell_slow": 50,
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.177,
-        "31": 0.059,
-        "61": 0.021,
-        "170": 0
+        "0": 0.647,
+        "992": 0.285,
+        "2659": 0.072,
+        "7323": 0
     }
 
     # Stoploss:
-    stoploss = -0.241
-
+    stoploss = -0.259
     # Trailing stop:
     trailing_stop = True
-    trailing_stop_positive = 0.13
-    trailing_stop_positive_offset = 0.189
+    trailing_stop_positive = 0.222
+    trailing_stop_positive_offset = 0.284
     trailing_only_offset_is_reached = True
+
     # Buy hypers
-    timeframe = '5m'
+    timeframe = '4h'
     # #################### END OF RESULT PLACE ####################
-    buy_push = DecimalParameter(0, 2, decimals=3, default=1, space='buy')
-    buy_shift = IntParameter(-10, 0, default=-6, space='buy')
-    buy_fast = IntParameter(2, 50, default=9, space='buy')
-    buy_slow = IntParameter(2, 50, default=18, space='buy')
-    if not DUALFIT:
-        sell_push = DecimalParameter(
-            0, 2, decimals=3,  default=1, space='sell')
-        sell_shift = IntParameter(-10, 0, default=-6, space='sell')
-        sell_fast = IntParameter(2, 50, default=9, space='sell')
-        sell_slow = IntParameter(2, 50, default=18, space='sell')
+    buy_push = DecimalParameter(1, 2, decimals=2, default=1, space='buy')
+    sell_push = DecimalParameter(1, 2, decimals=2,  default=1, space='sell')
+    buy_fast = IntParameter(2, 30, default=1, space='buy')
+    buy_slow = IntParameter(2, 50, default=1, space='buy')
+    sell_fast = IntParameter(2, 30, default=1, space='sell')
+    sell_slow = IntParameter(2, 50, default=1, space='sell')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe['buy_ema_fast'] = ta.SMA(
+        dataframe['buy_ma_fast'] = ta.SMA(
             dataframe, timeperiod=int(self.buy_fast.value))
-        dataframe['buy_ema_slow'] = ta.SMA(
+        dataframe['buy_ma_slow'] = ta.SMA(
             dataframe, timeperiod=int(self.buy_slow.value))
 
         conditions = []
-
         conditions.append(
-            qtpylib.crossed_above(
-                dataframe['buy_ema_fast'].shift(self.buy_shift.value),
-                dataframe['buy_ema_slow'].shift(
-                    self.buy_shift.value)*self.buy_push.value
-            )
+            (dataframe['buy_ma_fast']/dataframe['buy_ma_slow']
+             ).between(1, self.buy_push.value)
+
         )
 
         if conditions:
@@ -118,28 +95,16 @@ class Diamond(IStrategy):
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        push = self.buy_push.value
-        shift = self.buy_shift.value
-        ema_fast = dataframe['buy_ema_fast']
-        ema_slow = dataframe['buy_ema_slow']
-
-        if not DUALFIT:
-            push = self.sell_push.value
-            shift = self.sell_shift.value
-            ema_fast = dataframe['sell_ema_fast'] = ta.SMA(
-                dataframe, timeperiod=int(self.buy_fast.value))
-            ema_slow = dataframe['sell_ema_slow'] = ta.SMA(
-                dataframe, timeperiod=int(self.buy_slow.value))
+        dataframe['sell_ma_fast'] = ta.SMA(
+            dataframe, timeperiod=int(self.sell_fast.value))
+        dataframe['sell_ma_slow'] = ta.SMA(
+            dataframe, timeperiod=int(self.sell_slow.value))
 
         conditions = []
-
         conditions.append(
-            qtpylib.crossed_below(
-                ema_fast.shift(shift),
-                ema_slow.shift(shift)*push
-            )
+            (dataframe['sell_ma_slow']/dataframe['sell_ma_fast']
+             ).between(1, self.sell_push.value)
         )
-
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
