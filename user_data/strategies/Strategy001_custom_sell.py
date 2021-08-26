@@ -1,23 +1,23 @@
 
 # --- Do not remove these libs ---
-from freqtrade.strategy import IStrategy
+from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
 # --------------------------------
 
 import talib.abstract as ta
+import freqtrade.vendor.qtpylib.indicators as qtpylib
 
-
-class Strategy004(IStrategy):
+class Strategy001_custom_sell(IStrategy):
 
     """
-    Strategy 004
-    author@: Gerald Lonlas
+    Strategy 001_custom_sell
+    author@: Gerald Lonlas, froggleston
     github@: https://github.com/freqtrade/freqtrade-strategies
 
     How to use it?
-    > python3 ./freqtrade/main.py -s Strategy004
+    > python3 ./freqtrade/main.py -s Strategy001_custom_sell
     """
 
     # Minimal ROI designed for the strategy.
@@ -79,32 +79,16 @@ class Strategy004(IStrategy):
         or your hyperopt configuration, otherwise you will waste your memory and CPU usage.
         """
 
-        # ADX
-        dataframe['adx'] = ta.ADX(dataframe)
-        dataframe['slowadx'] = ta.ADX(dataframe, 35)
+        dataframe['ema20'] = ta.EMA(dataframe, timeperiod=20)
+        dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
 
-        # Commodity Channel Index: values Oversold:<-100, Overbought:>100
-        dataframe['cci'] = ta.CCI(dataframe)
+        heikinashi = qtpylib.heikinashi(dataframe)
+        dataframe['ha_open'] = heikinashi['open']
+        dataframe['ha_close'] = heikinashi['close']
 
-        # Stoch
-        stoch = ta.STOCHF(dataframe, 5)
-        dataframe['fastd'] = stoch['fastd']
-        dataframe['fastk'] = stoch['fastk']
-        dataframe['fastk-previous'] = dataframe.fastk.shift(1)
-        dataframe['fastd-previous'] = dataframe.fastd.shift(1)
-
-        # Slow Stoch
-        slowstoch = ta.STOCHF(dataframe, 50)
-        dataframe['slowfastd'] = slowstoch['fastd']
-        dataframe['slowfastk'] = slowstoch['fastk']
-        dataframe['slowfastk-previous'] = dataframe.slowfastk.shift(1)
-        dataframe['slowfastd-previous'] = dataframe.slowfastd.shift(1)
-
-        # EMA - Exponential Moving Average
-        dataframe['ema5'] = ta.EMA(dataframe, timeperiod=5)
-
-        dataframe['mean-volume'] = dataframe['volume'].mean()
-
+        dataframe['rsi'] = ta.RSI(dataframe, 14)
+        
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -115,23 +99,9 @@ class Strategy004(IStrategy):
         """
         dataframe.loc[
             (
-                (
-                    (dataframe['adx'] > 50) |
-                    (dataframe['slowadx'] > 26)
-                ) &
-                (dataframe['cci'] < -100) &
-                (
-                    (dataframe['fastk-previous'] < 20) &
-                    (dataframe['fastd-previous'] < 20)
-                ) &
-                (
-                    (dataframe['slowfastk-previous'] < 30) &
-                    (dataframe['slowfastd-previous'] < 30)
-                ) &
-                (dataframe['fastk-previous'] < dataframe['fastd-previous']) &
-                (dataframe['fastk'] > dataframe['fastd']) &
-                (dataframe['mean-volume'] > 0.75) &
-                (dataframe['close'] > 0.00000100)
+                qtpylib.crossed_above(dataframe['ema20'], dataframe['ema50']) &
+                (dataframe['ha_close'] > dataframe['ema20']) &
+                (dataframe['ha_open'] < dataframe['ha_close'])  # green bar
             ),
             'buy'] = 1
 
@@ -145,10 +115,27 @@ class Strategy004(IStrategy):
         """
         dataframe.loc[
             (
-                (dataframe['slowadx'] < 25) &
-                ((dataframe['fastk'] > 70) | (dataframe['fastd'] > 70)) &
-                (dataframe['fastk-previous'] < dataframe['fastd-previous']) &
-                (dataframe['close'] > dataframe['ema5'])
+                qtpylib.crossed_above(dataframe['ema50'], dataframe['ema100']) &
+                (dataframe['ha_close'] < dataframe['ema20']) &
+                (dataframe['ha_open'] > dataframe['ha_close'])  # red bar
             ),
             'sell'] = 1
         return dataframe
+
+    def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float, current_profit: float, **kwargs):
+        """
+        Sell only when matching some criteria other than those used to generate the sell signal
+        :return: str sell_reason, if any, otherwise None
+        """
+        # get dataframe
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair=pair, timeframe=self.timeframe)
+        
+        # get the current candle
+        current_candle = dataframe.iloc[-1].squeeze()
+        
+        # if RSI greater than 70 and profit is positive, then sell
+        if (current_candle['rsi'] > 70) and (current_profit > 0):
+            return "rsi_profit_sell"
+        
+        # else, hold
+        return None
