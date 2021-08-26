@@ -1,4 +1,11 @@
 # MultiMa Strategy
+# NOT IMPORTANT GUIDE:
+#   Buy me a Coffee:
+#       BTC: 1FvX1JbsmbK6BjcGnzTmUy5AvVgYHsgEpA
+#       ETH(ERC20): 0x675c1a0753b49752f445a978cb75d106417f0547
+#       DOGE: D6fVdhucaToyLUg3iCEjzP4g6mjbvibrTC
+#       USDT(TRC20): THmmW5k65WRw8TP6w58TvG156LccAgDtL3
+#       XRP: rDt7d2bf2CSKzTFug2etkhbr8yQjbZtLE7 TAG: 86584953
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # (First Hyperopt it.A hyperopt file is available)
