@@ -1,29 +1,5 @@
 # Persia Strategy
-# Iran also called Persia is home to one of the world's
-# oldest civilizations,beginning with the formation of the
-# Elamite kingdoms in the fourth millennium BC. "Cyrus the
-# Great" founded the "Achaemenid" Empire, which became one of
-# the largest empires in history and the world's first
-# superpower. Iran In Last 50 years officially called the
-# "Islamic Republic of Iran". And everything was changed!
-# Now we need support of free peoples around the world. We
-# don't want to change fully to somthig like North-Korea OR
-# Afghanistan. I'll show what happen if you "RANDOMLY" born
-# in Iran In two steps:
-# 1) fully vaccinated people til 25Aug2021:
-#   Total doses given	19,9M
-#   People fully vaccinated	4,38M
-#   % fully vaccinated	5,3 %
-# 2) Hacktivists leak videos of abuse in Iran Evin prison (Hot News):
-#   https://mega.nz/folder/1l5WxKRY#QK7QXPo1IaMvqQSROMZg6w
-# Anyway ...................................................
-# NOT IMPORTANT GUIDE:
-#   Buy me a Coffee:
-#       BTC: 1FvX1JbsmbK6BjcGnzTmUy5AvVgYHsgEpA
-#       ETH(ERC20): 0x675c1a0753b49752f445a978cb75d106417f0547
-#       DOGE: D6fVdhucaToyLUg3iCEjzP4g6mjbvibrTC
-#       USDT(TRC20): THmmW5k65WRw8TP6w58TvG156LccAgDtL3
-#       XRP: rDt7d2bf2CSKzTFug2etkhbr8yQjbZtLE7 TAG: 86584953
+# An strategy for combining formulas
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy Persia
@@ -2579,22 +2555,22 @@ class Persia(IStrategy):
     ###############################################################
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe = dataframe.shift(1)
+        dataframe1 = dataframe.shift(1)
         # print(timeframes)
         for indicator in indicators:
             for tf_idx in timeframes:
                 tf_idx = int(tf_idx)
                 try:
                     dataframe[f'{indicator}-{tf_idx}'] = getattr(
-                        ta, indicator)(dataframe, timeperiod=tf_idx)
+                        ta, indicator)(dataframe1, timeperiod=tf_idx)
                 except:
                     try:
                         dataframe[f'{indicator}-{tf_idx}'] = getattr(
-                            ta, indicator)(dataframe, timeperiod=float(tf_idx))
+                            ta, indicator)(dataframe1, timeperiod=float(tf_idx))
                     except:
                         try:
                             dataframe[f'{indicator}-{tf_idx}'] = getattr(ta, indicator)(
-                                dataframe,  timeperiod=tf_idx).iloc[:, 0]
+                                dataframe1,  timeperiod=tf_idx).iloc[:, 0]
                         except:
                             raise
         # print(dataframe.keys())
