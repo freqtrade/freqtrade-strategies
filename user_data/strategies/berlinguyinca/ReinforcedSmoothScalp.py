@@ -1,6 +1,8 @@
 # --- Do not remove these libs ---
-from freqtrade.strategy.interface import IStrategy
+from functools import reduce
+from freqtrade.strategy import IStrategy
 from freqtrade.strategy import timeframe_to_minutes
+from freqtrade.strategy import BooleanParameter, IntParameter
 from pandas import DataFrame
 from technical.util import resample_to_interval, resampled_merge
 import numpy  # noqa
@@ -33,6 +35,27 @@ class ReinforcedSmoothScalp(IStrategy):
     # resample factor to establish our general trend. Basically don't buy if a trend is not given
     resample_factor = 5
 
+    buy_adx = IntParameter(20, 50, default=32, space='buy')
+    buy_fastd = IntParameter(15, 45, default=30, space='buy')
+    buy_fastk = IntParameter(15, 45, default=26, space='buy')
+    buy_mfi = IntParameter(10, 25, default=22, space='buy')
+    buy_adx_enabled = BooleanParameter(default=True, space='buy')
+    buy_fastd_enabled = BooleanParameter(default=True, space='buy')
+    buy_fastk_enabled = BooleanParameter(default=False, space='buy')
+    buy_mfi_enabled = BooleanParameter(default=True, space='buy')
+
+    sell_adx = IntParameter(50, 100, default=53, space='sell')
+    sell_cci = IntParameter(100, 200, default=183, space='sell')
+    sell_fastd = IntParameter(50, 100, default=79, space='sell')
+    sell_fastk = IntParameter(50, 100, default=70, space='sell')
+    sell_mfi = IntParameter(75, 100, default=92, space='sell')
+
+    sell_adx_enabled = BooleanParameter(default=False, space='sell')
+    sell_cci_enabled = BooleanParameter(default=True, space='sell')
+    sell_fastd_enabled = BooleanParameter(default=True, space='sell')
+    sell_fastk_enabled = BooleanParameter(default=True, space='sell')
+    sell_mfi_enabled = BooleanParameter(default=False, space='sell')
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         tf_res = timeframe_to_minutes(self.timeframe) * 5
         df_res = resample_to_interval(dataframe, tf_res)
@@ -60,43 +83,55 @@ class ReinforcedSmoothScalp(IStrategy):
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[
-            (
-                (
-                        (dataframe['open'] < dataframe['ema_low']) &
-                        (dataframe['adx'] > 30) &
-                        (dataframe['mfi'] < 30) &
-                        (
-                                (dataframe['fastk'] < 30) &
-                                (dataframe['fastd'] < 30) &
-                                (qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd']))
-                        ) &
-                        (dataframe['resample_sma'] < dataframe['close'])
-                )
-                # |
-                # # try to get some sure things independent of resample
-                # ((dataframe['rsi'] - dataframe['mfi']) < 10) &
-                # (dataframe['mfi'] < 30) &
-                # (dataframe['cci'] < -200)
-            ),
-            'buy'] = 1
+
+        conditions = []
+        if self.buy_mfi_enabled.value:
+            conditions.append(dataframe['mfi'] < self.buy_mfi.value)
+        if self.buy_fastd_enabled.value:
+            conditions.append(dataframe['fastd'] < self.buy_fastd.value)
+        if self.buy_fastk_enabled.value:
+            conditions.append(dataframe['fastk'] < self.buy_fastk.value)
+        if self.buy_adx_enabled.value:
+            conditions.append(dataframe['adx'] > self.buy_adx.value)
+
+        # Some static conditions which always apply
+        conditions.append(qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd']))
+        conditions.append(dataframe['resample_sma'] < dataframe['close'])
+
+        # Check that volume is not 0
+        conditions.append(dataframe['volume'] > 0)
+
+        if conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'buy'] = 1
+
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe.loc[
-            (
-                    (
-                            (
-                                (dataframe['open'] >= dataframe['ema_high'])
 
-                            ) |
-                            (
-                                    (qtpylib.crossed_above(dataframe['fastk'], 70)) |
-                                    (qtpylib.crossed_above(dataframe['fastd'], 70))
+        conditions = []
 
-                            )
-                    ) & (dataframe['cci'] > 100)
-            )
-            ,
-            'sell'] = 1
+        # Some static conditions which always apply
+        conditions.append(dataframe['open'] > dataframe['ema_high'])
+
+        if self.sell_mfi_enabled.value:
+            conditions.append(dataframe['mfi'] > self.sell_mfi.value)
+        if self.sell_fastd_enabled.value:
+            conditions.append(dataframe['fastd'] > self.sell_fastd.value)
+        if self.sell_fastk_enabled.value:
+            conditions.append(dataframe['fastk'] > self.sell_fastk.value)
+        if self.sell_adx_enabled.value:
+            conditions.append(dataframe['adx'] < self.sell_adx.value)
+        if self.sell_cci_enabled.value:
+            conditions.append(dataframe['cci'] > self.sell_cci.value)
+
+        # Check that volume is not 0
+        conditions.append(dataframe['volume'] > 0)
+
+        if conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions),
+                'sell'] = 1
+
         return dataframe
