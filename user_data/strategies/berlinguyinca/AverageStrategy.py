@@ -1,5 +1,7 @@
 # --- Do not remove these libs ---
+from functools import reduce
 from freqtrade.strategy import IStrategy
+from freqtrade.strategy import CategoricalParameter, DecimalParameter, IntParameter
 from pandas import DataFrame
 # --------------------------------
 
@@ -29,10 +31,14 @@ class AverageStrategy(IStrategy):
     # Optimal timeframe for the strategy
     timeframe = '4h'
 
+    buy_range_short = IntParameter(5, 20, default=8)
+    buy_range_long = IntParameter(20, 120, default=21)
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
-        dataframe['maShort'] = ta.EMA(dataframe, timeperiod=8)
-        dataframe['maMedium'] = ta.EMA(dataframe, timeperiod=21)
+        # Combine all ranges ... to avoid duplicate calculation
+        for val in list(set(list(self.buy_range_short.range) + list(self.buy_range_long.range))):
+            dataframe[f'ema{val}'] = ta.EMA(dataframe, timeperiod=val)
 
         return dataframe
 
@@ -44,7 +50,11 @@ class AverageStrategy(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['maShort'], dataframe['maMedium'])
+                qtpylib.crossed_above(
+                    dataframe[f'ema{self.buy_range_short.value}'],
+                    dataframe[f'ema{self.buy_range_long.value}']
+                ) &
+                (dataframe['volume'] > 0)
             ),
             'buy'] = 1
 
@@ -58,7 +68,11 @@ class AverageStrategy(IStrategy):
         """
         dataframe.loc[
             (
-                qtpylib.crossed_above(dataframe['maMedium'], dataframe['maShort'])
+                qtpylib.crossed_above(
+                    dataframe[f'ema{self.buy_range_long.value}'],
+                    dataframe[f'ema{self.buy_range_short.value}']
+                    ) &
+                (dataframe['volume'] > 0)
             ),
             'sell'] = 1
         return dataframe
