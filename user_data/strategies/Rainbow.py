@@ -8,12 +8,12 @@
 # That Which (tf, rolling, shift) setting of an indicator will use to make Ribbons.
 # There isAcomperator param that used for find best comperatorare operator to generated ribbons.
 # freqtrade backtesting -s Rainbow -c configusdt.json
-# freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --strategy Rainbow -c configusdt.json --eps
-# $ freqtrade hyperopt --hyperopt-loss OnlyProfitHyperOptLoss --strategy Rainbow -c configusdt.json --eps
-# $$$ freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy Rainbow -c configusdt.json --eps
-# $ freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily --strategy Rainbow -c configusdt.json --eps
-# $$ freqtrade hyperopt --hyperopt-loss SortinoHyperOptLoss --strategy Rainbow -c configusdt.json --eps
-# $ freqtrade hyperopt --hyperopt-loss SortinoHyperOptLossDaily --strategy Rainbow -c configusdt.json --eps
+# freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
+# $ freqtrade hyperopt --hyperopt-loss OnlyProfitHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
+# $$$ freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
+# $ freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily --strategy Rainbow -c configusdt.json -e 10
+# $$ freqtrade hyperopt --hyperopt-loss SortinoHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
+# $ freqtrade hyperopt --hyperopt-loss SortinoHyperOptLossDaily --strategy Rainbow -c configusdt.json -e 10
 
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
@@ -47,6 +47,7 @@ def sieve_of_eratosthenes(n):
 
 
 class Rainbow(IStrategy):
+    # One pair BTC/USDT, without --eps, 1000$,  one pair
     #     53/100:     81 trades. 27/53/1 Wins/Draws/Losses. Avg profit   0.25%. Median profit   0.00%. Total profit  200.27435768 USDT (  20.03Σ%). Avg duration 15:54:00 min. Objective: -3.73368
 
 
@@ -133,7 +134,7 @@ class Rainbow(IStrategy):
                         self.buy_ma_rolling.value).mean().shift(self.buy_ma_shift.value)
                     dataframe['B'] = dataframe.iloc[:, i-1].rolling(
                         self.buy_ma_rolling.value).mean().shift(self.buy_ma_shift.value)
-                    conditions.append(self.ConditionGenerator(
+                    conditions.append(self.condition_generator(
                         self.buy_ma_comperator.value, dataframe, dataframe['A'], dataframe['B']))
 
         elif self.buy_ma_driver.value == 'rolling':
@@ -144,7 +145,7 @@ class Rainbow(IStrategy):
                         rolling).mean().shift(self.buy_ma_shift.value)
                     dataframe['B'] = dataframe[self.buy_ma_time_range.value].rolling(
                         rolling-1).mean().shift(self.buy_ma_shift.value)
-                    conditions.append(self.ConditionGenerator(
+                    conditions.append(self.condition_generator(
                         self.buy_ma_comperator.value, dataframe, dataframe['A'], dataframe['B']))
 
         elif self.buy_ma_driver.value == 'shift':
@@ -154,7 +155,7 @@ class Rainbow(IStrategy):
                     self.buy_ma_rolling.value).mean().shift(shift)
                 dataframe['B'] = dataframe[self.buy_ma_time_range.value].rolling(
                     self.buy_ma_rolling.value).mean().shift(shift-1)
-                conditions.append(self.ConditionGenerator(
+                conditions.append(self.condition_generator(
                     self.buy_ma_comperator.value, dataframe, dataframe['A'], dataframe['B']))
 
         if conditions:
@@ -174,7 +175,7 @@ class Rainbow(IStrategy):
                         self.sell_ma_rolling.value).mean().shift(self.sell_ma_shift.value)
                     dataframe['B'] = dataframe.iloc[:, i-1].rolling(
                         self.sell_ma_rolling.value).mean().shift(self.sell_ma_shift.value)
-                    conditions.append(self.ConditionGenerator(
+                    conditions.append(self.condition_generator(
                         self.sell_ma_comperator.value, dataframe, dataframe['A'], dataframe['B']))
 
         elif self.sell_ma_driver.value == 'rolling':
@@ -185,7 +186,7 @@ class Rainbow(IStrategy):
                         rolling).mean().shift(self.sell_ma_shift.value)
                     dataframe['B'] = dataframe[self.sell_ma_time_range.value].rolling(
                         rolling-1).mean().shift(self.sell_ma_shift.value)
-                    conditions.append(self.ConditionGenerator(
+                    conditions.append(self.condition_generator(
                         self.sell_ma_comperator.value, dataframe, dataframe['A'], dataframe['B']))
 
         elif self.sell_ma_driver.value == 'shift':
@@ -195,7 +196,7 @@ class Rainbow(IStrategy):
                     self.sell_ma_rolling.value).mean().shift(shift)
                 dataframe['B'] = dataframe[self.sell_ma_time_range.value].rolling(
                     self.sell_ma_rolling.value).mean().shift(shift-1)
-                conditions.append(self.ConditionGenerator(
+                conditions.append(self.condition_generator(
                     self.sell_ma_comperator.value, dataframe, dataframe['A'], dataframe['B']))
 
         if conditions:
@@ -206,7 +207,7 @@ class Rainbow(IStrategy):
 
     # you can add more conditions here with new tags and than add
     # them to comperator hyperoptable variable.
-    def ConditionGenerator(self, comperator, df, A, B):
+    def condition_generator(self, comperator, df, A, B):
         # comperator == 'Tag':
         if comperator == 'crossed_above':
             return qtpylib.crossed_above(A, B)
