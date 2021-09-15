@@ -179,7 +179,7 @@ class Rainbow(IStrategy):
 
         elif self.sell_ma_driver.value == 'rolling':
             rng = self.sell_ma_rolling.range
-            for rolling in rng:
+            for rolling in rng: 
                 if rolling-1 >= 0:
                     dataframe['A'] = dataframe[self.sell_ma_time_range.value].rolling(
                         rolling).mean().shift(self.sell_ma_shift.value)
