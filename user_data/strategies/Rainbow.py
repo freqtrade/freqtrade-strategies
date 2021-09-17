@@ -7,13 +7,7 @@
 # And See What will happen. The key thing we use in this strategy Is Driver that controls
 # That Which (tf, rolling, shift) setting of an indicator will use to make Ribbons.
 # There isAcomperator param that used for find best comperatorare operator to generated ribbons.
-# freqtrade backtesting -s Rainbow -c configusdt.json
-# freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
-# $ freqtrade hyperopt --hyperopt-loss OnlyProfitHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
-# $$$ freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
-# $ freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily --strategy Rainbow -c configusdt.json -e 10
-# $$ freqtrade hyperopt --hyperopt-loss SortinoHyperOptLoss --strategy Rainbow -c configusdt.json -e 10
-# $ freqtrade hyperopt --hyperopt-loss SortinoHyperOptLossDaily --strategy Rainbow -c configusdt.json -e 10
+# Hyperopt this strategy with SharpeHyperOptLoss And/Or SortinoHyperOptLoss 
 
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
