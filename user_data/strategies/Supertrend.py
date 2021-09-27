@@ -16,6 +16,7 @@ import logging
 from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy.hyper import IntParameter
+import pandas as pd
 from pandas import DataFrame
 import talib.abstract as ta
 import numpy as np
@@ -80,39 +81,77 @@ class Supertrend(IStrategy):
     sell_p3 = IntParameter(7, 21, default=14)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
+        # init tmp dataframe
+        df = dataframe.copy()
+
         for multiplier in self.buy_m1.range:
-            for period in self.buy_p1.range:
-                dataframe[f'supertrend_1_buy_{multiplier}_{period}'] = self.supertrend(dataframe, multiplier, period)['STX']
+            supertrend_1_buy = pd.concat([
+                pd.DataFrame(
+                    self.supertrend(df, multiplier, period)['STX'], columns=[f'supertrend_1_buy_{multiplier}_{period}']
+                    ) for period in self.buy_p1.range
+                ], ignore_index=True)
+        pd.concat([dataframe, supertrend_1_buy], axis=1)
+        del supertrend_1_buy
 
         for multiplier in self.buy_m2.range:
-            for period in self.buy_p2.range:
-                dataframe[f'supertrend_2_buy_{multiplier}_{period}'] = self.supertrend(dataframe, multiplier, period)['STX']
+            supertrend_2_buy = pd.concat([
+                pd.DataFrame(
+                    self.supertrend(df, multiplier, period)['STX'], columns=[f'supertrend_2_buy_{multiplier}_{period}']
+                    ) for period in self.buy_p2.range
+                ], ignore_index=True)
+        pd.concat([dataframe, supertrend_2_buy], axis=1)
+        del supertrend_2_buy
 
         for multiplier in self.buy_m3.range:
-            for period in self.buy_p3.range:
-                dataframe[f'supertrend_3_buy_{multiplier}_{period}'] = self.supertrend(dataframe, multiplier, period)['STX']
+            supertrend_3_buy = pd.concat([
+                pd.DataFrame(
+                    self.supertrend(df, multiplier, period)['STX'], columns=[f'supertrend_3_buy_{multiplier}_{period}']
+                    ) for period in self.buy_p3.range
+                ], ignore_index=True)
+        pd.concat([dataframe, supertrend_3_buy], axis=1)
+        del supertrend_3_buy
 
         for multiplier in self.sell_m1.range:
-            for period in self.sell_p1.range:
-                dataframe[f'supertrend_1_sell_{multiplier}_{period}'] = self.supertrend(dataframe, multiplier, period)['STX']
+            supertrend_1_sell = pd.concat([
+                pd.DataFrame(
+                    self.supertrend(df, multiplier, period)['STX'], columns=[f'supertrend_1_sell_{multiplier}_{period}']
+                ) for period in self.sell_p1.range
+                ], ignore_index=True)
+        pd.concat([dataframe, supertrend_1_sell], axis=1)
+        del supertrend_1_sell
 
         for multiplier in self.sell_m2.range:
-            for period in self.sell_p2.range:
-                dataframe[f'supertrend_2_sell_{multiplier}_{period}'] = self.supertrend(dataframe, multiplier, period)['STX']
+            supertrend_2_sell = pd.concat([
+                pd.DataFrame(
+                    self.supertrend(df, multiplier, period)['STX'], columns=[f'supertrend_2_sell_{multiplier}_{period}']
+                    ) for period in self.sell_p2.range
+                ], ignore_index=True)
+        pd.concat([dataframe, supertrend_2_sell], axis=1)
+        del supertrend_2_sell
 
         for multiplier in self.sell_m3.range:
-            for period in self.sell_p3.range:
-                dataframe[f'supertrend_3_sell_{multiplier}_{period}'] = self.supertrend(dataframe, multiplier, period)['STX']
+            supertrend_3_sell = pd.concat([
+                pd.DataFrame(
+                    self.supertrend(df, multiplier, period)['STX'], columns=[f'supertrend_3_sell_{multiplier}_{period}']
+                    ) for period in self.sell_p3.range
+                ], ignore_index=True)
+        pd.concat([dataframe, supertrend_3_sell], axis=1)
+        del supertrend_3_sell
 
-        return dataframe
+        # free tmp dataframe
+        del df
+
+        return dataframe.copy()
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
-               (dataframe[f'supertrend_1_buy_{self.buy_m1.value}_{self.buy_p1.value}'] == 'up') &
-               (dataframe[f'supertrend_2_buy_{self.buy_m2.value}_{self.buy_p2.value}'] == 'up') &
-               (dataframe[f'supertrend_3_buy_{self.buy_m3.value}_{self.buy_p3.value}'] == 'up') & # The three indicators are 'up' for the current candle
-               (dataframe['volume'] > 0) # There is at least some trading volume
+                # (dataframe['date'].dt.hour < 20) | (dataframe['date'].dt.hour > 22) & # guard: time of chaos
+                (dataframe[f'supertrend_1_buy_{self.buy_m1.value}_{self.buy_p1.value}'] == 'up') &
+                (dataframe[f'supertrend_2_buy_{self.buy_m2.value}_{self.buy_p2.value}'] == 'up') &
+                (dataframe[f'supertrend_3_buy_{self.buy_m3.value}_{self.buy_p3.value}'] == 'up') & # The three indicators are 'up' for the current candle
+                (dataframe['volume'] > 0) # There is at least some trading volume
         ),
             'buy'] = 1
 
