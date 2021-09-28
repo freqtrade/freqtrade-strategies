@@ -7,9 +7,6 @@ from pandas import DataFrame
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 # --------------------------------
-import talib.abstract as ta
-import freqtrade.vendor.qtpylib.indicators as qtpylib
-
 
 class Scalp(IStrategy):
     """
