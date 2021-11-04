@@ -25,7 +25,7 @@ class MultiMa(IStrategy):
 
     sell_ma_count = IntParameter(0, 10, default=10, space="sell")
     sell_ma_gap = IntParameter(2, 10, default=2, space="sell")
-    sell_ma_shift = IntParameter(, 10, default=0, space="sell")
+    sell_ma_shift = IntParameter(0, 10, default=0, space="sell")
     # sell_ma_rolling = IntParameter(0, 10, default=0, space='sell')
 
     # ROI table:
