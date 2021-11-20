@@ -1,18 +1,15 @@
-# Khayyam Strategy
+# Hour Strategy
 # In this strategy we try to find the best hours to buy and sell in a day.(in hourly timeframe)
-# Cuz of that you should just use 1h timeframe on this strategy.
-# Name of this strategy come from the Omar khayyam who was a Persian polymath,
-# mathematician, astronomer, philosopher, and poet!
-# https://en.wikipedia.org/wiki/Omar_Khayyam
+# Because of that you should just use 1h timeframe on this strategy.
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# * RUN LIVE AFTER HYPEROPT!
-# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy Khayyam -e 200
+# Requires hyperopt before running.
+# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy HourBasedStrategy -e 200
 
 
-from freqtrade.strategy import IntParameter
-from freqtrade.strategy import IStrategy
+from freqtrade.strategy import IntParameter, IStrategy
 from pandas import DataFrame
+
 # --------------------------------
 # Add your lib to import here
 # No need to These imports. just for who want to add more conditions:
@@ -20,7 +17,7 @@ from pandas import DataFrame
 # import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
-class Khayyam(IStrategy):
+class HourBasedStrategy(IStrategy):
     # SHIB/USDT, 1000$x1:100days
     # 158/1000:     51 trades. 29/19/3 Wins/Draws/Losses. Avg profit   4.02%. Median profit   2.48%. Total profit  4867.53438466 USDT ( 486.75%). Avg duration 1 day, 19:38:00 min. Objective: -4.17276
     # buy_params = {"buy_hour_max": 18,"buy_hour_min": 7,}
@@ -73,7 +70,7 @@ class Khayyam(IStrategy):
     }
 
     # Stoploss:
-    stoploss = -0.296
+    stoploss = -0.10
 
     # Optimal timeframe
     timeframe = '1h'
