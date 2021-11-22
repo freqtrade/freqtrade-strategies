@@ -82,7 +82,7 @@ First you need a [working Freqtrade](https://freqtrade.io).
 Once you have the bot on the right version, follow this steps:
 
 1. Select the strategy you want. All strategies of the repo are into 
-[user_data/strategies](https://github.com/freqtrade/freqtrade/tree/develop/user_data/strategies)
+[user_data/strategies](https://github.com/freqtrade/freqtrade-strategies/tree/master/user_data/strategies)
 2. Copy the strategy file
 3. Paste it into your `user_data/strategies` folder
 4. Run the bot with the parameter `--strategy <STRATEGY CLASS NAME>` (ex: `freqtrade trade --strategy Strategy001`)
