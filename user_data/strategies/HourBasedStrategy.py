@@ -99,7 +99,7 @@ class HourBasedStrategy(IStrategy):
         min, max = self.sell_hour_min.value, self.sell_hour_max.value
         dataframe.loc[
             (
-                (dataframe['hour'].between(min, max))
+                (dataframe['hour'].between(max, min))
             ),
-            'buy'] = 1
+            'sell'] = 1
         return dataframe
