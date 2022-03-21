@@ -26,4 +26,18 @@ Please Click on each strategy to see details of the mistakes.
 uses `.min()` and `.max()` to normalize `trend_ichimoku_base` as well as `trend_kst_diff`.
 
 </details>
+
+<details>
+<summary>wtc</summary>
+
+``` python
+min_max_scaler = preprocessing.MinMaxScaler()
+x_scaled = min_max_scaler.fit_transform(x)
+```
+
+Using a MinMaxScaler will automatically take the absolute maximum and minimum of a series.
+
+</details>
+</details>
+
 </details>
