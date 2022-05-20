@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 class BreakEven(IStrategy):
     """
-    author@: lenik
+    author@: leni
 
     Sometimes I want to close the bot ASAP, but not have the positions floating around.
 
