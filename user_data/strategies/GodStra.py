@@ -11,21 +11,22 @@
 
 # --- Do not remove these libs ---
 import logging
+from functools import reduce
 
-from numpy.lib import math
-from freqtrade.strategy.interface import IStrategy
-from pandas import DataFrame
-# --------------------------------
-
+import freqtrade.vendor.qtpylib.indicators as qtpylib
+import numpy as np
 # Add your lib to import here
 # import talib.abstract as ta
 import pandas as pd
+from freqtrade.strategy import IStrategy
+from numpy.lib import math
+from pandas import DataFrame
 # import talib.abstract as ta
 from ta import add_all_ta_features
 from ta.utils import dropna
-import freqtrade.vendor.qtpylib.indicators as qtpylib
-from functools import reduce
-import numpy as np
+
+# --------------------------------
+
 
 
 class GodStra(IStrategy):

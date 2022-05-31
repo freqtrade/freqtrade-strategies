@@ -1,6 +1,6 @@
 
 # --- Do not remove these libs ---
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IStrategy
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
@@ -88,7 +88,7 @@ class Strategy001_custom_sell(IStrategy):
         dataframe['ha_close'] = heikinashi['close']
 
         dataframe['rsi'] = ta.RSI(dataframe, 14)
-        
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -129,13 +129,13 @@ class Strategy001_custom_sell(IStrategy):
         """
         # get dataframe
         dataframe, _ = self.dp.get_analyzed_dataframe(pair=pair, timeframe=self.timeframe)
-        
+
         # get the current candle
         current_candle = dataframe.iloc[-1].squeeze()
-        
+
         # if RSI greater than 70 and profit is positive, then sell
         if (current_candle['rsi'] > 70) and (current_profit > 0):
             return "rsi_profit_sell"
-        
+
         # else, hold
         return None

@@ -1,7 +1,7 @@
 from pandas import DataFrame
 from technical.indicators import cmf
 
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IStrategy
 
 
 class TechnicalExampleStrategy(IStrategy):

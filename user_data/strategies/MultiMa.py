@@ -3,8 +3,7 @@
 # github: https://github.com/mablue/
 
 # --- Do not remove these libs ---
-from freqtrade.strategy.hyper import IntParameter
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IntParameter, IStrategy
 from pandas import DataFrame
 
 # --------------------------------

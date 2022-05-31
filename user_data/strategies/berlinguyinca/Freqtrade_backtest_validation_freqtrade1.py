@@ -4,7 +4,7 @@
 # The purpose is to test Freqtrade backtest provides like results to a known industry platform.
 #
 # --- Do not remove these libs ---
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IStrategy
 from pandas import DataFrame
 # --------------------------------
 

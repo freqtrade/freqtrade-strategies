@@ -12,8 +12,7 @@
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces roi buy --strategy Heracles
 # ######################################################################
 # --- Do not remove these libs ---
-from freqtrade.strategy.hyper import IntParameter, DecimalParameter
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IntParameter, DecimalParameter, IStrategy
 from pandas import DataFrame
 # --------------------------------
 # Add your lib to import here

@@ -4,8 +4,7 @@
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces all --strategy mabStra --config config.json -e 100
 
 # --- Do not remove these libs ---
-from freqtrade.strategy.hyper import IntParameter, DecimalParameter
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IntParameter, DecimalParameter, IStrategy
 from pandas import DataFrame
 # --------------------------------
 

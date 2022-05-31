@@ -40,8 +40,7 @@
 # *    7/10:    117 trades. 74/41/2 Wins/Draws/Losses. Avg profit   1.91%. Median profit   1.50%. Total profit  0.07370921 BTC (  73.71%). Avg duration 9:26:00 min. Objective: -0.07371
 
 # --- Do not remove these libs ---
-from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import CategoricalParameter, DecimalParameter, IntParameter, IStrategy
 from pandas import DataFrame
 # --------------------------------
 

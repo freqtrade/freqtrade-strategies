@@ -20,10 +20,9 @@ from functools import reduce
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import talib.abstract as ta
 import random
-from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
+from freqtrade.strategy import CategoricalParameter, IStrategy
 
 from numpy.lib import math
-from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 
 # ########################## SETTINGS ##############################

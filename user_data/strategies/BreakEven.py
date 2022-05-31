@@ -1,6 +1,7 @@
 # --- Do not remove these libs ---
-from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import IStrategy
 from pandas import DataFrame
+
 # --------------------------------
 
 
@@ -12,13 +13,13 @@ class BreakEven(IStrategy):
 
     I can "/stopbuy" and wait for the positions to get closed by the bot rules, which is
     waiting for some profit, etc -- this usually takes too long...
-    
+
     What I would prefer is to close everything that is over 0% profit to avoid the losses.
 
     Here's a simple strategy with empty buy/sell signals and "minimal_roi = { 0 : 0 }" that
     sells everything already at profit and wait until the positions at loss will come to break
     even point (or the small profit you provide in ROI table).
-    
+
     You may restart the bot with the new strategy as a command-line parameter.
 
     Another way would be to specify the original strategy in the config file, then change to
@@ -29,7 +30,7 @@ class BreakEven(IStrategy):
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {
         "0": 0.01,      # at least 1% at first
-        "10": 0         # after 10min, everything goes 
+        "10": 0         # after 10min, everything goes
     }
 
     # This is more radical version that sells everything above the profit level

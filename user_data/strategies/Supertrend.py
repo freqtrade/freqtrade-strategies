@@ -14,8 +14,7 @@ Supertrend strategy:
 
 import logging
 from numpy.lib import math
-from freqtrade.strategy.interface import IStrategy
-from freqtrade.strategy.hyper import IntParameter
+from freqtrade.strategy import IStrategy, IntParameter
 from pandas import DataFrame
 import talib.abstract as ta
 import numpy as np

@@ -1,22 +1,14 @@
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
-from freqtrade.strategy import IStrategy, informative
-                                DecimalParameter, IntParameter, BooleanParameter, CategoricalParameter, stoploss_from_open)
+from freqtrade.strategy import (IStrategy, informative)
 from pandas import DataFrame, Series
-from typing import Dict, List, Optional, Tuple
-from functools import reduce
-from freqtrade.persistence import Trade
-from datetime import datetime, timedelta, timezone
-from freqtrade.exchange import timeframe_to_prev_date
-from freqtrade_strategies.custom_indicators import zema, tv_hma, pmax
 import talib.abstract as ta
 import math
 import pandas_ta as pta
 # from finta import TA as fta
 import logging
 from logging import FATAL
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +46,10 @@ class multi_tf (IStrategy):
     process_only_new_candles = True
     startup_candle_count = 100
 
-    # This method is not required. 
+    # This method is not required.
     # def informative_pairs(self): ...
 
-    # Define informative upper timeframe for each pair. Decorators can be stacked on same 
+    # Define informative upper timeframe for each pair. Decorators can be stacked on same
     # method. Available in populate_indicators as 'rsi_30m' and 'rsi_1h'.
     @informative('30m')
     @informative('1h')
@@ -66,8 +58,8 @@ class multi_tf (IStrategy):
         return dataframe
 
     # Define BTC/STAKE informative pair. Available in populate_indicators and other methods as
-    # 'btc_rsi_1h'. Current stake currency should be specified as {stake} format variable 
-    # instead of hard-coding actual stake currency. Available in populate_indicators and other 
+    # 'btc_rsi_1h'. Current stake currency should be specified as {stake} format variable
+    # instead of hard-coding actual stake currency. Available in populate_indicators and other
     # methods as 'btc_usdt_rsi_1h' (when stake currency is USDT).
     @informative('1h', 'BTC/{stake}')
     def populate_indicators_btc_1h(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -103,7 +95,7 @@ class multi_tf (IStrategy):
         # Informative pairs are available in this method.
         dataframe['rsi_less'] = dataframe['rsi'] < dataframe['rsi_1h']
         return dataframe
-    
+
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         stake = self.config['stake_currency']
         dataframe.loc[
