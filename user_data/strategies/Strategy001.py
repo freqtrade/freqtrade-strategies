@@ -45,14 +45,14 @@ class Strategy001(IStrategy):
     process_only_new_candles = False
 
     # Experimental settings (configuration will overide these if set)
-    use_sell_signal = True
-    sell_profit_only = True
-    ignore_roi_if_buy_signal = False
+    use_exit_signal = True
+    exit_profit_only = True
+    ignore_roi_if_entry_signal = False
 
     # Optional order type mapping
     order_types = {
-        'buy': 'limit',
-        'sell': 'limit',
+        'entry': 'limit',
+        'exit': 'limit',
         'stoploss': 'market',
         'stoploss_on_exchange': False
     }
@@ -89,7 +89,7 @@ class Strategy001(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
@@ -101,11 +101,11 @@ class Strategy001(IStrategy):
                 (dataframe['ha_close'] > dataframe['ema20']) &
                 (dataframe['ha_open'] < dataframe['ha_close'])  # green bar
             ),
-            'buy'] = 1
+            'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame
@@ -117,5 +117,5 @@ class Strategy001(IStrategy):
                 (dataframe['ha_close'] < dataframe['ema20']) &
                 (dataframe['ha_open'] > dataframe['ha_close'])  # red bar
             ),
-            'sell'] = 1
+            'exit_long'] = 1
         return dataframe

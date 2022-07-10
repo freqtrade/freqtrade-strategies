@@ -47,7 +47,7 @@ class Scalp(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['open'] < dataframe['ema_low']) &
@@ -58,10 +58,10 @@ class Scalp(IStrategy):
                     (qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd']))
                 )
             ),
-            'buy'] = 1
+            'enter_long'] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['open'] >= dataframe['ema_high'])
@@ -70,5 +70,5 @@ class Scalp(IStrategy):
                 (qtpylib.crossed_above(dataframe['fastk'], 70)) |
                 (qtpylib.crossed_above(dataframe['fastd'], 70))
             ),
-            'sell'] = 1
+            'exit_long'] = 1
         return dataframe

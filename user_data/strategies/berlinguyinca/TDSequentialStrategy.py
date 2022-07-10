@@ -39,14 +39,14 @@ class TDSequentialStrategy(IStrategy):
     timeframe = '1h'
 
     # These values can be overridden in the "ask_strategy" section in the config.
-    use_sell_signal = True
-    sell_profit_only = False
-    ignore_roi_if_buy_signal = False
+    use_exit_signal = True
+    exit_profit_only = False
+    ignore_roi_if_entry_signal = False
 
     # Optional order type mapping
     order_types = {
-        'buy': 'limit',
-        'sell': 'limit',
+        'entry': 'limit',
+        'exit': 'limit',
         'stoploss': 'limit',
         'stoploss_on_exchange': False
     }
@@ -56,8 +56,8 @@ class TDSequentialStrategy(IStrategy):
 
     # Optional time in force for orders
     order_time_in_force = {
-        'buy': 'gtc',
-        'sell': 'gtc',
+        'entry': 'gtc',
+        'exit': 'gtc',
     }
 
     def informative_pairs(self):
@@ -123,29 +123,29 @@ class TDSequentialStrategy(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
         :param metadata: Additional information, like the currently traded pair
         :return: DataFrame with buy column
         """
-        dataframe["buy"] = 0
+        dataframe["enter_long"] = 0
         dataframe.loc[((dataframe['exceed_low']) &
                       (dataframe['seq_buy'] > 8))
-                      , 'buy'] = 1
+                      , 'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame
         :param metadata: Additional information, like the currently traded pair
         :return: DataFrame with buy columnNA / NaN values
         """
-        dataframe["sell"] = 0
+        dataframe["exit_long"] = 0
         dataframe.loc[((dataframe['exceed_high']) |
                        (dataframe['seq_sell'] > 8))
-                      , 'sell'] = 1
+                      , 'exit_long'] = 1
         return dataframe

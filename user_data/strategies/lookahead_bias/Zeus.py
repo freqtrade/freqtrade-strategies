@@ -103,7 +103,7 @@ class Zeus(IStrategy):
         dataframe['trend_kst_diff'] = (tkd-tkd.min())/(tkd.max()-tkd.min())
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         IND = 'trend_ichimoku_base'
         REAL = self.buy_real.value
@@ -120,11 +120,11 @@ class Zeus(IStrategy):
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'buy'] = 1
+                'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         IND = 'trend_kst_diff'
         REAL = self.sell_real.value
@@ -142,6 +142,6 @@ class Zeus(IStrategy):
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'sell'] = 1
+                'exit_long'] = 1
 
         return dataframe

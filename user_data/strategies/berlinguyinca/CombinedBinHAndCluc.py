@@ -26,9 +26,9 @@ class CombinedBinHAndCluc(IStrategy):
     stoploss = -0.05
     timeframe = '5m'
 
-    use_sell_signal = True
-    sell_profit_only = True
-    ignore_roi_if_buy_signal = False
+    use_exit_signal = True
+    exit_profit_only = True
+    ignore_roi_if_entry_signal = False
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # strategy BinHV45
@@ -46,7 +46,7 @@ class CombinedBinHAndCluc(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (  # strategy BinHV45
                     dataframe['lower'].shift().gt(0) &
@@ -61,15 +61,15 @@ class CombinedBinHAndCluc(IStrategy):
                     (dataframe['close'] < 0.985 * dataframe['bb_lowerband']) &
                     (dataframe['volume'] < (dataframe['volume_mean_slow'].shift(1) * 20))
             ),
-            'buy'
+            'enter_long'
         ] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         """
         dataframe.loc[
             (dataframe['close'] > dataframe['bb_middleband']),
-            'sell'
+            'exit_long'
         ] = 1
         return dataframe

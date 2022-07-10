@@ -69,7 +69,7 @@ class MultiMa(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         # I used range(self.buy_ma_count.value) instade of self.buy_ma_count.range
         # Cuz it returns range(7,8) but we need range(8) for all modes hyperopt, backtest and etc
@@ -81,10 +81,10 @@ class MultiMa(IStrategy):
                 conditions.append(dataframe[key] < dataframe[past_key])
 
         if conditions:
-            dataframe.loc[reduce(lambda x, y: x & y, conditions), "buy"] = 1
+            dataframe.loc[reduce(lambda x, y: x & y, conditions), "enter_long"] = 1
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
 
         for ma_count in range(self.sell_ma_count.value):
@@ -94,5 +94,5 @@ class MultiMa(IStrategy):
                 conditions.append(dataframe[key] > dataframe[past_key])
 
         if conditions:
-            dataframe.loc[reduce(lambda x, y: x | y, conditions), "sell"] = 1
+            dataframe.loc[reduce(lambda x, y: x | y, conditions), "exit_long"] = 1
         return dataframe

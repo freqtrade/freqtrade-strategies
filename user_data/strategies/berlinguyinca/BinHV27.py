@@ -54,7 +54,8 @@ class BinHV27(IStrategy):
         dataframe['delta'] = dataframe['fastsma'] - dataframe['fastsma'].shift()
         dataframe['slowingdown'] = dataframe['delta'].lt(dataframe['delta'].shift())
         return dataframe
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             dataframe['slowsma'].gt(0) &
             dataframe['close'].lt(dataframe['highsma']) &
@@ -89,9 +90,10 @@ class BinHV27(IStrategy):
                 dataframe['emarsi'].le(25)
               )
             ),
-            'buy'] = 1
+            'enter_long'] = 1
         return dataframe
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
               (
@@ -131,5 +133,5 @@ class BinHV27(IStrategy):
                 dataframe['slowsma'].gt(0)
               )
             ),
-            'sell'] = 1
+            'exit_long'] = 1
         return dataframe

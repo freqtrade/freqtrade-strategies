@@ -13,7 +13,7 @@ class CofiBitStrategy(IStrategy):
     """
         taken from slack by user CofiBit
     """
-    
+
     # Buy hyperspace params:
     buy_params = {
         "buy_fastx": 25,
@@ -56,7 +56,7 @@ class CofiBitStrategy(IStrategy):
 
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the buy signal for the given dataframe
         :param dataframe: DataFrame
@@ -70,11 +70,11 @@ class CofiBitStrategy(IStrategy):
                 (dataframe['fastd'] < self.buy_fastx.value) &
                 (dataframe['adx'] > self.buy_adx.value)
             ),
-            'buy'] = 1
+            'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame
@@ -88,6 +88,6 @@ class CofiBitStrategy(IStrategy):
                 (qtpylib.crossed_above(dataframe['fastk'], self.sell_fastx.value)) |
                 (qtpylib.crossed_above(dataframe['fastd'], self.sell_fastx.value))
             ),
-            'sell'] = 1
+            'exit_long'] = 1
 
         return dataframe

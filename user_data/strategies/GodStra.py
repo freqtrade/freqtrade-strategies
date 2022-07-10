@@ -93,7 +93,7 @@ class GodStra(IStrategy):
         # dataframe.to_csv("df.csv", index=True)
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = list()
         # /5: Cuz We have 5 Group of variables inside buy_param
         for i in range(self.dna_size(self.buy_params)):
@@ -132,11 +132,11 @@ class GodStra(IStrategy):
         print(conditions)
         dataframe.loc[
             reduce(lambda x, y: x & y, conditions),
-            'buy'] = 1
+            'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = list()
         for i in range(self.dna_size(self.sell_params)):
             OPR = self.sell_params[f'sell-oper-{i}']
@@ -172,6 +172,6 @@ class GodStra(IStrategy):
 
         dataframe.loc[
             reduce(lambda x, y: x & y, conditions),
-            'sell'] = 1
+            'exit_long'] = 1
 
         return dataframe

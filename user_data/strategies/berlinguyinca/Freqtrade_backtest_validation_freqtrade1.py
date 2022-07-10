@@ -31,19 +31,19 @@ class Freqtrade_backtest_validation_freqtrade1(IStrategy):
         dataframe['slowMA'] = ta.SMA(dataframe, timeperiod=28)
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['fastMA'] > dataframe['slowMA'])
             ),
-            'buy'] = 1
+            'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['fastMA'] < dataframe['slowMA'])
             ),
-            'sell'] = 1
+            'exit_long'] = 1
         return dataframe

@@ -85,19 +85,19 @@ class HourBasedStrategy(IStrategy):
         dataframe['hour'] = dataframe['date'].dt.hour
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['hour'].between(self.buy_hour_min.value, self.buy_hour_max.value))
             ),
-            'buy'] = 1
+            'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
                 (dataframe['hour'].between(self.sell_hour_min.value, self.sell_hour_max.value))
             ),
-            'sell'] = 1
+            'exit_long'] = 1
         return dataframe

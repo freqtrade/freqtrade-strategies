@@ -21,7 +21,7 @@ class CustomStoplossWithPSAR(IStrategy):
     you are supposed to take the `custom_stoploss()` and `populate_indicators()`
     parts and adapt it to your own strategy
 
-    the populate_buy_trend() function is pretty nonsencial
+    the populate_entry_trend() function is pretty nonsencial
     """
     timeframe = '1h'
     stoploss = -0.2
@@ -64,7 +64,7 @@ class CustomStoplossWithPSAR(IStrategy):
         # dataframe['rsi'] = ta.RSI(dataframe)
         return dataframe
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Placeholder Strategy: buys when SAR is smaller then candle before
         Based on TA indicators, populates the buy signal for the given dataframe
@@ -75,11 +75,11 @@ class CustomStoplossWithPSAR(IStrategy):
             (
                 (dataframe['sar'] < dataframe['sar'].shift())
             ),
-            'buy'] = 1
+            'enter_long'] = 1
 
         return dataframe
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Placeholder Strategy: does nothing
         Based on TA indicators, populates the sell signal for the given dataframe
@@ -87,5 +87,5 @@ class CustomStoplossWithPSAR(IStrategy):
         :return: DataFrame with buy column
         """
         # Deactivated sell signal to allow the strategy to work correctly
-        dataframe.loc[:, 'sell'] = 0
+        dataframe.loc[:, 'exit_long'] = 0
         return dataframe

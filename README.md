@@ -2,6 +2,8 @@
 
 This Git repo contains free buy/sell strategies for [Freqtrade](https://github.com/freqtrade/freqtrade).
 
+All strategies should work with a freqtrade version of 2022.4 or newer.
+
 ## Disclaimer
 
 These strategies are for educational purposes only. Do not risk money 
@@ -31,7 +33,7 @@ bot.
 ## Free trading strategies
 
 Value below are result from backtesting from 2018-01-10 to 2018-01-30 and  
-`ask_strategy.sell_profit_only` enabled. More detail on each strategy 
+`exit_profit_only` enabled. More detail on each strategy 
 page.
 
 |  Strategy | Buy count | AVG profit % | Total profit | AVG duration | Backtest period |
