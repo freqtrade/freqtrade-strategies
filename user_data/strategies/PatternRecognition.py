@@ -19,14 +19,15 @@ from technical.util import resample_to_interval, resampled_merge
 
 
 class PatternRecognition(IStrategy):
-    # Pattern Recognition Strategy 
+    # Pattern Recognition Strategy
     # By: @Mablue
     # freqtrade hyperopt -s PatternRecognition --hyperopt-loss SharpeHyperOptLossDaily -e 1000
-    # 
+    #
 
     # 173/1000:    510 trades. 408/14/88 Wins/Draws/Losses. Avg profit   2.35%. Median profit   5.60%. Total profit 5421.34509618 USDT ( 542.13%). Avg duration 7 days, 11:54:00 min. Objective: -1.60426
 
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         "buy_pr1": "CDLHIGHWAVE",
@@ -58,7 +59,7 @@ class PatternRecognition(IStrategy):
     buy_pr1 = CategoricalParameter(prs, default=prs[0], space="buy")
     buy_vol1 = CategoricalParameter([-100,100], default=0, space="buy")
 
-    
+
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         for pr in self.prs:

@@ -29,7 +29,7 @@ class MACDStrategy(IStrategy):
     - Sell side: CCI between 0 and 700
 
     """
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION: int = 3
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"

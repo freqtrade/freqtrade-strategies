@@ -21,6 +21,7 @@ class InformativeSample(IStrategy):
     > python3 freqtrade -s InformativeSample
     """
 
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {

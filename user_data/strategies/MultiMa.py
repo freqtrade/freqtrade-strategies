@@ -17,6 +17,7 @@ from functools import reduce
 class MultiMa(IStrategy):
     # 111/2000:     18 trades. 12/4/2 Wins/Draws/Losses. Avg profit   9.72%. Median profit   3.01%. Total profit  733.01234143 USDT (  73.30%). Avg duration 2 days, 18:40:00 min. Objective: 1.67048
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         "buy_ma_count": 4,

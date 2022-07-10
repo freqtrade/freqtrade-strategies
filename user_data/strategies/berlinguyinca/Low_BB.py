@@ -29,6 +29,7 @@ class Low_BB(IStrategy):
         buy after crossing .98 * lower_bb and sell if trailing stop loss is hit
     """
 
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {
