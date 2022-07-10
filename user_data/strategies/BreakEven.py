@@ -27,6 +27,7 @@ class BreakEven(IStrategy):
 
     """
 
+    INTERFACE_VERSION: int = 3
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {
         "0": 0.01,      # at least 1% at first

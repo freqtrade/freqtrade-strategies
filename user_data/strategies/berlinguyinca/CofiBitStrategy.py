@@ -14,6 +14,7 @@ class CofiBitStrategy(IStrategy):
         taken from slack by user CofiBit
     """
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         "buy_fastx": 25,

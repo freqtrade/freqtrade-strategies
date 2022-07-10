@@ -55,6 +55,7 @@ class Diamond(IStrategy):
     #    Config: 5 x UNLIMITED STOCK costume pair list,
     #    hyperopt : 5000 x SortinoHyperOptLossDaily,
     #    34/5000: 297 trades. 136/156/5 Wins/Draws/Losses. Avg profit   0.49%. Median profit   0.00%. Total profit  45.84477237 USDT (  33.96Σ%). Avg duration 11:54:00 min. Objective: -46.50379
+    INTERFACE_VERSION: int = 3
 
     # Buy hyperspace params:
     buy_params = {

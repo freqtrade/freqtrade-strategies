@@ -14,7 +14,7 @@ class hlhb(IStrategy):
     More information in https://www.babypips.com/trading/forex-hlhb-system-explained
     """
 
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION: int = 3
 
     position_stacking = "True"
 

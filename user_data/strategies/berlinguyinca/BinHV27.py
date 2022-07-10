@@ -22,7 +22,7 @@ class BinHV27(IStrategy):
         strategy sponsored by user BinH from slack
 
     """
-
+    INTERFACE_VERSION: int = 3
     minimal_roi = {
         "0": 1
     }
@@ -92,7 +92,7 @@ class BinHV27(IStrategy):
             ),
             'enter_long'] = 1
         return dataframe
-        
+
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (

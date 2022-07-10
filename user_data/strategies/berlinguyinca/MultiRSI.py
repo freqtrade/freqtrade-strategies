@@ -14,6 +14,7 @@ class MultiRSI(IStrategy):
     based on work from Creslin
 
     """
+    INTERFACE_VERSION: int = 3
     minimal_roi = {
         "0": 0.01
     }

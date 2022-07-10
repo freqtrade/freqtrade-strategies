@@ -23,6 +23,7 @@ class SmoothOperator(IStrategy):
     a none completed peak shape.
     """
 
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     # we only sell after 100%, unless our sell points are found before
     minimal_roi = {

@@ -14,6 +14,7 @@ import talib.abstract as ta
 
 class mabStra(IStrategy):
 
+    INTERFACE_VERSION: int = 3
     # #################### RESULTS PASTE PLACE ####################
     # ROI table:
     minimal_roi = {

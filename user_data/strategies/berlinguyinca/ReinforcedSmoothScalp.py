@@ -18,6 +18,7 @@ class ReinforcedSmoothScalp(IStrategy):
         we recommend to have at least 60 parallel trades at any time to cover non avoidable losses
     """
 
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {

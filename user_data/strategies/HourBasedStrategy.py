@@ -49,6 +49,7 @@ class HourBasedStrategy(IStrategy):
     # {KDA/USDT, BTC/USDT, DOGE/USDT, SAND/USDT, ETH/USDT, SOL/USDT}, 1000$x1:100days, ShuffleFilter42
     # 56/1000:     63 trades. 41/19/3 Wins/Draws/Losses. Avg profit   4.60%. Median profit   8.89%. Total profit  11596.50333022 USDT ( 1159.65%). Avg duration 1 day, 14:46:00 min. Objective: -5.76694
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         "buy_hour_max": 24,

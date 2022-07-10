@@ -14,6 +14,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 class Freqtrade_backtest_validation_freqtrade1(IStrategy):
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     minimal_roi = {
         "40": 2.0,

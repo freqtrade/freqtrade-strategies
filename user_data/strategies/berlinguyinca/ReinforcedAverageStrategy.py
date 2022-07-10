@@ -20,6 +20,7 @@ class ReinforcedAverageStrategy(IStrategy):
         buys and sells on crossovers - doesn't really perfom that well and its just a proof of concept
     """
 
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {

@@ -23,6 +23,7 @@ class CustomStoplossWithPSAR(IStrategy):
 
     the populate_entry_trend() function is pretty nonsencial
     """
+    INTERFACE_VERSION: int = 3
     timeframe = '1h'
     stoploss = -0.2
     custom_info = {}

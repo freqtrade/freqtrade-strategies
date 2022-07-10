@@ -15,6 +15,7 @@ class EMASkipPump(IStrategy):
         basic strategy, which trys to avoid pump and dump market conditions. Shared from the tradingview
         slack
     """
+    INTERFACE_VERSION: int = 3
     EMA_SHORT_TERM = 5
     EMA_MEDIUM_TERM = 12
     EMA_LONG_TERM = 21

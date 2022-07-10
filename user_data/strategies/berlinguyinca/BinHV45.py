@@ -18,7 +18,7 @@ def bollinger_bands(stock_price, window_size, num_of_std):
 
 
 class BinHV45(IStrategy):
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION: int = 3
 
     minimal_roi = {
         "0": 0.0125

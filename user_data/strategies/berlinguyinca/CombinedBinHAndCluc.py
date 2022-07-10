@@ -20,6 +20,7 @@ class CombinedBinHAndCluc(IStrategy):
     #   so it is better to increase "stake_amount" value rather then "max_open_trades" to get more profit
     # - if the market is constantly green(like in JAN 2018) the best performance is reached with
     #   "max_open_trades" = 2 and minimal_roi = 0.01
+    INTERFACE_VERSION: int = 3
     minimal_roi = {
         "0": 0.05
     }

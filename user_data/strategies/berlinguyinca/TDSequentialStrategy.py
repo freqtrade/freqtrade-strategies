@@ -21,7 +21,7 @@ class TDSequentialStrategy(IStrategy):
 
     Created by @bmoulkaf
     """
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION: int = 3
 
     # Minimal ROI designed for the strategy
     minimal_roi = {'0': 5}

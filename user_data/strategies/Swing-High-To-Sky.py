@@ -34,7 +34,7 @@ rsiSellVal = 88
 
 
 class SwingHighToSky(IStrategy):
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION = 3
 
     timeframe = '15m'
 

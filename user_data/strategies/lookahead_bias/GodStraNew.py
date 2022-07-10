@@ -459,6 +459,7 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
 
 class GodStraNew(IStrategy):
     # #################### RESULTS PASTE PLACE ####################
+    INTERFACE_VERSION: int = 3
     # ROI table:
     minimal_roi = {
         "0": 0.598,

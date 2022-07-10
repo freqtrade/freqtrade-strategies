@@ -16,6 +16,7 @@ class Scalp(IStrategy):
         Recommended is to only sell based on ROI for this strategy
     """
 
+    INTERFACE_VERSION: int = 3
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {

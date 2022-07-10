@@ -38,6 +38,7 @@ class GodStra(IStrategy):
     # | * Best |   2/500 |       10 |      7    0    3 |       18.76% |  983.46414442 USDT  (187.58%) |        360.0 m |    -4.32665 |
     # | * Best |   5/500 |        9 |      8    0    1 |       21.83% | 1,060.11476586 USDT  (196.50%) |      3,440.0 m |     -7.0696 |
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         'buy-cross-0': 'volatility_kcc',

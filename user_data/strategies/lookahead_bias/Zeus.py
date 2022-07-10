@@ -33,6 +33,7 @@ class Zeus(IStrategy):
     # "timeframe": "4h",
     # "dry_run_wallet": 0.1,
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         "buy_cat": "<R",

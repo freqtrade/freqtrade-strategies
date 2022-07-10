@@ -45,6 +45,7 @@ class wtc(IStrategy):
     # "timeframe": "30m",
     # "dry_run_wallet": 0.1,
 
+    INTERFACE_VERSION: int = 3
     # Buy hyperspace params:
     buy_params = {
         "buy_max": 0.9609,

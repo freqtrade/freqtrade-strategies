@@ -5,6 +5,7 @@ from freqtrade.strategy import IStrategy
 
 
 class TechnicalExampleStrategy(IStrategy):
+    INTERFACE_VERSION: int = 3
     minimal_roi = {
         "0": 0.01
     }

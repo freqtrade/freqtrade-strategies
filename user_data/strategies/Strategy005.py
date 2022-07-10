@@ -20,7 +20,7 @@ class Strategy005(IStrategy):
     How to use it?
     > python3 ./freqtrade/main.py -s Strategy005
     """
-    INTERFACE_VERSION = 2
+    INTERFACE_VERSION = 3
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"

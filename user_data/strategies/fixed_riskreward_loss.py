@@ -29,6 +29,7 @@ class FixedRiskRewardLoss(IStrategy):
     losses by setting it to the buy rate + fees.
     """
 
+    INTERFACE_VERSION: int = 3
     custom_info = {
         'risk_reward_ratio': 3.5,
         'set_to_break_even_at_profit': 1,
