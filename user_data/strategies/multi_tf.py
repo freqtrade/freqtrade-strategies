@@ -76,7 +76,8 @@ class multi_tf (IStrategy):
     # Define BTC/STAKE informative pair. A custom formatter may be specified for formatting
     # column names. A callable `fmt(**kwargs) -> str` may be specified, to implement custom
     # formatting. Available in populate_indicators and other methods as 'rsi_fast_upper'.
-    @informative('1h', 'BTC/{stake}', '{column}')
+    # Resulting column names: `BTC_rsi_fast_upper_1h`, `BTC_close_1h` ...
+    @informative('1h', 'BTC/{stake}', 'BTC_{column}_{timeframe}')
     def populate_indicators_btc_1h_2(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['rsi_fast_upper'] = ta.RSI(dataframe, timeperiod=4)
         return dataframe
