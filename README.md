@@ -38,11 +38,11 @@ page.
 
 |  Strategy | Buy count | AVG profit % | Total profit | AVG duration | Backtest period |
 |-----------|-----------|--------------|--------------|--------------|-----------------|
-| [Strategy 001](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/Strategy001.py) | 55 | 0.05 | 0.00012102 |  476.1 | 2018-01-10 to 2018-01-30 |
-| [Strategy 002](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/Strategy002.py) | 9 | 3.21 | 0.00114807 |  189.4 | 2018-01-10 to 2018-01-30 |
-| [Strategy 003](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/Strategy003.py) | 14 | 1.47 | 0.00081740 |  227.5 | 2018-01-10 to 2018-01-30 | 
-| [Strategy 004](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/Strategy004.py) | 37 | 0.69 | 0.00102128 |  367.3 | 2018-01-10 to 2018-01-30 | 
-| [Strategy 005](https://github.com/freqtrade/freqtrade-strategies/blob/master/user_data/strategies/Strategy005.py) | 180 | 1.16 | 0.00827589 |  156.2 | 2018-01-10 to 2018-01-30 |
+| [Strategy 001](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy001.py) | 55 | 0.05 | 0.00012102 |  476.1 | 2018-01-10 to 2018-01-30 |
+| [Strategy 002](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy002.py) | 9 | 3.21 | 0.00114807 |  189.4 | 2018-01-10 to 2018-01-30 |
+| [Strategy 003](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy003.py) | 14 | 1.47 | 0.00081740 |  227.5 | 2018-01-10 to 2018-01-30 | 
+| [Strategy 004](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy004.py) | 37 | 0.69 | 0.00102128 |  367.3 | 2018-01-10 to 2018-01-30 | 
+| [Strategy 005](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy005.py) | 180 | 1.16 | 0.00827589 |  156.2 | 2018-01-10 to 2018-01-30 |
 
 
 Strategies from this repo are free to use. Feel free to update them. 
@@ -84,7 +84,7 @@ First you need a [working Freqtrade](https://freqtrade.io).
 Once you have the bot on the right version, follow this steps:
 
 1. Select the strategy you want. All strategies of the repo are into 
-[user_data/strategies](https://github.com/freqtrade/freqtrade-strategies/tree/master/user_data/strategies)
+[user_data/strategies](https://github.com/freqtrade/freqtrade-strategies/tree/main/user_data/strategies)
 2. Copy the strategy file
 3. Paste it into your `user_data/strategies` folder
 4. Run the bot with the parameter `--strategy <STRATEGY CLASS NAME>` (ex: `freqtrade trade --strategy Strategy001`)
