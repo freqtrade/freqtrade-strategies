@@ -105,7 +105,7 @@ class multi_tf (IStrategy):
                 &
                 (dataframe['eth_btc_rsi_1h'] < 50)
                 &
-                (dataframe['rsi_fast_upper'] < 40)
+                (dataframe['BTC_rsi_fast_upper_1h'] < 40)
                 &
                 (dataframe['btc_rsi_super_fast_1h'] < 30)
                 &
