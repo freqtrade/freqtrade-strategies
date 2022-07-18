@@ -98,7 +98,7 @@ class multi_tf (IStrategy):
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        stake = self.config['stake_currency']
+        stake = self.config['stake_currency'].lower()
         dataframe.loc[
             (
                 (dataframe[f'btc_{stake}_rsi_1h'] < 35)
