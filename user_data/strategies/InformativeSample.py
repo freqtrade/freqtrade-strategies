@@ -44,7 +44,7 @@ class InformativeSample(IStrategy):
     trailing_stop_positive_offset = 0.04
 
     # run "populate_indicators" only for new candle
-    ta_on_candle = False
+    process_only_new_candles = True
 
     # Experimental settings (configuration will overide these if set)
     use_exit_signal = True
