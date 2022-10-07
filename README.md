@@ -33,8 +33,7 @@ bot.
 ## Free trading strategies
 
 Value below are result from backtesting from 2018-01-10 to 2018-01-30 and  
-`exit_profit_only` enabled. More detail on each strategy 
-page.
+`exit_profit_only` enabled. More detail on each strategy page.
 
 |  Strategy | Buy count | AVG profit % | Total profit | AVG duration | Backtest period |
 |-----------|-----------|--------------|--------------|--------------|-----------------|
@@ -44,14 +43,15 @@ page.
 | [Strategy 004](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy004.py) | 37 | 0.69 | 0.00102128 |  367.3 | 2018-01-10 to 2018-01-30 | 
 | [Strategy 005](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy005.py) | 180 | 1.16 | 0.00827589 |  156.2 | 2018-01-10 to 2018-01-30 |
 
-
-Strategies from this repo are free to use. Feel free to update them. 
+Strategies from this repo are free to use. Feel free to update them to your likings.
 Most of them  were designed from Hyperopt calculations.
 
 Some only work in specific market conditions, while others are more "general purpose" strategies.
 It's noteworthy that depending on the exchange and Pairs used, further optimization can bring better results.
 
 Please keep in mind, results will heavily depend on the pairs, timeframe and timerange used to backtest - so please run your own backtests that mirror your usecase, to evaluate each strategy for yourself.
+
+The results above should serve as a general outline to demonstrate the number of trades to expect. Actual performance will be different based on various factors.
 
 ## Share your own strategies and contribute to this repo
 
