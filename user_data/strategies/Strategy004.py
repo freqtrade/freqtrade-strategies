@@ -103,8 +103,11 @@ class Strategy004(IStrategy):
 
         # EMA - Exponential Moving Average
         dataframe['ema5'] = ta.EMA(dataframe, timeperiod=5)
-
-        dataframe['mean-volume'] = dataframe['volume'].mean()
+        
+        # get the rolling volume mean for the last hour (12x5)
+        # Note: dataframe['volume'].mean() uses the whole dataframe in 
+        # backtesting hence will have lookahead, but would be fine for dry/live use
+        dataframe['mean-volume'] = dataframe['volume'].rolling(12).mean()
 
         return dataframe
 
