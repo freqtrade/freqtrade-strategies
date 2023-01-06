@@ -4,8 +4,7 @@ import pandas as pd
 from functools import reduce
 from pandas import DataFrame
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-from freqtrade.strategy.interface import IStrategy
-from freqtrade.strategy import CategoricalParameter, DecimalParameter, IntParameter, RealParameter
+from freqtrade.strategy import IStrategy, CategoricalParameter, DecimalParameter, IntParameter, RealParameter
 
 __author__ = "Robert Roman"
 __copyright__ = "Free For Use"
@@ -88,6 +87,15 @@ class Bandtastic(IStrategy):
         dataframe['bb_lowerband4'] = bollinger4['lower']
         dataframe['bb_middleband4'] = bollinger4['mid']
         dataframe['bb_upperband4'] = bollinger4['upper']
+        # Build EMA rows - combine all ranges to a single set to avoid duplicate calculations.
+        for period in set(
+                list(self.buy_fastema.range)
+                + list(self.buy_slowema.range)
+                + list(self.sell_fastema.range)
+                + list(self.sell_slowema.range)
+            ):
+            dataframe[f'EMA_{period}'] = ta.EMA(dataframe, timeperiod=period)
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -99,10 +107,7 @@ class Bandtastic(IStrategy):
         if self.buy_mfi_enabled.value:
             conditions.append(dataframe['mfi'] < self.buy_mfi.value)
         if self.buy_ema_enabled.value:
-            try:
-                conditions.append(ta.EMA(dataframe, timeperiod=int(self.buy_fastema.value)) > ta.EMA(dataframe, timeperiod=int(self.buy_slowema.value)))
-            except Exception:
-                pass
+            conditions.append(dataframe[f'EMA_{self.buy_fastema.value}'] > dataframe[f'EMA_{self.buy_slowema.value}'])
 
         # TRIGGERS
         if self.buy_trigger.value == 'bb_lower1':
@@ -133,10 +138,7 @@ class Bandtastic(IStrategy):
         if self.sell_mfi_enabled.value:
             conditions.append(dataframe['mfi'] > self.sell_mfi.value)
         if self.sell_ema_enabled.value:
-            try:
-                conditions.append(ta.EMA(dataframe, timeperiod=int(self.sell_fastema.value)) < ta.EMA(dataframe, timeperiod=int(self.sell_slowema.value)))
-            except Exception:
-                pass
+            conditions.append(dataframe[f'EMA_{self.sell_fastema.value}'] < dataframe[f'EMA_{self.sell_slowema.value}'])
 
         # TRIGGERS
         if self.sell_trigger.value == 'sell-bb_upper1':
