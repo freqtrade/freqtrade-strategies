@@ -12,6 +12,7 @@ import talib.abstract as ta
 from freqtrade.persistence import Trade
 from freqtrade.strategy import (CategoricalParameter, DecimalParameter,
                                 IntParameter, IStrategy)
+from freqtrade.exchange import date_minus_candles
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 from technical.util import resample_to_interval, resampled_merge
@@ -122,16 +123,17 @@ class VolatilitySystem(IStrategy):
                               current_entry_profit: float, current_exit_profit: float,
                               **kwargs) -> Optional[float]:
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
-        # Only buy when not actively falling price.
         if len(dataframe) > 2:
             last_candle = dataframe.iloc[-1].squeeze()
             previous_candle = dataframe.iloc[-2].squeeze()
             signal_name = 'enter_long' if not trade.is_short else 'enter_short'
+            prior_date = date_minus_candles(self.timeframe, 1, current_time)
             # Only enlarge position on new signal.
             if (
                 last_candle[signal_name] == 1
                 and  previous_candle[signal_name] != 1
                 and trade.nr_of_successful_entries < 2
+                and trade.orders[-1].order_date_utc < prior_date
             ):
                 return trade.stake_amount
         return None
