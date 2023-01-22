@@ -23,7 +23,10 @@ class VolatilityStrategy(IStrategy):
     """
     Volatility System strategy.
     Based on https://www.tradingview.com/script/3hhs0XbR/
-
+    Pairs tested: [ETHUSDT, BTCUSDT, SOLUSDT]
+    No Hyperopt needed
+    Leverage is optional but the lower the better to limit liquidations
+    
     """
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, side: str,
@@ -102,17 +105,14 @@ class VolatilityStrategy(IStrategy):
         :param dataframe: DataFrame
         :return: DataFrame with buy and sell columns
         """
-        #self.unlock_pair(metadata['pair'])
         # Use qtpylib.crossed_above to get only one signal, otherwise the signal is active
         # for the whole "long" timeframe.
         dataframe.loc[
-            # qtpylib.crossed_above(dataframe['close_change'] * 1, dataframe['atr']),
             ((dataframe['close_change'] * 1) > dataframe['atr'].shift(2)),
-            'enter_long'] = (1)
+            'enter_long'] = 1
         dataframe.loc[
-            # qtpylib.crossed_above(dataframe['close_change'] * -1, dataframe['atr']),
             ((dataframe['close_change'] * -1) > dataframe['atr'].shift(2)),
-            'enter_short'] = (1)
+            'enter_short'] = 1
 
         return dataframe
 
@@ -124,10 +124,10 @@ class VolatilityStrategy(IStrategy):
         """       
         dataframe.loc[
             dataframe['enter_long'] == 1,
-            'exit_long'] = (1)
+            'exit_short'] = 1
         dataframe.loc[
             dataframe['enter_short'] == 1,
-            'exit_short'] = (1)
+            'exit_long'] = 1
         return dataframe
 
 
@@ -154,7 +154,6 @@ class VolatilityStrategy(IStrategy):
             previous_candle = dataframe.iloc[-2].squeeze()
             prior_date = date_minus_candles(self.timeframe, 1, current_time)
             signal_name = 'enter_long' if not trade.is_short else 'enter_short'
-            #print(f"entries {trade.nr_of_successful_entries} & Min Stake: {min_stake}")
             # Only enlarge position on new signal.
             if (
                 last_candle[signal_name] == 1
