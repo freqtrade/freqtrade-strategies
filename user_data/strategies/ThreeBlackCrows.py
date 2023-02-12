@@ -48,33 +48,31 @@ class ThreeBlackCrows(IStrategy):
     # "XPR/USDT","DYDX/USDT","FTT/USDT","KAVA/USDT","XEC/USDT"
     # "method": "StaticPairList"
 
-    # 44/100:     73 trades. 33/39/1 Wins/Draws/Losses.
-    # Avg profit   1.04%.
-    # Median profit   0.00%.
-    # Total profit 754.07546328 USDT (  75.41%).
-    # Avg duration 10:04:00 min.
-    # Objective: -9.94281
+    # 38/100:     67 trades. 32/34/1 Wins/Draws/Losses.
+    # Avg profit   1.23%. Median profit   0.00%.
+    # Total profit 815.05358020 USDT (  81.51%).
+    # Avg duration 10:58:00 min. Objective: -9.86920
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_pow": 1.821,
+        "buy_pow": 3.849,
     }
 
     # Sell hyperspace params:
     sell_params = {
-        "sell_pow": 1.989,
+        "sell_pow": 3.798,
     }
 
     # ROI table:
     minimal_roi = {
-        "0": 0.19,
-        "29": 0.049,
-        "60": 0.027,
-        "152": 0
+        "0": 0.213,
+        "39": 0.048,
+        "56": 0.029,
+        "159": 0
     }
 
     # Stoploss:
-    stoploss = -0.213
+    stoploss = -0.288
 
     # Trailing stop:
     trailing_stop = False  # value loaded from strategy
@@ -86,8 +84,8 @@ class ThreeBlackCrows(IStrategy):
     startup_candle_count: int = 30
 
     # Strategy parameters
-    buy_pow = DecimalParameter(1, 2, decimals=3, default=1.5, space="buy")
-    sell_pow = DecimalParameter(1, 2, decimals=3, default=1.5, space="sell")
+    buy_pow = DecimalParameter(0, 4, decimals=3, default=3.849, space="buy")
+    sell_pow = DecimalParameter(0, 4, decimals=3, default=3.798, space="sell")
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         return dataframe
