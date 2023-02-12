@@ -18,9 +18,10 @@ import pandas_ta as pta
 from technical import qtpylib
 
 
-class ThreeBlackCrows(IStrategy):
+class PowerTower(IStrategy):
     # By: Masoud Azizi (@mablue)
-    # Investopedia Link: https://www.investopedia.com/terms/t/three_black_crows.asp
+    # Power Tower is a complitly New Strategy(or Candlistic Pattern or Indicator) to finding strongly rising coins.
+    # much effective than "Three black Crows" but based on Idea of this candlestick pattern, but with different rules!
 
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
@@ -32,7 +33,7 @@ class ThreeBlackCrows(IStrategy):
     # Can this strategy go short?
     can_short: bool = False
 
-    # $ freqtrade hyperopt -s ThreeBlackCrows --hyperopt-loss SharpeHyperOptLossDaily
+    # $ freqtrade hyperopt -s PowerTower --hyperopt-loss SharpeHyperOptLossDaily
 
     # "max_open_trades": 1,
     # "stake_currency": "USDT",
