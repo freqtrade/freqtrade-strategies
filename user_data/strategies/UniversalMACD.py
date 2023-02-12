@@ -99,7 +99,10 @@ class UniversalMACD(IStrategy):
         dataframe['ma26'] = ta.EMA(dataframe, timeperiod=26)
         dataframe['umacd'] = (dataframe['ma12'] / dataframe['ma26']) - 1
 
-        print(dataframe['umacd'].min(), dataframe['umacd'].max())
+        # Just for show user the min and max of indicator in different coins to set inside hyperoptable variables.cuz
+        # in different timeframes should change the min and max in hyperoptable variables.
+        # print(dataframe['umacd'].min(), dataframe['umacd'].max())
+
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
