@@ -56,18 +56,6 @@ class UniversalMACD(IStrategy):
     # Avg    duration    3: 13:00    min.\
     # Objective: -11.63412
 
-    # Buy hyperspace params:
-    buy_params = {
-        "buy_umacd_max": -0.01176,
-        "buy_umacd_min": -0.01416,
-    }
-
-    # Sell hyperspace params:
-    sell_params = {
-        "sell_umacd_max": -0.02323,
-        "sell_umacd_min": -0.00707,
-    }
-
     # ROI table:
     minimal_roi = {
         "0": 0.213,
