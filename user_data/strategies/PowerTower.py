@@ -53,17 +53,7 @@ class PowerTower(IStrategy):
     # Avg profit   1.23%. Median profit   0.00%.
     # Total profit 815.05358020 USDT (  81.51%).
     # Avg duration 10:58:00 min. Objective: -9.86920
-
-    # Buy hyperspace params:
-    buy_params = {
-        "buy_pow": 3.849,
-    }
-
-    # Sell hyperspace params:
-    sell_params = {
-        "sell_pow": 3.798,
-    }
-
+    
     # ROI table:
     minimal_roi = {
         "0": 0.213,
