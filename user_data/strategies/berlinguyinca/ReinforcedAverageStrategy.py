@@ -41,7 +41,7 @@ class ReinforcedAverageStrategy(IStrategy):
     trailing_only_offset_is_reached = False
 
     # run "populate_indicators" only for new candle
-    process_only_new_candles = False
+    process_only_new_candles = True
 
     # Experimental settings (configuration will overide these if set)
     use_exit_signal = True

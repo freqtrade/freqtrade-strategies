@@ -44,7 +44,7 @@ class Strategy003(IStrategy):
     trailing_stop_positive_offset = 0.02
 
     # run "populate_indicators" only for new candle
-    process_only_new_candles = False
+    process_only_new_candles = True
 
     # Experimental settings (configuration will overide these if set)
     use_exit_signal = True

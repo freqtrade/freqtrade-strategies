@@ -43,7 +43,7 @@ class FReinforcedStrategy(IStrategy):
     # trailing_stop_positive_offset = 0.0  # Disabled / not configured
 
     # Run "populate_indicators()" only for new candle.
-    process_only_new_candles = False
+    process_only_new_candles = True
 
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 14
