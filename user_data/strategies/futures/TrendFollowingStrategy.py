@@ -46,7 +46,7 @@ class TrendFollowingStrategy(IStrategy):
             (dataframe['close'] < dataframe['trend']) & 
             (dataframe['close'].shift(1) >= dataframe['trend'].shift(1)) &
             (dataframe['obv'] < dataframe['obv'].shift(1)), 
-            'enter_short'] = -1
+            'enter_short'] = 1
         
         return dataframe
 
