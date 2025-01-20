@@ -70,7 +70,7 @@ It is designed to support all major exchanges and be controlled via Telegram. It
 Each Strategies includes:  
 
 - [x] **Minimal ROI**: Minimal ROI optimized for the strategy.
-- [x] **Stoploss**: Optimimal stoploss.
+- [x] **Stoploss**: Optimal stoploss.
 - [x] **Buy signals**: Result from Hyperopt or based on exisiting trading strategies.
 - [x] **Sell signals**: Result from Hyperopt or based on exisiting trading strategies.
 - [x] **Indicators**: Includes the indicators required to run the strategy.
