@@ -29,6 +29,8 @@ class CustomStoplossWithPSAR(IStrategy):
     custom_info = {}
     use_custom_stoploss = True
 
+    startup_candle_count = 199
+
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
 
