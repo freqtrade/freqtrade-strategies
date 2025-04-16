@@ -104,7 +104,7 @@ class FixedRiskRewardLoss(IStrategy):
         :param dataframe: DataFrame
         :return: DataFrame with buy column
         """
-        # Allways buys
+        # Always buys
         dataframe.loc[:, 'enter_long'] = 1
         return dataframe
 
