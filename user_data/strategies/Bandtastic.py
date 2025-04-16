@@ -34,6 +34,8 @@ class Bandtastic(IStrategy):
     # Stoploss:
     stoploss = -0.345
 
+    startup_candle_count = 999
+
     # Trailing stop:
     trailing_stop = True
     trailing_stop_positive = 0.01
@@ -42,7 +44,7 @@ class Bandtastic(IStrategy):
 
     # Hyperopt Buy Parameters
     buy_fastema = IntParameter(low=1, high=236, default=211, space='buy', optimize=True, load=True)
-    buy_slowema = IntParameter(low=1, high=126, default=364, space='buy', optimize=True, load=True)
+    buy_slowema = IntParameter(low=1, high=250, default=250, space='buy', optimize=True, load=True)
     buy_rsi = IntParameter(low=15, high=70, default=52, space='buy', optimize=True, load=True)
     buy_mfi = IntParameter(low=15, high=70, default=30, space='buy', optimize=True, load=True)
 
