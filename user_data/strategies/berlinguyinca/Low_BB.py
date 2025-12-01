@@ -66,8 +66,8 @@ class Low_BB(IStrategy):
         # dataframe['mfi'] = ta.MFI(dataframe)
         # dataframe['rsi'] = ta.RSI(dataframe, timeperiod=7)
 
-        # dataframe['canbuy'] = np.NaN
-        # dataframe['canbuy2'] = np.NaN
+        # dataframe['canbuy'] = np.nan
+        # dataframe['canbuy2'] = np.nan
         # dataframe.loc[dataframe.close.rolling(49).min() <= 1.1 * dataframe.close, 'canbuy'] == 1
         # dataframe.loc[dataframe.close.rolling(600).max() < 1.2 * dataframe.close, 'canbuy'] = 1
         # dataframe.loc[dataframe.close.rolling(600).max() * 0.8 >  dataframe.close, 'canbuy2'] = 1

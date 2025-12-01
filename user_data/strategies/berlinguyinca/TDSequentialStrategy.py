@@ -142,7 +142,7 @@ class TDSequentialStrategy(IStrategy):
         Based on TA indicators, populates the sell signal for the given dataframe
         :param dataframe: DataFrame
         :param metadata: Additional information, like the currently traded pair
-        :return: DataFrame with buy columnNA / NaN values
+        :return: DataFrame with buy columnNA / nan values
         """
         dataframe["exit_long"] = 0
         dataframe.loc[((dataframe['exceed_high']) |

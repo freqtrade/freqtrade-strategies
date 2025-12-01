@@ -238,7 +238,7 @@ class FSupertrendStrategy(IStrategy):
             )
         # Mark the trend direction up/down
         df[stx] = np.where(
-            (df[st] > 0.00), np.where((df["close"] < df[st]), "down", "up"), np.NaN
+            (df[st] > 0.00), np.where((df["close"] < df[st]), "down", "up"), None
         )
 
         # Remove basic and final bands from the columns
