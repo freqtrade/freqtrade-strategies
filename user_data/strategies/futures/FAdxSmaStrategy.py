@@ -53,9 +53,9 @@ class FAdxSmaStrategy(IStrategy):
     pos_exit_adx = DecimalParameter(15, 40, decimals=1, default=30.0, space="sell")
 
     # Define the parameter spaces
-    adx_period = IntParameter(4, 24, default=14)
-    sma_short_period = IntParameter(4, 24, default=12)
-    sma_long_period = IntParameter(12, 175, default=48)
+    adx_period = IntParameter(4, 24, default=14, space='buy')
+    sma_short_period = IntParameter(4, 24, default=12, space='buy')
+    sma_long_period = IntParameter(12, 175, default=48, space='buy')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
