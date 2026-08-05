@@ -32,22 +32,12 @@ bot.
 
 ## Free trading strategies
 
-Value below are result from backtesting from 2018-01-10 to 2018-01-30 and  
-`exit_profit_only` enabled. More detail on each strategy page.
+Strategies from this repo are free to use, though they are provided as-is and without any warranty.
+They also mostly should serve as a starting point for your own strategies, not as "ready to use" strategies.
+Feel free to use and/or update them to your likings.
 
-|  Strategy | Buy count | AVG profit % | Total profit | AVG duration | Backtest period |
-|-----------|-----------|--------------|--------------|--------------|-----------------|
-| [Strategy 001](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy001.py) | 55 | 0.05 | 0.00012102 |  476.1 | 2018-01-10 to 2018-01-30 |
-| [Strategy 002](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy002.py) | 9 | 3.21 | 0.00114807 |  189.4 | 2018-01-10 to 2018-01-30 |
-| [Strategy 003](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy003.py) | 14 | 1.47 | 0.00081740 |  227.5 | 2018-01-10 to 2018-01-30 | 
-| [Strategy 004](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy004.py) | 37 | 0.69 | 0.00102128 |  367.3 | 2018-01-10 to 2018-01-30 | 
-| [Strategy 005](https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy005.py) | 180 | 1.16 | 0.00827589 |  156.2 | 2018-01-10 to 2018-01-30 |
-
-Strategies from this repo are free to use. Feel free to update them to your likings.
-Most of them  were designed from Hyperopt calculations.
-
-Some only work in specific market conditions, while others are more "general purpose" strategies.
-It's noteworthy that depending on the exchange and Pairs used, further optimization can bring better results.
+Some may only work in specific market conditions, while others are more "general purpose" strategies.
+It's noteworthy that further optimization to the exchange and Pairs used will usually result in better outcomes.
 
 Please keep in mind, results will heavily depend on the pairs, timeframe and timerange used to backtest - so please run your own backtests that mirror your usecase, to evaluate each strategy for yourself.
 
