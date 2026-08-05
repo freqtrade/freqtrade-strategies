@@ -9,7 +9,7 @@ All strategies should work with a freqtrade version of 2022.4 or newer.
 These strategies are for educational purposes only. Do not risk money 
 which you are afraid to lose. USE THE SOFTWARE AT YOUR OWN RISK. THE 
 AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR TRADING 
-RESULTS. 
+RESULTS.
 
 Always start by testing strategies with a backtesting then run the 
 trading bot in Dry-run. Do not engage money before you understand how 
@@ -24,11 +24,11 @@ bot.
 - [Free trading strategies](#free-trading-strategies)
 - [Contribute](#share-your-own-strategies-and-contribute-to-this-repo)
 - [FAQ](#faq)
-    - [What is Freqtrade?](#what-is-freqtrade)
-    - [What includes these strategies?](#what-includes-these-strategies)
-    - [How to install a strategy?](#how-to-install-a-strategy)
-    - [How to test a strategy?](#how-to-test-a-strategy)
-    - [How to create/optimize a strategy?](https://www.freqtrade.io/en/latest/strategy-customization/)
+  - [What is Freqtrade?](#what-is-freqtrade)
+  - [What includes these strategies?](#what-includes-these-strategies)
+  - [How to install a strategy?](#how-to-install-a-strategy)
+  - [How to test a strategy?](#how-to-test-a-strategy)
+  - [How to create/optimize a strategy?](https://www.freqtrade.io/en/latest/strategy-customization/)
 
 ## Free trading strategies
 
@@ -61,11 +61,11 @@ Each Strategies includes:
 
 - [x] **Minimal ROI**: Minimal ROI optimized for the strategy.
 - [x] **Stoploss**: Optimal stoploss.
-- [x] **Buy signals**: Result from Hyperopt or based on exisiting trading strategies.
-- [x] **Sell signals**: Result from Hyperopt or based on exisiting trading strategies.
+- [x] **Buy signals**: Result from Hyperopt or based on existing trading strategies.
+- [x] **Sell signals**: Result from Hyperopt or based on existing trading strategies.
 - [x] **Indicators**: Includes the indicators required to run the strategy.
 
-Best backtest multiple strategies with the exchange and pairs you're interrested in, and finetune the strategy to the markets you're trading.
+Best backtest multiple strategies with the exchange and pairs you're interested in, and fine tune the strategy to the markets you're trading.
 
 ### How to install a strategy?
 
