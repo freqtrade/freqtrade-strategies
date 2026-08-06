@@ -47,7 +47,7 @@ class MultiRSI(IStrategy):
 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
-        dataframe.fillna(method='ffill', inplace=True)
+        dataframe.ffill(inplace=True)
 
         return dataframe
 
