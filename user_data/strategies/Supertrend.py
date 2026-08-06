@@ -190,7 +190,10 @@ class Supertrend(IStrategy):
     
         # 6. fillna
         result = pd.DataFrame({'ST': st, 'STX': stx}, index=df.index)
-        result.fillna(0, inplace=True)
-      
+        # 'STX' holds 'up'/'down' strings, so filling the whole frame with 0
+        # raises "Invalid value '0' for dtype 'str'" on pandas >= 3.
+        result['ST'] = result['ST'].fillna(0)
+        result['STX'] = result['STX'].fillna('')
+
         return result
 
