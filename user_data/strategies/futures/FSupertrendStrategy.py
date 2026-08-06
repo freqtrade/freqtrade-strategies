@@ -12,11 +12,13 @@ Supertrend strategy:
 """
 
 import logging
-from numpy.lib import math
 from freqtrade.strategy import IStrategy, IntParameter
 from pandas import DataFrame
+import pandas as pd
 import talib.abstract as ta
 import numpy as np
+
+import technical.indicators as ftt
 
 
 class FSupertrendStrategy(IStrategy):
@@ -76,41 +78,76 @@ class FSupertrendStrategy(IStrategy):
     sell_p3 = IntParameter(7, 21, default=10)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        new_cols = []
+
         for multiplier in self.buy_m1.range:
             for period in self.buy_p1.range:
-                dataframe[f"supertrend_1_buy_{multiplier}_{period}"] = self.supertrend(
-                    dataframe, multiplier, period
-                )["STX"]
+                new_cols.append(
+                    self.supertrend_direction(
+                        dataframe,
+                        multiplier,
+                        period,
+                        f"supertrend_1_buy_{multiplier}_{period}",
+                    )
+                )
 
         for multiplier in self.buy_m2.range:
             for period in self.buy_p2.range:
-                dataframe[f"supertrend_2_buy_{multiplier}_{period}"] = self.supertrend(
-                    dataframe, multiplier, period
-                )["STX"]
+                new_cols.append(
+                    self.supertrend_direction(
+                        dataframe,
+                        multiplier,
+                        period,
+                        f"supertrend_2_buy_{multiplier}_{period}",
+                    )
+                )
 
         for multiplier in self.buy_m3.range:
             for period in self.buy_p3.range:
-                dataframe[f"supertrend_3_buy_{multiplier}_{period}"] = self.supertrend(
-                    dataframe, multiplier, period
-                )["STX"]
+                new_cols.append(
+                    self.supertrend_direction(
+                        dataframe,
+                        multiplier,
+                        period,
+                        f"supertrend_3_buy_{multiplier}_{period}",
+                    )
+                )
 
         for multiplier in self.sell_m1.range:
             for period in self.sell_p1.range:
-                dataframe[f"supertrend_1_sell_{multiplier}_{period}"] = self.supertrend(
-                    dataframe, multiplier, period
-                )["STX"]
+                new_cols.append(
+                    self.supertrend_direction(
+                        dataframe,
+                        multiplier,
+                        period,
+                        f"supertrend_1_sell_{multiplier}_{period}",
+                    )
+                )
 
         for multiplier in self.sell_m2.range:
             for period in self.sell_p2.range:
-                dataframe[f"supertrend_2_sell_{multiplier}_{period}"] = self.supertrend(
-                    dataframe, multiplier, period
-                )["STX"]
+                new_cols.append(
+                    self.supertrend_direction(
+                        dataframe,
+                        multiplier,
+                        period,
+                        f"supertrend_2_sell_{multiplier}_{period}",
+                    )
+                )
 
         for multiplier in self.sell_m3.range:
             for period in self.sell_p3.range:
-                dataframe[f"supertrend_3_sell_{multiplier}_{period}"] = self.supertrend(
-                    dataframe, multiplier, period
-                )["STX"]
+                new_cols.append(
+                    self.supertrend_direction(
+                        dataframe,
+                        multiplier,
+                        period,
+                        f"supertrend_3_sell_{multiplier}_{period}",
+                    )
+                )
+
+        if new_cols:
+            dataframe = pd.concat([dataframe] + new_cols, axis=1)
 
         return dataframe
 
@@ -183,67 +220,13 @@ class FSupertrendStrategy(IStrategy):
 
         return dataframe
 
-    """
-        Supertrend Indicator; adapted for freqtrade
-        from: https://github.com/freqtrade/freqtrade-strategies/issues/30
-    """
-
-    def supertrend(self, dataframe: DataFrame, multiplier, period):
-        df = dataframe.copy()
-
-        df["TR"] = ta.TRANGE(df)
-        df["ATR"] = ta.SMA(df["TR"], period)
-
-        st = "ST_" + str(period) + "_" + str(multiplier)
-        stx = "STX_" + str(period) + "_" + str(multiplier)
-
-        # Compute basic upper and lower bands
-        df["basic_ub"] = (df["high"] + df["low"]) / 2 + multiplier * df["ATR"]
-        df["basic_lb"] = (df["high"] + df["low"]) / 2 - multiplier * df["ATR"]
-
-        # Compute final upper and lower bands
-        df["final_ub"] = 0.00
-        df["final_lb"] = 0.00
-        for i in range(period, len(df)):
-            df["final_ub"].iat[i] = (
-                df["basic_ub"].iat[i]
-                if df["basic_ub"].iat[i] < df["final_ub"].iat[i - 1]
-                or df["close"].iat[i - 1] > df["final_ub"].iat[i - 1]
-                else df["final_ub"].iat[i - 1]
-            )
-            df["final_lb"].iat[i] = (
-                df["basic_lb"].iat[i]
-                if df["basic_lb"].iat[i] > df["final_lb"].iat[i - 1]
-                or df["close"].iat[i - 1] < df["final_lb"].iat[i - 1]
-                else df["final_lb"].iat[i - 1]
-            )
-
-        # Set the Supertrend value
-        df[st] = 0.00
-        for i in range(period, len(df)):
-            df[st].iat[i] = (
-                df["final_ub"].iat[i]
-                if df[st].iat[i - 1] == df["final_ub"].iat[i - 1]
-                and df["close"].iat[i] <= df["final_ub"].iat[i]
-                else df["final_lb"].iat[i]
-                if df[st].iat[i - 1] == df["final_ub"].iat[i - 1]
-                and df["close"].iat[i] > df["final_ub"].iat[i]
-                else df["final_lb"].iat[i]
-                if df[st].iat[i - 1] == df["final_lb"].iat[i - 1]
-                and df["close"].iat[i] >= df["final_lb"].iat[i]
-                else df["final_ub"].iat[i]
-                if df[st].iat[i - 1] == df["final_lb"].iat[i - 1]
-                and df["close"].iat[i] < df["final_lb"].iat[i]
-                else 0.00
-            )
-        # Mark the trend direction up/down
-        df[stx] = np.where(
-            (df[st] > 0.00), np.where((df["close"] < df[st]), "down", "up"), None
-        )
-
-        # Remove basic and final bands from the columns
-        df.drop(["basic_ub", "basic_lb", "final_ub", "final_lb"], inplace=True, axis=1)
-
-        df.fillna(0, inplace=True)
-
-        return DataFrame(index=df.index, data={"ST": df[st], "STX": df[stx]})
+    def supertrend_direction(
+        self, dataframe: DataFrame, multiplier: int, period: int, name: str
+    ) -> pd.Series:
+        """
+        Supertrend direction ('up' / 'down') as a named series.
+        `ftt.supertrend` returns a (value, direction) tuple - only the direction is used here.
+        """
+        _, stx = ftt.supertrend(dataframe, period=period, multiplier=multiplier)
+        # 'stx' is None before the indicator has warmed up - keep the empty string
+        return pd.Series(stx, index=dataframe.index, name=name).fillna("")
