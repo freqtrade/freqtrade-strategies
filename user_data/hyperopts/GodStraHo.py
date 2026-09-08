@@ -1,7 +1,7 @@
 # GodStra Strategy Hyperopt
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# IMPORTANT: INSTALL TA BEFOUR RUN:
+# IMPORTANT: INSTALL TA BEFORE RUN:
 # :~$ pip install ta
 # freqtrade hyperopt --hyperopt GodStraHo --hyperopt-loss SharpeHyperOptLossDaily --spaces all --strategy GodStra --config config.json -e 100
 

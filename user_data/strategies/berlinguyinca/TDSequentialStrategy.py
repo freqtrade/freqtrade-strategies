@@ -17,7 +17,7 @@ class TDSequentialStrategy(IStrategy):
 
     Sell trigger:
         When you see 9 consecutive closes "higher" than the close 4 candles prior.
-        An ideal sell is when the the high of bars 6 and 7 in the count are exceeded by the high of bars 8 or 9.
+        An ideal sell is when the high of bars 6 and 7 in the count are exceeded by the high of bars 8 or 9.
 
     Created by @bmoulkaf
     """

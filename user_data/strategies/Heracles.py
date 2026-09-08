@@ -7,7 +7,7 @@
 #       "method": "AgeFilter",
 #       "min_days_listed": 100
 #   },
-# IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
+# IMPORTANT: INSTALL TA BEFORE RUN(pip install ta)
 #
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces roi buy --strategy Heracles
 # ######################################################################

@@ -13,9 +13,9 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 class ReinforcedSmoothScalp(IStrategy):
     """
-        this strategy is based around the idea of generating a lot of potentatils buys and make tiny profits on each trade
+        this strategy is based around the idea of generating a lot of potential buys and make tiny profits on each trade
 
-        we recommend to have at least 60 parallel trades at any time to cover non avoidable losses
+        we recommend to have at least 60 parallel trades at any time to cover non-avoidable losses
     """
 
     INTERFACE_VERSION: int = 3
