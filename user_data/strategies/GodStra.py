@@ -6,7 +6,7 @@
 #       "method": "AgeFilter",
 #       "min_days_listed": 30
 #   },
-# IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
+# IMPORTANT: INSTALL TA BEFORE RUN(pip install ta)
 # IMPORTANT: Use Smallest "max_open_trades" for getting best results inside config.json
 
 # --- Do not remove these libs ---

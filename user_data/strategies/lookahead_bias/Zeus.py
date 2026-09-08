@@ -2,7 +2,7 @@
 # AVG/MID profit in USDT
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
+# IMPORTANT: INSTALL TA BEFORE RUN(pip install ta)
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi --strategy Zeus
 # --- Do not remove these libs ---
 import logging
